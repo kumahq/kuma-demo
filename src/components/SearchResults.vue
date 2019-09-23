@@ -1,17 +1,17 @@
 <template>
   <div class="search-results">
     <ul>
-      <li>Search result item 1</li>
-      <li>Search result item 2</li>
-      <li>Search result item 3</li>
-      <li>Search result item 4</li>
-      <li>Search result item 5</li>
+      <li v-model="items" v-for="(item, index) in items" :key="index">{{ item.title }}</li>
     </ul>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    items: Array
+  }
+};
 </script>
 
 <style lang="scss">

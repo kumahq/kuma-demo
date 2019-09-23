@@ -1,13 +1,12 @@
 <template>
   <div id="app">
     <search />
-    <search-results />
+    <search-results :items="items" />
     <global-footer />
   </div>
 </template>
 
 <script>
-import "normalize.css";
 import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
 import SearchResults from "./components/SearchResults.vue";

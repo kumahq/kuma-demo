@@ -1,17 +1,34 @@
 <template>
   <div class="search">
-    <form>
-      <input type="search" name="search" id="search" />
+    <form @submit.prevent>
+      <input
+        @keyup="submitQuery"
+        type="search"
+        name="search"
+        id="search"
+        placeholder="Enter a search query..."
+        autocomplete="off"
+      />
     </form>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    submitQuery(ev) {
+      const query = ev.target.value;
+      this.$store.commit("updateSearchQuery", query);
+    }
+  }
+};
 </script>
 
 <style lang="scss">
 input[type="search"] {
   display: block;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
 }
 </style>
