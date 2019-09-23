@@ -1,7 +1,7 @@
 <template>
   <div class="search-results">
     <ul>
-      <li v-model="items" v-for="(item, index) in items" :key="index">{{ item.title }}</li>
+      <li v-for="(item, index) in items" :key="index">{{ item.title }}</li>
     </ul>
   </div>
 </template>

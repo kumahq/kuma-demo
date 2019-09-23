@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <search />
-    <search-results :items="items" />
+    <search-results :items="filterListBySearchQuery" />
     <global-footer />
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
 import SearchResults from "./components/SearchResults.vue";
@@ -17,6 +18,9 @@ export default {
     GlobalFooter,
     Search,
     SearchResults
+  },
+  computed: {
+    ...mapGetters(["filterListBySearchQuery"])
   }
 };
 </script>
