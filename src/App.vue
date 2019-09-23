@@ -1,28 +1,45 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <search />
+    <search-results />
+    <global-footer />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import "normalize.css";
+import GlobalFooter from "./components/GlobalFooter.vue";
+import Search from "./components/Search.vue";
+import SearchResults from "./components/SearchResults.vue";
 
 export default {
   name: "app",
   components: {
-    HelloWorld
+    GlobalFooter,
+    Search,
+    SearchResults
   }
 };
 </script>
 
 <style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
+  font-size: 2.4rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+#app {
+  width: 100%;
+  max-width: 1040px;
+  padding: 2rem;
+  margin: 0 auto;
 }
 </style>
