@@ -1,6 +1,7 @@
 <template>
   <div class="search mb-8">
-    <form @submit.prevent>
+    <form class="flex flex-row items-center -mx-4" @submit.prevent>
+      <label for="search" class="mx-4 font-bold uppercase">Product Search</label>
       <input
         @keyup="submitQuery"
         type="search"
@@ -8,6 +9,7 @@
         id="search"
         placeholder="Search products by title..."
         autocomplete="off"
+        class="border border-gray-400 px-4 py-4 flex-grow mx-4"
       />
     </form>
   </div>
@@ -25,10 +27,4 @@ export default {
 </script>
 
 <style lang="scss">
-input[type="search"] {
-  display: block;
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-}
 </style>

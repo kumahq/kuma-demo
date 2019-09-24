@@ -7,6 +7,9 @@
           :category="item.category"
           :picture="item.picture"
           :detail="item.productDetail"
+          :quantity="item.quantity"
+          :size="item.size"
+          :reviews="item.reviews"
         />
       </li>
     </ul>

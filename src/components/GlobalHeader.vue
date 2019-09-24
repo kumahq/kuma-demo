@@ -1,5 +1,5 @@
 <template>
-  <header class="global-header">
+  <header class="global-header flex items-center justify-between mb-8 mt-8">
     <div class="global-header__col">
       <img :src="require('@/assets/kuma-logo.svg')" alt="Kuma Marketplace Logo" />
     </div>
@@ -14,20 +14,4 @@ export default {};
 </script>
 
 <style lang="scss">
-.global-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  text-align: center;
-
-  h1 {
-    font-size: 2.6rem;
-    margin-left: auto;
-  }
-}
-
-.global-header__col {
-  flex: 1;
-}
 </style>

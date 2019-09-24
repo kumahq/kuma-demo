@@ -16,6 +16,13 @@ import SearchResults from "./components/SearchResults.vue";
 
 export default {
   name: "app",
+  metaInfo: {
+    title: "Home",
+    titleTemplate: "%s | Kuma Marketplace",
+    htmlAttrs: {
+      lang: "en"
+    }
+  },
   components: {
     GlobalHeader,
     GlobalFooter,
@@ -35,28 +42,4 @@ export default {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-// App
-html {
-  // font-size: 62.5%;
-}
-
-body {
-  // font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
-}
-
-#app {
-}
-
-h1 {
-  @apply text-2xl;
-}
-
-h2 {
-  @apply text-xl;
-}
-
-h3 {
-  @apply text-lg;
-}
 </style>
