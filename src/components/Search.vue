@@ -6,7 +6,7 @@
         type="search"
         name="search"
         id="search"
-        placeholder="Enter a search query..."
+        placeholder="Search products..."
         autocomplete="off"
       />
     </form>
