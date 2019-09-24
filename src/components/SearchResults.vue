@@ -1,10 +1,18 @@
 <template>
   <div class="search-results">
-    <ul>
-      <li v-for="(item, index) in items" :key="index">
-        <product :name="item.name" :category="item.category" />
+    <ul v-if="items.length">
+      <li v-for="item in items" :key="item._id">
+        <product
+          :name="item.name"
+          :category="item.category"
+          :picture="item.picture"
+          :detail="item.productDetail"
+        />
       </li>
     </ul>
+    <div v-else>
+      <p>No results met your search criteria!</p>
+    </div>
   </div>
 </template>
 

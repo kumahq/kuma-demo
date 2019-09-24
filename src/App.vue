@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container mx-auto min-h-screen antialiased leading-tight">
     <global-header />
     <search />
     <search-results :items="filterListBySearchQuery" />
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap");
 
 // Tailwind
 @tailwind base;
@@ -38,29 +38,25 @@ export default {
 
 // App
 html {
-  font-size: 62.5%;
+  // font-size: 62.5%;
 }
 
 body {
-  font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
-  font-size: 2.4rem;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  // font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
 }
 
 #app {
-  width: 100%;
-  max-width: 1040px;
-  padding: 2rem;
-  margin: 0 auto;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 400;
+h1 {
+  @apply text-2xl;
+}
+
+h2 {
+  @apply text-xl;
+}
+
+h3 {
+  @apply text-lg;
 }
 </style>

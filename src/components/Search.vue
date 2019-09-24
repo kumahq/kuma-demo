@@ -1,12 +1,12 @@
 <template>
-  <div class="search">
+  <div class="search mb-8">
     <form @submit.prevent>
       <input
         @keyup="submitQuery"
         type="search"
         name="search"
         id="search"
-        placeholder="Search products..."
+        placeholder="Search products by title..."
         autocomplete="off"
       />
     </form>
