@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import debounce from "vue-debounce/src/debounce";
 import { mapGetters } from "vuex";
 import GlobalHeader from "./components/GlobalHeader.vue";
 import GlobalFooter from "./components/GlobalFooter.vue";
