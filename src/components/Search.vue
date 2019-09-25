@@ -1,7 +1,7 @@
 <template>
-  <div class="search mb-8">
-    <form class="flex flex-row items-center -mx-4" @submit.prevent>
-      <label for="search" class="mx-4 font-bold uppercase">Product Search</label>
+  <div class="search">
+    <form class="flex flex-row items-center -mx-4 mt-4" @submit.prevent>
+      <!-- <label for="search" class="mx-4 font-bold uppercase">Search</label> -->
       <input
         @keyup="submitQuery"
         type="search"

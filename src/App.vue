@@ -1,13 +1,24 @@
 <template>
-  <div id="app" class="container mx-auto min-h-screen antialiased leading-tight">
-    <global-header />
-    <search />
-    <search-results :items="filterListBySearchQuery" />
-    <global-footer />
+  <div id="app" class="antialiased leading-tight">
+    <div class="header-wrap fixed w-screen pt-2 pb-4 pl-8 pr-8 bg-white shadow-xl">
+      <div class="flex items-center justify-between -mx-4">
+        <div class="w-1/6 mx-4">
+          <global-header />
+        </div>
+        <div class="w-5/6 mx-4">
+          <search />
+        </div>
+      </div>
+    </div>
+    <div class="content-wrapper container mx-auto">
+      <search-results :items="filterListBySearchQuery" />
+      <global-footer />
+    </div>
   </div>
 </template>
 
 <script>
+import debounce from "vue-debounce/src/debounce";
 import { mapGetters } from "vuex";
 import GlobalHeader from "./components/GlobalHeader.vue";
 import GlobalFooter from "./components/GlobalFooter.vue";
@@ -42,4 +53,12 @@ export default {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
+}
+
+.content-wrapper {
+  padding-top: 8rem;
+}
 </style>

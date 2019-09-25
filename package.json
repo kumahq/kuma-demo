@@ -1,5 +1,5 @@
 {
-  "name": "kuma-app",
+  "name": "kuma-marketplace-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,6 +14,7 @@
     "normalize.css": "^8.0.1",
     "tailwindcss": "^1.1.2",
     "vue": "^2.6.10",
+    "vue-debounce": "^2.1.0",
     "vue-meta": "^2.2.2",
     "vuex": "^3.1.1"
   },

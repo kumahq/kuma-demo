@@ -11,9 +11,7 @@ import { faTag } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 import { faTshirt } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
 library.add(faTag, faStar, faBoxOpen, faTshirt);
 Vue.component("fa-icon", FontAwesomeIcon);
 

@@ -1,24 +1,5 @@
 <template>
-  <footer class="global-footer">
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+  <footer class="global-footer text-center mt-8 p-8 border-t border-gray-300">
+    <p>&copy; {{ new Date().getFullYear() }} Kuma Marketplace</p>
   </footer>
 </template>
-
-<script>
-export default {};
-</script>
-
-<style lang="scss">
-$height: 3rem;
-
-.global-footer {
-  width: 100%;
-  text-align: center;
-  font-size: 1.6rem;
-
-  p {
-    margin: 0;
-    padding: 0;
-  }
-}
-</style>
