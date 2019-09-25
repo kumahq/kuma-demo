@@ -1,4 +1,4 @@
-<img src="src/assets/kuma-logo.svg" style="display:block;width:100%;height:auto;margin-bottom:20px;"/>
+![Kuma Logo](src/assets/kuma-logo.svg)
 
 # Kuma Marketplace Demo App
 
