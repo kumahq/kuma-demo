@@ -23,10 +23,10 @@ app.get('/search', function (req, res) {
       }
     }
   }
+
   elastic.search(body)
     .then(results => {
-      console.log(results)
-      res.send(results)
+      res.send(results.hits.hits)
     })
     .catch(err => {
       console.log(err)

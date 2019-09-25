@@ -14,18 +14,10 @@ client.ping({
 })
 
 const search = (body) => {
-    client.search({
-            index: 'market-items',
-            body: body,
-            type: 'clothing_list'
-        })
-        .then(results => {
-            return results.hits.hits
-        })
-        .catch(err => {
-            console.log('elastic.js search() has failed: ' + err)
-            return []
-        })
+    return client.search({
+        index: 'market-items',
+        body: body
+    })
 }
 
 const createBulk = async () => {
