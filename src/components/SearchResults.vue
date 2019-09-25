@@ -3,18 +3,21 @@
     <ul v-if="items.length">
       <li v-for="item in items" :key="item._id">
         <product
-          :name="item.name"
-          :category="item.category"
-          :picture="item.picture"
-          :detail="item.productDetail"
-          :quantity="item.quantity"
-          :size="item.size"
-          :reviews="item.reviews"
+          :name="item._source.name"
+          :category="item._source.category"
+          :picture="item._source.picture"
+          :detail="item._source.productDetail"
+          :quantity="item._source.quantity"
+          :size="item._source.size"
+          :reviews="item._source.reviews"
+          :price="item._source.price"
         />
       </li>
     </ul>
     <div v-else>
-      <p>No results met your search criteria!</p>
+      <p
+        class="text-2xl text-center font-bold"
+      >Try searching for &quot;shirt&quot; or &quot;fedora&quot;.</p>
     </div>
   </div>
 </template>
@@ -31,6 +34,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-</style>
