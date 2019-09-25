@@ -1,14 +1,32 @@
-const redis = require("redis")
-const redisClient = redis.createClient()
+const items = require('./test/items.json')
 
-redisClient.on('connect', function () {
+const redis = require("redis")
+const client = redis.createClient()
+const { promisify } = require('util')
+const getAsync = promisify(client.get).bind(client)
+
+client.on('connect', () => {
     console.log('Redis client connected')
 })
-redisClient.set('my test key', 'my test value', redis.print)
-redisClient.get('my test key', function (error, result) {
-    if (error) {
-        console.log(error)
-        throw error
+
+const search = async (itemId) => {
+    const res = await getAsync(itemId);
+
+    if (res == null) {
+        console.log('Item does not exist, please check the item index provided.')
+        return err
     }
-    console.log('GET result ->' + result)
+
+    return res
+}
+
+const importData = () => {
+    items.forEach(item => {
+        client.set(item.index, JSON.stringify(item.reviews))
+    })
+}
+
+module.exports = Object.assign({
+    search,
+    importData
 })

@@ -7,7 +7,7 @@ const client = new elasticsearch.Client({
 
 client.ping({
     requestTimeout: 30000,
-}, function (error) {
+}, (error) => {
     if (error) {
         console.error('elasticsearch cluster is down!')
     }
@@ -25,7 +25,7 @@ const createBulk = async () => {
 
     client.indices.create({
         index: 'market-items'
-    }, function (error, response, status) {
+    }, (error, response, status) => {
         if (error) {
             console.log(error)
         } else {
@@ -46,12 +46,12 @@ const createBulk = async () => {
     return bulk
 }
 
-const importElasticData = async () => {
+const importData = async () => {
     const bulk = await createBulk()
 
     client.bulk({
         body: bulk
-    }, function (err, response) {
+    }, (err, response) => {
         if (err) {
             console.log("Failed Bulk operation", err);
         } else {
@@ -62,6 +62,5 @@ const importElasticData = async () => {
 
 module.exports = Object.assign({
     search,
-    createBulk,
-    importElasticData
+    importData
 })
