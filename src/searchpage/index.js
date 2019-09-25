@@ -17,15 +17,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/search', (req, res) => {
-  let body = {
-    query: {
-      match: {
-        name: req.query.item
-      }
-    }
-  }
-
-  elastic.search(body)
+  elastic.search(req.query.item)
     .then(results => {
       console.log(`found ${results.hits.total.value} items in ${results.took}ms`);
       res.send(results.hits.hits)
@@ -36,7 +28,18 @@ app.get('/search', (req, res) => {
     })
 })
 
-app.get('/item/:itemIndexId/review', (req, res) => {
+app.get('/items/:itemIndexId', (req, res) => {
+  elastic.searchId(req.params.itemIndexId)
+    .then(results => {
+      res.send(results.hits.hits)
+    })
+    .catch(err => {
+      console.log(err)
+      res.send([])
+    })
+})
+
+app.get('/items/:itemIndexId/review', (req, res) => {
   redis.search(`${req.params.itemIndexId}`)
     .then(results => {
       res.send(results)

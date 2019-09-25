@@ -13,7 +13,30 @@ client.ping({
     }
 })
 
-const search = (body) => {
+const search = (itemName) => {
+    let body = {
+        query: {
+            match: {
+                name: itemName
+            }
+        }
+    }
+
+    return client.search({
+        index: 'market-items',
+        body: body
+    })
+}
+
+const searchId = (itemId) => {
+    let body = {
+        query: {
+            match: {
+                index: itemId
+            }
+        }
+    }
+
     return client.search({
         index: 'market-items',
         body: body
@@ -34,6 +57,8 @@ const createBulk = async () => {
     })
 
     await items.forEach(item => {
+        item.reviews = undefined
+
         bulk.push({
             index: {
                 _index: "market-items",
@@ -62,5 +87,6 @@ const importData = async () => {
 
 module.exports = Object.assign({
     search,
+    searchId,
     importData
 })
