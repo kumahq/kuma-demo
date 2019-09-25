@@ -14,6 +14,7 @@
             class="block bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
             href="#"
           >Buy</a>
+          <p class="text-center mt-4 font-bold text-3xl">{{ price }}</p>
         </div>
       </div>
       <div class="w-4/5 px-4">
@@ -70,16 +71,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.product__title {
-  font-weight: 700;
-}
-
-.product__category {
-  // font-size: 1.8rem;
-}
-
-.product__detail {
-}
-</style>

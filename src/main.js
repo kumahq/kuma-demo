@@ -1,8 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueMeta from "vue-meta";
-import Vuex from "vuex";
-import store from "./store";
 import "normalize.css";
 
 // Font Awesome
@@ -16,11 +14,9 @@ library.add(faTag, faStar, faBoxOpen, faTshirt);
 Vue.component("fa-icon", FontAwesomeIcon);
 
 Vue.use(VueMeta);
-Vue.use(Vuex);
 
 Vue.config.productionTip = false;
 
 new Vue({
-  store,
   render: h => h(App)
 }).$mount("#app");

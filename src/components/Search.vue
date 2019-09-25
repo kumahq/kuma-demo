@@ -3,7 +3,8 @@
     <form class="flex flex-row items-center -mx-4 mt-4" @submit.prevent>
       <!-- <label for="search" class="mx-4 font-bold uppercase">Search</label> -->
       <input
-        @keyup="submitQuery"
+        @keyup="search"
+        v-model="searchQuery"
         type="search"
         name="search"
         id="search"
@@ -17,10 +18,16 @@
 
 <script>
 export default {
+  data() {
+    return {
+      searchQuery: ""
+    };
+  },
   methods: {
-    submitQuery(ev) {
-      const query = ev.target.value;
-      this.$store.commit("updateSearchQuery", query);
+    search(ev) {
+      const query = ev.target.value.trim().toLowerCase();
+      this.searchQuery = query;
+      this.$emit("input", ev);
     }
   }
 };
