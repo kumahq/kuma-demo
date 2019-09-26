@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div class="content-wrapper container mx-auto">
+    <div class="content-wrapper container mx-auto max-w-6xl">
       <search-results :items="items" />
       <global-footer />
     </div>

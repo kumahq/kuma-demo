@@ -8,12 +8,14 @@
           :key="item.id"
           class="product__reviews__item p-4 mt-4 border-b border-gray-300 shadow-md rounded"
         >
-          <h3 class="product__reviews__title flex flex-row font-bold mb-2">
-            <div class="mr-4">{{ item.name }}</div>
+          <h3 class="product__reviews__title flex flex-row items-center font-bold mb-2">
+            <div class="mr-4">
+              <h3 class="text-xl">{{ item.name }}</h3>
+            </div>
             <div>
               <ul class="flex">
                 <li v-for="i in parseInt(item.rating)" :key="i">
-                  <fa-icon :icon="['fas', 'star']" class="mr-2" />
+                  <fa-icon :icon="['fas', 'star']" class="text-lg mr-2 text-yellow-600" />
                 </li>
               </ul>
             </div>
