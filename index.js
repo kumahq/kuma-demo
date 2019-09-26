@@ -36,10 +36,10 @@ app.get('/items/:itemIndexId', (req, res) => {
     .catch(err => {
       console.log(err)
       res.send([])
-    })
+    }) 
 })
 
-app.get('/items/:itemIndexId/review', (req, res) => {
+app.get('/items/:itemIndexId/reviews', (req, res) => {
   redis.search(`${req.params.itemIndexId}`)
     .then(results => {
       res.send(results)

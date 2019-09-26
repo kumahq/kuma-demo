@@ -55,9 +55,9 @@
     ]
     ```
 
-8. Make a request to the Node /items/${item_index_id}/review endpoint
+8. Make a request to the Node /items/${item_index_id}/reviews endpoint
    ```sh
-   curl -i http://localhost:3001/items/6/review
+   curl -i http://localhost:3001/items/6/reviews
    ```
    The response would be an array of item reviews stored in Redis:
    ```

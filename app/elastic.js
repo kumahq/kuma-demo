@@ -15,9 +15,12 @@ client.ping({
 
 const search = (itemName) => {
     let body = {
+        size: 200,
+        from: 0, 
         query: {
-            match: {
-                name: itemName
+            query_string: {
+                default_field: "name",
+                query: `*${itemName}*`
             }
         }
     }
