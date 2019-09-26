@@ -1,9 +1,7 @@
 <template>
   <div class="product__reviews-wrap mt-8">
     <div v-if="items" class="product__reviews">
-      <header class="product__reviews__header">
-        <h2 class="font-bold text-xl">Reviews</h2>
-      </header>
+      <slot name="header"></slot>
       <ul>
         <li
           v-for="item in items"
