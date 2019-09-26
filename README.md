@@ -43,3 +43,10 @@ yarn run test:unit
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+---
+
+## TODO
+
+- Pagination
+- Better optimize the API calls (if possible)
