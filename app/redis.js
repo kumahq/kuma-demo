@@ -1,4 +1,4 @@
-const items = require('./test/items.json')
+const items = require('../test/items.json')
 
 const redis = require("redis")
 const client = redis.createClient()

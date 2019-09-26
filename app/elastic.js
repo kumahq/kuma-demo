@@ -1,4 +1,4 @@
-const items = require('./test/items.json')
+const items = require('../test/items.json')
 
 const elasticsearch = require('elasticsearch')
 const client = new elasticsearch.Client({

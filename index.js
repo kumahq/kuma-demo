@@ -1,6 +1,6 @@
-const redis = require('./redis')
+const redis = require('./app/redis')
 redis.importData()
-const elastic = require('./elastic')
+const elastic = require('./app/elastic')
 elastic.importData()
 
 const express = require('express')
