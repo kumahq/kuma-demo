@@ -27,7 +27,53 @@
    ```sh
    npm start
    ```
-7. Make a request to the Node /search endpoint that queries ES for the market item and then gets the item reviews from Redis
+7. Make a request to the Node /items endpoint that queries ES for the market item
    ```sh
-   curl -i http://localhost:3001/search?item=jean
+   curl -i http://localhost:3001/items?q=boot
+    ```
+    The response would be an array of item objects:
+    ```
+    [
+        {
+            "_index":"market-items",
+            "_type":"clothing_list",
+            "_id":"a5REbm0BbA87YP8VtVin",
+            "_score":3.189999,
+            "_source":{
+                "index":6,
+                "price":"$448.00",
+                "quantity":6,
+                "picture":"https://i.imgur.com/koDDUEC.png",
+                "company":"Endicil",
+                "size":"XXXXL",
+                "category":"Boot with Fur",
+                "name":"Endicil Boot with Fur - Size XXXXL",
+                "productDetail":"Ullamco qui quis sunt officia ..."
+                }
+            },
+            ...
+    ]
+    ```
+
+8. Make a request to the Node /items/${item_index_id}/review endpoint
+   ```sh
+   curl -i http://localhost:3001/items/6/review
+   ```
+   The response would be an array of item reviews stored in Redis:
+   ```
+   [
+       {
+           "id":0,
+           "name":"Cooley Gamble",
+           "review":"Exercitation mollit aute sit et veniam...",
+           "rating":3
+        },
+        {
+            "id":1,
+            "name":"Castaneda Thompson",
+            "review":"Ullamco cillum pariatur veniam...",
+            "rating":4
+        },
+        ...
+    ]
    ```

@@ -16,8 +16,8 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/search', (req, res) => {
-  elastic.search(req.query.item)
+app.get('/items', (req, res) => {
+  elastic.search(req.query.q)
     .then(results => {
       console.log(`found ${results.hits.total.value} items in ${results.took}ms`);
       res.send(results.hits.hits)
