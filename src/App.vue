@@ -19,10 +19,21 @@
 
 <script>
 import axios from "axios";
+import { setupCache } from "axios-cache-adapter";
 import GlobalHeader from "./components/GlobalHeader.vue";
 import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
 import SearchResults from "./components/SearchResults.vue";
+
+// setup axios caching
+const cache = setupCache({
+  maxAge: 15 * 60 * 1000
+});
+
+// setup the product API Elasticsearch call
+const productsApi = axios.create({
+  adapter: cache.adapter
+});
 
 export default {
   name: "app",
@@ -44,13 +55,38 @@ export default {
     Search,
     SearchResults
   },
+  created() {
+    // load all products initially
+    this.loadAllProducts();
+  },
   methods: {
+    loadAllProducts() {
+      productsApi({
+        url: "http://localhost:3001/items?q",
+        method: "GET"
+      })
+        .then(response => {
+          // populate the items array
+          this.items = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     submitSearch(ev) {
       const query = ev.target.value.trim().toLowerCase();
-      axios
-        .get(`http://localhost:3001/search?item=${query}`)
+      productsApi({
+        url: `http://localhost:3001/items?q=${query}`,
+        method: "GET"
+      })
         .then(response => {
-          this.items = response.data;
+          if (query) {
+            // only load the query results
+            this.items = response.data;
+          } else {
+            // otherwise load all products
+            this.loadAllProducts();
+          }
         })
         .catch(error => {
           console.log(error);

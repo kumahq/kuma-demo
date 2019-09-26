@@ -19,6 +19,7 @@
       </div>
       <div class="w-4/5 px-4">
         <h2 class="product__title text-3xl font-bold mb-4">{{ name }}</h2>
+        <h3 class="product__company text-xl italic mb-4">Made by {{ company }}</h3>
         <div class="product__detail text-lg leading-normal">
           <p>{{ detail }}</p>
         </div>
@@ -34,7 +35,7 @@
                 @click="showModal"
                 @keydown.prevent="closeOnEsc"
                 class="bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
-              >Read {{ reviews.length }} Reviews</button>
+              >Read Reviews</button>
             </p>
           </div>
           <div class="mx-4">
@@ -71,8 +72,19 @@
 </template>
 
 <script>
+import axios from "axios";
+import { setupCache } from "axios-cache-adapter";
 import Reviews from "./Reviews.vue";
 import Modal from "./Modal.vue";
+
+// axios caching
+const cache = setupCache({
+  maxAge: 15 * 60 * 1000
+});
+
+const reviewsApi = axios.create({
+  adapter: cache.adapter
+});
 
 export default {
   data() {
@@ -108,6 +120,18 @@ export default {
       if (this.isModalVisible && ev.keyCode === 27) {
         this.closeModal();
       }
+    },
+    fetchReviews(id) {
+      reviewsApi({
+        url: `http://localhost:3001/items/${id}/reviews`,
+        method: "GET"
+      })
+        .then(async response => {
+          this.reviews = await response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };

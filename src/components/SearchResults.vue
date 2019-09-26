@@ -11,13 +11,12 @@
           :size="item._source.size"
           :reviews="item._source.reviews"
           :price="item._source.price"
+          :company="item._source.company"
         />
       </li>
     </ul>
     <div v-else>
-      <p
-        class="text-2xl text-center font-bold"
-      >Try searching for &quot;shirt&quot; or &quot;fedora&quot;.</p>
+      <p class="text-2xl text-center font-bold">No results!</p>
     </div>
   </div>
 </template>

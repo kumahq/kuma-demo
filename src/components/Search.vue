@@ -10,7 +10,7 @@
         id="search"
         placeholder="Search products by title..."
         autocomplete="off"
-        class="border border-gray-400 px-4 py-4 flex-grow mx-4"
+        class="border border-gray-400 px-4 py-4 flex-grow mx-4 text-xl"
       />
     </form>
   </div>
