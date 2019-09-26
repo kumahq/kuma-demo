@@ -89,7 +89,8 @@ const reviewsApi = axios.create({
 export default {
   data() {
     return {
-      isModalVisible: false
+      isModalVisible: false,
+      reviews: []
     };
   },
   props: {
@@ -102,8 +103,7 @@ export default {
     size: String,
     category: String,
     name: String,
-    detail: String,
-    reviews: Array
+    detail: String
   },
   components: {
     Reviews,
@@ -112,6 +112,8 @@ export default {
   methods: {
     showModal() {
       this.isModalVisible = true;
+      this.fetchReviews(this.index);
+      console.log(this.index);
     },
     closeModal() {
       this.isModalVisible = false;
@@ -123,7 +125,7 @@ export default {
     },
     fetchReviews(id) {
       reviewsApi({
-        url: `http://localhost:3001/items/${id}/reviews`,
+        url: `http://localhost:3001/items/${id}/reviews/`,
         method: "GET"
       })
         .then(async response => {
