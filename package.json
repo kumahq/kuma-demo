@@ -1,0 +1,11 @@
+{
+  "name": "kuma-marketplace-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "(cd app && npm install); (cd api && npm install)",
+    "api:start": "cd api && npm run start",
+    "app:start": "cd app && npm run serve",
+    "app:build": "cd app && npm run build"
+  }
+}
