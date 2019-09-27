@@ -99,3 +99,4 @@ The app is not yet prepared to be hosted but runs perfectly well locally. To get
 3. If for some reason an endpoint fails, the app will display errors very clearly on the front end. For example, if the app fails to load the products on initial page load, you will see the error itself where the content would usually load. For reviews, you will see API errors appear within the modals themselves (which are triggered by clicking the "Read Reviews" buttons).
 4. There is [an adapter](https://www.npmjs.com/package/axios-cache-adapter) in place that will cache Axios endpoint calls. This makes all calls after the initial ones much smaller.
 5. There is currently no pagination but it's on the roadmap.
+6. The endpoints for reviews and products are hard-coded into the app. Therefore if you try to view the app via an IP address like `192.168.0.5:8080` (e.g. on a mobile device), you will receive a network error since the API calls go to `localhost`.
