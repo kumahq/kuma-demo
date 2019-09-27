@@ -80,6 +80,8 @@ This will output to a `dist` folder.
 
 ### App notes
 
+The app is not yet prepared to be hosted but runs perfectly well locally. To get it working in a hosting environment (like Netlify), the build and run commands will need to be written based on [Netlify's documentation](https://www.netlify.com/docs/build-settings/).
+
 1. The search runs queries as you type but will not run unnecessary queries when you are deleting characters in the search field. Try typing things like "hat", "shirt", "fedora", etc.
 2. The reviews for each product make a separate Redis endpoint call when clicking the "Read Reviews" button on each product. The reviews will open in a modal window and that is when the API call is made to that product's ID.
 3. If for some reason an endpoint fails, the app will display errors very clearly on the front end. For example, if the app fails to load the products on initial page load, you will see the error itself where the content would usually load. For reviews, you will see API errors appear within the modals themselves (which are triggered by clicking the "Read Reviews" buttons).
