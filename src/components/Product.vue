@@ -68,6 +68,16 @@
             >Reviews for {{ name }}</h2>
           </template>
           <template v-slot:body>
+            <error v-if="modalApiError">
+              <template v-slot:header>
+                <p>There was a Review Redis API error:</p>
+              </template>
+              <template v-slot:body>
+                <code>
+                  <pre>{{ modalApiError }}</pre>
+                </code>
+              </template>
+            </error>
             <reviews :items="reviews" />
           </template>
         </modal>
@@ -82,6 +92,7 @@ import axios from "axios";
 import { setupCache } from "axios-cache-adapter";
 import Reviews from "./Reviews.vue";
 import Modal from "./Modal.vue";
+import Error from "./Error.vue";
 
 // axios caching
 const cache = setupCache({
@@ -95,8 +106,9 @@ const reviewsApi = axios.create({
 export default {
   data() {
     return {
+      reviews: [],
       isModalVisible: false,
-      reviews: []
+      modalApiError: ""
     };
   },
   props: {
@@ -113,13 +125,13 @@ export default {
   },
   components: {
     Reviews,
-    Modal
+    Modal,
+    Error
   },
   methods: {
     showModal() {
       this.isModalVisible = true;
       this.fetchReviews(this.index);
-      console.log(this.index);
     },
     closeModal() {
       this.isModalVisible = false;
@@ -138,7 +150,8 @@ export default {
           this.reviews = await response.data;
         })
         .catch(error => {
-          console.log(error);
+          this.modalApiError = error;
+          console.error("Reviews Redis API Error:", error);
         });
     }
   }

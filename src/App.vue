@@ -11,6 +11,29 @@
       </div>
     </div>
     <div class="content-wrapper container mx-auto max-w-6xl">
+      <div class="errors" v-if="productInitApiError || searchApiError">
+        <error v-if="productInitApiError">
+          <template v-slot:header>
+            <p>There was a Product API error:</p>
+          </template>
+          <template v-slot:body>
+            <code>
+              <pre>{{ productInitApiError }}</pre>
+            </code>
+          </template>
+        </error>
+
+        <error v-if="searchApiError">
+          <template v-slot:header>
+            <p>There was a Search API error:</p>
+          </template>
+          <template v-slot:body>
+            <code>
+              <pre>{{ searchApiError }}</pre>
+            </code>
+          </template>
+        </error>
+      </div>
       <search-results :items="items" />
       <global-footer />
     </div>
@@ -24,6 +47,13 @@ import GlobalHeader from "./components/GlobalHeader.vue";
 import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
 import SearchResults from "./components/SearchResults.vue";
+import Error from "./components/Error.vue";
+
+// the API endpoint
+const api = "http://localhost:3001/items";
+
+// API search query param
+const apiParam = "?q";
 
 // setup axios caching
 const cache = setupCache({
@@ -46,14 +76,17 @@ export default {
   },
   data() {
     return {
-      items: []
+      items: [],
+      productInitApiError: "",
+      searchApiError: ""
     };
   },
   components: {
     GlobalHeader,
     GlobalFooter,
     Search,
-    SearchResults
+    SearchResults,
+    Error
   },
   created() {
     // load all products initially
@@ -62,7 +95,7 @@ export default {
   methods: {
     loadAllProducts() {
       productsApi({
-        url: "http://localhost:3001/items?q",
+        url: `${api}${apiParam}`,
         method: "GET"
       })
         .then(response => {
@@ -70,13 +103,14 @@ export default {
           this.items = response.data;
         })
         .catch(error => {
-          console.log(error);
+          this.productInitApiError = error;
+          console.error("Product API Error:", error);
         });
     },
     submitSearch(ev) {
       const query = ev.target.value.trim().toLowerCase();
       productsApi({
-        url: `http://localhost:3001/items?q=${query}`,
+        url: `${api}${apiParam}=${query}`,
         method: "GET"
       })
         .then(response => {
@@ -89,7 +123,8 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          this.searchApiError = error;
+          console.error("Search API Error:", error);
         });
     }
   }

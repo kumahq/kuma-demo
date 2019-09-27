@@ -57,6 +57,7 @@ export default {
   position: relative;
   width: 100%;
   max-width: 960px;
+  max-height: 90vh;
   overflow-x: auto;
   display: flex;
   flex-direction: column;
@@ -67,6 +68,8 @@ export default {
 }
 
 .modal__body {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal__footer {
