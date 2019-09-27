@@ -1,19 +1,20 @@
 <template>
   <div class="product mb-8 pt-8 border-t border-gray-300">
-    <header class="product__header flex flex-row -mx-4">
-      <div class="w-1/5 px-4">
+    <header class="product__header md:flex flex-row -mx-4">
+      <div class="md:w-1/5 px-4">
+        <h2 class="product__title text-2xl text-center font-bold mb-4 md:hidden">{{ name }}</h2>
         <div class="product__image bg-white">
           <img
             :src="picture"
             :alt="`A picture of ${name}`"
-            class="object-fill w-full rounded border-4 border-solid border-gray-300 shadow-lg"
+            class="max-w-xs md:max-w-full rounded border-4 border-solid border-gray-300 shadow-lg mx-auto"
           />
         </div>
         <div class="product__actions mt-4">
           <p class="text-center mt-4 font-bold text-3xl">{{ price }}</p>
           <p class="text-center mt-4">
             <a
-              class="block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
+              class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
               href="#"
             >
               <fa-icon :icon="['fas', 'shopping-cart']" class="mr-2" />Add to Cart
@@ -21,33 +22,35 @@
           </p>
         </div>
       </div>
-      <div class="w-4/5 px-4">
-        <h2 class="product__title text-3xl font-bold mb-4">{{ name }}</h2>
-        <h3 class="product__company text-xl text-pink font-bold italic mb-4">Made by {{ company }}</h3>
+      <div class="md:w-4/5 px-4">
+        <h2 class="product__title text-3xl font-bold mb-4 hidden md:block">{{ name }}</h2>
+        <h3
+          class="product__company text-xl text-pink font-bold italic mb-4 mt-4 md:mt-0 text-center md:text-left"
+        >Made by {{ company }}</h3>
         <div class="product__detail text-lg leading-normal">
           <p>{{ detail }}</p>
         </div>
         <!-- .product__detail -->
 
         <div class="product__extras mt-4 p-4 bg-gray-200 rounded">
-          <div class="flex items-center justify-between flex-row -mx-4">
+          <div class="md:flex items-center justify-between flex-row -mx-4">
             <div class="mx-4">
-              <ul class="flex text-gray-600 flex-row -mx-4">
+              <ul class="sm:flex text-gray-600 flex-row -mx-4">
                 <li class="mx-4">
                   <fa-icon :icon="['fas', 'tshirt']" class="mr-2" />
-                  {{ size }}
+                  <span>{{ size }}</span>
                 </li>
-                <li class="mx-4">
+                <li class="mx-4 mt-4 sm:mt-0">
                   <fa-icon :icon="['fas', 'tag']" class="mr-2" />
-                  {{ category }}
+                  <span>{{ category }}</span>
                 </li>
-                <li class="mx-4">
+                <li class="mx-4 mt-4 sm:mt-0">
                   <fa-icon :icon="['fas', 'box-open']" class="mr-2" />Only
                   <strong>{{ quantity }}</strong> Left!
                 </li>
               </ul>
             </div>
-            <div class="mx-4">
+            <div class="mx-4 mt-4 md:mt-0">
               <p>
                 <button
                   type="button"

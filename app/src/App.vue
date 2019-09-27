@@ -1,11 +1,11 @@
 <template>
   <div id="app" class="antialiased leading-tight">
     <div class="header-wrap fixed w-screen pt-2 pb-4 pl-8 pr-8 bg-white shadow-xl">
-      <div class="flex items-center justify-between -mx-4">
-        <div class="w-1/6 mx-4">
+      <div class="sm:flex items-center justify-between -mx-4">
+        <div class="w-full sm:w-2/6 md:w-1/6 sm:mx-4">
           <global-header />
         </div>
-        <div class="w-5/6 mx-4">
+        <div class="w-full sm:w-4/6 md:w-5/6 sm:mx-4">
           <search @input="submitSearch" />
         </div>
       </div>
