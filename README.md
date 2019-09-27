@@ -2,18 +2,15 @@
 
 #### Table of contents
 
-1. [Setup](#setup)
-2. [API](#api)
-
-- [Docker](#docker---products-endpoint)
-- [Redis](#redis---reviews-endpoint)
-- [Run](#run-the-api)
-
-3. [App](#app)
-
-- [Run](#run-the-app)
-- [Build](#build-the-app)
-- [Notes](#app-notes)
+- [Setup](#setup)
+- [API](#api)
+  - [Docker](#docker---products-endpoint)
+  - [Redis](#redis---reviews-endpoint)
+  - [Run](#run-the-api)
+- [App](#app)
+  - [Run](#run-the-app)
+  - [Build](#build-the-app)
+  - [Notes](#app-notes)
 
 ## Setup
 
