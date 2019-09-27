@@ -26,8 +26,19 @@ export default {
   methods: {
     search(ev) {
       const query = ev.target.value.trim().toLowerCase();
+      const key = event.keyCode || event.charCode;
       this.searchQuery = query;
-      this.$emit("input", ev);
+      // only run the search query if the user is not pressing
+      // the delete or backspace keys. no need to hit the API
+      // for every single string that is being deleted
+      if (key !== 8 && key !== 46) {
+        this.$emit("input", ev);
+      }
+      // if the user has typed a query and cleared the search input,
+      // the list is returned to its normal state
+      if (!query) {
+        this.$emit("input", ev);
+      }
     }
   }
 };
