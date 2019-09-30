@@ -5,7 +5,7 @@ const client = new elasticsearch.Client({
     node: 'http://localhost:9200',
     maxRetries: 10,
     requestTimeout: 60000,
-    sniffOnStart: true
+    // sniffOnStart: true
 })
 
 client.ping({
