@@ -1,7 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueMeta from "vue-meta";
-// import VuePaginate from "vue-paginate";
 import "normalize.css";
 
 // Font Awesome
@@ -18,8 +17,6 @@ library.add(faTag, faStar, faBoxOpen, faTshirt, faShoppingCart);
 Vue.component("fa-icon", FontAwesomeIcon);
 
 Vue.use(VueMeta);
-
-// Vue.use(VuePaginate);
 
 Vue.config.productionTip = false;
 

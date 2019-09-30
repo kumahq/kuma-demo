@@ -27,7 +27,7 @@ npm run setup
 This command will setup the Docker container for the Elasticsearch endpoint:
 
 ```sh
-npm run api:docker
+npm run api:elasticsearch
 ```
 
 The products endpoint is located at: `http://localhost:3001/items`.

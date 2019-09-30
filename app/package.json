@@ -15,8 +15,7 @@
     "normalize.css": "^8.0.1",
     "tailwindcss": "^1.1.2",
     "vue": "^2.6.10",
-    "vue-meta": "^2.2.2",
-    "vue-paginate": "^3.6.0"
+    "vue-meta": "^2.2.2"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
