@@ -2,7 +2,10 @@ const items = require('../test/items.json')
 
 const elasticsearch = require('elasticsearch')
 const client = new elasticsearch.Client({
-    hosts: ['http://localhost:9200']
+    node: 'http://localhost:9200',
+    maxRetries: 10,
+    requestTimeout: 60000,
+    sniffOnStart: true
 })
 
 client.ping({
