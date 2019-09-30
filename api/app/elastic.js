@@ -2,10 +2,10 @@ const items = require('../test/items.json')
 
 const elasticsearch = require('elasticsearch')
 const client = new elasticsearch.Client({
-    node: 'http://localhost:9200',
-    maxRetries: 10,
-    requestTimeout: 60000,
-    // sniffOnStart: true
+    // hosts: ['http://elasticsearch-loadbalancer:80'],
+    hosts: ['http://localhost:9200'],
+    maxRetries: 20,
+    requestTimeout: 3000
 })
 
 client.ping({
@@ -17,9 +17,18 @@ client.ping({
 })
 
 const search = (itemName) => {
+    client.ping({
+        requestTimeout: 10,
+    }, (error) => {
+        if (error) {
+            console.error('elasticsearch cluster is down, unable to search')
+            return new Error(error)
+        }
+    })
+
     let body = {
         size: 200,
-        from: 0, 
+        from: 0,
         query: {
             query_string: {
                 default_field: "name",
@@ -84,9 +93,9 @@ const importData = async () => {
         body: bulk
     }, (err, response) => {
         if (err) {
-            console.log("Failed Bulk operation", err);
+            console.log("Failed Bulk operation", err)
         } else {
-            console.log("Successfully imported, total items: ", bulk.length);
+            console.log("Successfully imported, total items: ", bulk.length)
         }
     })
 }

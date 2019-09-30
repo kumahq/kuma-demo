@@ -16,6 +16,12 @@ app.use((req, res, next) => {
   next()
 })
 
+app.get('/upload', (req, res) => {
+  redis.importData()
+  elastic.importData()
+  console.log('Redis and Elastic data uploaded')
+})
+
 app.get('/items', (req, res) => {
   elastic.search(req.query.q)
     .then(results => {
@@ -45,7 +51,7 @@ app.get('/items/:itemIndexId/reviews', (req, res) => {
       res.send(results)
     })
     .catch(err => {
-      console.log('Error fetching review from Redis')
+      console.log('Error fetching review from Redis :', err)
       res.send([err])
     })
 })
