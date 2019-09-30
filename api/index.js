@@ -24,7 +24,7 @@ app.get('/items', (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.send([])
+      res.send([err])
     })
 })
 
@@ -35,7 +35,7 @@ app.get('/items/:itemIndexId', (req, res) => {
     })
     .catch(err => {
       console.log(err)
-      res.send([])
+      res.send([err])
     }) 
 })
 
@@ -46,7 +46,7 @@ app.get('/items/:itemIndexId/reviews', (req, res) => {
     })
     .catch(err => {
       console.log('Error fetching review from Redis')
-      res.send([])
+      res.send([err])
     })
 })
 
