@@ -34,7 +34,12 @@
           </template>
         </error>
       </div>
-      <search-results :items="items" />
+      <div v-if="dataIsLoaded">
+        <search-results :items="items" :query="searchQuery" />
+      </div>
+      <div v-else class="loading-screen h-screen flex items-center justify-center text-pink">
+        <fa-icon :icon="['fas', 'circle-notch']" size="5x" spin />
+      </div>
       <global-footer />
     </div>
   </div>
@@ -77,6 +82,8 @@ export default {
   data() {
     return {
       items: [],
+      dataIsLoaded: false,
+      searchQuery: "",
       productInitApiError: "",
       searchApiError: ""
     };
@@ -101,6 +108,7 @@ export default {
         .then(response => {
           // populate the items array
           this.items = response.data;
+          this.dataIsLoaded = true;
         })
         .catch(error => {
           this.productInitApiError = error;
@@ -117,6 +125,7 @@ export default {
           if (query) {
             // only load the query results
             this.items = response.data;
+            this.searchQuery = query;
           } else {
             // otherwise load all products
             this.loadAllProducts();
@@ -134,6 +143,8 @@ export default {
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap");
 
+$topbar-height: 8rem;
+
 // Tailwind
 @tailwind base;
 @tailwind components;
@@ -144,6 +155,10 @@ body {
 }
 
 .content-wrapper {
-  padding-top: 8rem;
+  padding-top: $topbar-height;
+}
+
+.loading-screen {
+  margin-top: -#{$topbar-height};
 }
 </style>

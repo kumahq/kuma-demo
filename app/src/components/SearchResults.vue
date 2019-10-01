@@ -15,8 +15,12 @@
         />
       </li>
     </ul>
-    <div v-else>
-      <p class="text-2xl text-center font-bold">No results!</p>
+    <div
+      v-else
+      class="no-results h-screen flex items-center justify-center text-4xl text-pink font-bold"
+    >
+      <p v-if="query">No search results for {{ query }}!</p>
+      <p v-else>No search results!</p>
     </div>
   </div>
 </template>
@@ -26,10 +30,17 @@ import Product from "./Product.vue";
 
 export default {
   props: {
-    items: Array
+    items: Array,
+    query: String
   },
   components: {
     Product
   }
 };
 </script>
+
+<style lang="scss">
+.no-results {
+  margin-top: -8rem; // the topbar height
+}
+</style>
