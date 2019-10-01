@@ -50,7 +50,3 @@ curl http://localhost:3001/items/6/reviews/
 #### App.vue
 
 This is where all of the magic happens. The Elasticsearch endpoint is called on page load and displays all of the products. As the user searches, the search method is called and queries the Elasticsearch endpoint for the query the user enters.
-
-```
-
-```
