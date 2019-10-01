@@ -90,6 +90,9 @@ export default {
   color: #fff;
   text-align: center;
   box-shadow: 0 3px 5px 0 rgba(#000, 0.35);
+  will-change: transform;
+  transform-origin: center;
+  transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
 
   svg {
     width: 50%;
@@ -98,6 +101,10 @@ export default {
     path {
       fill: #fff;
     }
+  }
+
+  &:hover {
+    transform: scale(1.15);
   }
 }
 
@@ -109,6 +116,6 @@ export default {
 
 .modal-fade-enter-active,
 .modal-fade-leave-active {
-  transition: opacity 0.25s ease-in-out;
+  transition: opacity 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 </style>

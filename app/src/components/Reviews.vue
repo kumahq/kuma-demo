@@ -6,7 +6,7 @@
         <li
           v-for="item in items"
           :key="item.id"
-          class="product__reviews__item p-4 mt-4 border-b border-gray-300 shadow-md rounded"
+          class="product__reviews__item p-4 mt-4 shadow-md bg-gray-200 rounded"
         >
           <h3 class="product__reviews__title flex flex-row items-center font-bold mb-2">
             <div class="mr-4">
