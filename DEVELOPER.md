@@ -4,6 +4,8 @@
 
 ### Endpoints
 
+First and foremost, make sure to run all commands to get each endpoint setup. Please refer to the [README](README.md) to see those commands.
+
 #### Elasticsearch - Products endpoint
 
 The products endpoint is located at: `http://localhost:3001/items`. This will not return any product data unless `?q=` is appended to it (see below).
