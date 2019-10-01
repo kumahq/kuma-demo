@@ -43,7 +43,6 @@ curl http://localhost:3001/items/6/reviews/
 - `GlobalHeader.vue` - The global app header (it contains the logo and the search bar)
 - `Modal.vue` - A generic component for displaying modals
 - `Product.vue` - Displays all of the product details. It's the first component seen when loading the app, and has the most importance in `SearchResults.vue`
-  - This component references the
 - `Reviews.vue` - This component displays a product's reviews. It's used within a modal in `Product.vue`
 - `Search.vue` - The main search bar referenced in `GlobalHeader.vue`. It triggers the Elasticsearch endpoint queries as the user types, but will ignore the BACKSPACE and DEL keys as to prevent needless repeat queries. Using the search will emit an action to `App.vue`, which will trigger the Elasticsearch queries based on what the user searches for
 - `SearchResults.vue` - This is what is immediately displayed on app load. It will consume the Elasticsearch endpoint and display its data. It is housed within `/src/App.vue`, which is where the Elasticsearch products data is called
