@@ -81,7 +81,15 @@
                 </code>
               </template>
             </error>
-            <reviews :items="reviews" />
+            <div v-if="isModalDataLoaded">
+              <reviews :items="reviews" />
+            </div>
+            <div
+              v-else
+              class="loading-reviews flex items-center justify-center text-pink mt-8 mb-8"
+            >
+              <fa-icon :icon="['fas', 'circle-notch']" size="3x" spin />
+            </div>
           </template>
         </modal>
         <!-- modal -->
@@ -111,7 +119,8 @@ export default {
     return {
       reviews: [],
       isModalVisible: false,
-      modalApiError: ""
+      modalApiError: "",
+      isModalDataLoaded: false
     };
   },
   props: {
@@ -151,6 +160,7 @@ export default {
       })
         .then(async response => {
           this.reviews = await response.data;
+          this.isModalDataLoaded = await true;
         })
         .catch(error => {
           this.modalApiError = error;

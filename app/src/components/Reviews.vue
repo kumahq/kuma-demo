@@ -14,7 +14,7 @@
             </div>
             <div>
               <ul class="flex">
-                <li v-for="i in parseInt(item.rating)" :key="i">
+                <li v-for="i in item.rating" :key="i">
                   <fa-icon :icon="['fas', 'star']" class="text-lg mr-2 text-yellow-600" />
                 </li>
               </ul>
