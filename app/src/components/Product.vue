@@ -159,7 +159,13 @@ export default {
         method: "GET"
       })
         .then(async response => {
-          this.reviews = await response.data;
+          const errorCheck = response.data[0].code;
+          if (errorCheck && errorCheck.length) {
+            this.modalApiError = errorCheck;
+          } else {
+            this.reviews = await response.data;
+          }
+
           this.isModalDataLoaded = await true;
         })
         .catch(error => {

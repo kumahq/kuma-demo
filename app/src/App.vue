@@ -11,7 +11,8 @@
       </div>
     </div>
     <div class="content-wrapper container mx-auto max-w-6xl">
-      <div class="errors" v-if="productInitApiError || searchApiError">
+      <div class="errors" v-if="productInitApiError || searchApiError || assetUploadError">
+        <!-- initial product API errors -->
         <error v-if="productInitApiError">
           <template v-slot:header>
             <p>There was a Product API error:</p>
@@ -23,6 +24,7 @@
           </template>
         </error>
 
+        <!-- Search query API errors -->
         <error v-if="searchApiError">
           <template v-slot:header>
             <p>There was a Search API error:</p>
@@ -30,6 +32,18 @@
           <template v-slot:body>
             <code>
               <pre>{{ searchApiError }}</pre>
+            </code>
+          </template>
+        </error>
+
+        <!-- Asset upload API errors -->
+        <error v-if="assetUploadError">
+          <template v-slot:header>
+            <p>There was an Asset Upload API error:</p>
+          </template>
+          <template v-slot:body>
+            <code>
+              <pre>{{ assetUploadError }}</pre>
             </code>
           </template>
         </error>
@@ -113,9 +127,9 @@ export default {
         url: `${api}/items${apiParam}`,
         method: "GET"
       })
-        .then(response => {
+        .then(async response => {
           // populate the items array
-          this.items = response.data;
+          this.items = await response.data;
           this.dataIsLoaded = true;
         })
         .catch(error => {
@@ -129,14 +143,14 @@ export default {
         url: `${api}/items${apiParam}=${query}`,
         method: "GET"
       })
-        .then(response => {
+        .then(async response => {
           if (query) {
             // only load the query results
-            this.items = response.data;
-            this.searchQuery = query;
+            this.items = await response.data;
+            this.searchQuery = await query;
           } else {
             // otherwise load all products
-            this.loadAllProducts();
+            await this.loadAllProducts();
           }
         })
         .catch(error => {
@@ -149,12 +163,12 @@ export default {
         url: `${api}/upload`,
         method: "POST"
       })
-        .then(response => {
-          console.log(response.data);
+        .then(async response => {
+          await console.log(response.data);
         })
         .catch(error => {
           this.assetUploadError = error;
-          console.error("Endpoint assets upload error:", error);
+          console.error("Asset Upload API Error:", error);
         });
     }
   }
