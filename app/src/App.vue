@@ -105,7 +105,8 @@ export default {
       searchQuery: "",
       productInitApiError: "",
       searchApiError: "",
-      assetUploadError: ""
+      assetUploadError: "",
+      uploadHasAlreadyRun: false
     };
   },
   components: {
@@ -130,7 +131,10 @@ export default {
           this.items = await response.data;
           this.dataIsLoaded = true;
           // upload assets to the endpoints
-          await this.uploadAssets();
+          if (this.uploadHasAlreadyRun === false) {
+            await this.uploadAssets();
+            this.uploadHasAlreadyRun = true;
+          }
         })
         .catch(error => {
           this.productInitApiError = error;
