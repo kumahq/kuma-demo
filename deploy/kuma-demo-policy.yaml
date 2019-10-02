@@ -39,3 +39,18 @@ spec:
         service: '*'
     conf:
       backend: logstash
+---
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  namespace: kuma-app
+  name: everyone-to-everyone
+spec:
+  rules:
+  - sources:
+    - match:
+        service: '*'
+    destinations:
+    - match:
+        service: '*'

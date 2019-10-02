@@ -24,15 +24,13 @@ spec:
     metadata:
       labels:
         app: kuma-demo-api
-      annotations:
-        kuma.io/mesh: default
     spec:
       containers:
       - image: kvn0218/kuma-demo-api:latest
         name: kuma-demo-api
         env:
         - name: ES_HOST
-          value: "http://elasticsearch:80"
+          value: http://elasticsearch:80
         - name: REDIS_HOST
           value: "redis-master"
         imagePullPolicy: Always

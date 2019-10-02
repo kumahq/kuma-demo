@@ -75,8 +75,8 @@ spec:
           value: "true"
         - name: HTTP_ENABLE
           value: "true"
-        - name: NETWORK_HOST  
-          value: "0.0.0.0"
+        - name: NETWORK_HOST
+          value: "0.0.0.0"          
         ports:
         - containerPort: 9200
           name: http

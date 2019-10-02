@@ -34,6 +34,47 @@ data:
         tag => "logstash"
       }
     }
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: logstash
+#   namespace: logging
+#   labels:
+#     app: logstash
+# spec:
+#   selector:
+#     matchLabels:
+#       app: logstash
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: logstash
+#     spec:
+#       containers:
+#       - name: logstash
+#         image: kvn0218/kuma-demo-log
+#         args:
+#         - -f
+#         - /etc/logstash/logstash.conf
+#         ports:
+#         - containerPort: 5000
+#         volumeMounts:
+#         - mountPath: /etc/logstash
+#           name: logstash-config
+#           readOnly: true
+#         resources:
+#           requests:
+#             cpu: 500m
+#             memory: 512Mi
+#           limits:
+#             cpu: 1000m
+#             memory: 1Gi
+#       volumes:
+#       - configMap:
+#           name: logstash-config
+#         name: logstash-config
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,24 +95,9 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: kvn0218/kuma-demo-log
+        image: kong-docker-kuma-docker.bintray.io/kuma-tcp-echo
         args:
-        - -f
-        - /etc/logstash/logstash.conf
+        - -port
+        - "5000"
         ports:
         - containerPort: 5000
-        volumeMounts:
-        - mountPath: /etc/logstash
-          name: logstash-config
-          readOnly: true
-        resources:
-          requests:
-            cpu: 500m
-            memory: 512Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-      volumes:
-      - configMap:
-          name: logstash-config
-        name: logstash-config
