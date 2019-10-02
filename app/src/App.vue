@@ -55,7 +55,7 @@ import SearchResults from "./components/SearchResults.vue";
 import Error from "./components/Error.vue";
 
 // the API endpoint
-const api = "http://localhost:3001/items";
+const api = "http://localhost:3001";
 
 // API search query param
 const apiParam = "?q";
@@ -67,6 +67,11 @@ const cache = setupCache({
 
 // setup the product API Elasticsearch call
 const productsApi = axios.create({
+  adapter: cache.adapter
+});
+
+// setup the asset upload endpoint
+const assetUploadApi = axios.create({
   adapter: cache.adapter
 });
 
@@ -85,7 +90,8 @@ export default {
       dataIsLoaded: false,
       searchQuery: "",
       productInitApiError: "",
-      searchApiError: ""
+      searchApiError: "",
+      assetUploadError: ""
     };
   },
   components: {
@@ -98,11 +104,13 @@ export default {
   created() {
     // load all products initially
     this.loadAllProducts();
+    // upload assets to the endpoints
+    this.uploadAssets();
   },
   methods: {
     loadAllProducts() {
       productsApi({
-        url: `${api}${apiParam}`,
+        url: `${api}/items${apiParam}`,
         method: "GET"
       })
         .then(response => {
@@ -118,7 +126,7 @@ export default {
     submitSearch(ev) {
       const query = ev.target.value.trim().toLowerCase();
       productsApi({
-        url: `${api}${apiParam}=${query}`,
+        url: `${api}/items${apiParam}=${query}`,
         method: "GET"
       })
         .then(response => {
@@ -134,6 +142,19 @@ export default {
         .catch(error => {
           this.searchApiError = error;
           console.error("Search API Error:", error);
+        });
+    },
+    uploadAssets() {
+      assetUploadApi({
+        url: `${api}/upload`,
+        method: "POST"
+      })
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          this.assetUploadError = error;
+          console.error("Endpoint assets upload error:", error);
         });
     }
   }
