@@ -130,7 +130,7 @@ export default {
           this.items = await response.data;
           this.dataIsLoaded = true;
           // upload assets to the endpoints
-          this.uploadAssets();
+          await this.uploadAssets();
         })
         .catch(error => {
           this.productInitApiError = error;
