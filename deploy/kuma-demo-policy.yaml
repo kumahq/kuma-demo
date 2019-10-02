@@ -2,7 +2,7 @@ apiVersion: kuma.io/v1alpha1
 kind: Mesh
 metadata:
   name: default
-  namespace: kuma-system
+  namespace: kuma-app
 spec:
   mtls:
     ca:

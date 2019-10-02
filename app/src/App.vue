@@ -131,10 +131,10 @@ export default {
           this.items = await response.data;
           this.dataIsLoaded = true;
           // upload assets to the endpoints
-          if (this.uploadHasAlreadyRun === false) {
-            await this.uploadAssets();
-            this.uploadHasAlreadyRun = true;
-          }
+          // if (this.uploadHasAlreadyRun === false) {
+          //   await this.uploadAssets();
+          //   this.uploadHasAlreadyRun = true;
+          // }
         })
         .catch(error => {
           this.productInitApiError = error;
