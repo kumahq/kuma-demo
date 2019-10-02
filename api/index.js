@@ -14,10 +14,16 @@ app.use((req, res, next) => {
   next()
 })
 
-app.post('/upload', (req, res) => {
-  redis.importData()
-  elastic.importData()
-  res.end('Files uploaded')
+app.get('/', (req, res) => {
+  res.send('Hello World! Made with <3 by the OCTO team at Kong Inc.')
+})
+
+app.post('/upload', async (req, res) => {
+  console.log('Uploading items to redis endpoint')
+  await redis.importData()
+  console.log('Uploading items to elasticsearch endpoint')
+  await elastic.importData()
+  res.end('Files uploaded to Redis and ES!')
 })
 
 app.get('/items', (req, res) => {

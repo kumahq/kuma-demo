@@ -19,7 +19,8 @@ const client = redis.createClient({
         }
         return Math.min(options.attempt * 100, 3000);
     }
-});
+})
+
 const { promisify } = require('util')
 const getAsync = promisify(client.get).bind(client)
 
