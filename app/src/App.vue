@@ -118,8 +118,6 @@ export default {
   created() {
     // load all products initially
     this.loadAllProducts();
-    // upload assets to the endpoints
-    this.uploadAssets();
   },
   methods: {
     loadAllProducts() {
@@ -131,6 +129,8 @@ export default {
           // populate the items array
           this.items = await response.data;
           this.dataIsLoaded = true;
+          // upload assets to the endpoints
+          this.uploadAssets();
         })
         .catch(error => {
           this.productInitApiError = error;
