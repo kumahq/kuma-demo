@@ -2,8 +2,7 @@ const items = require('../test/items.json')
 
 const elasticsearch = require('elasticsearch')
 const client = new elasticsearch.Client({
-    // hosts: ['http://elasticsearch-loadbalancer:80'],
-    hosts: ['http://localhost:9200'],
+    hosts: [`${process.env.ES_HOST || `http://localhost:9200`}`],
     maxRetries: 20,
     requestTimeout: 3000
 })
@@ -94,8 +93,10 @@ const importData = async () => {
     }, (err, response) => {
         if (err) {
             console.log("Failed Bulk operation", err)
+            return {}
         } else {
             console.log("Successfully imported, total items: ", bulk.length)
+            return {}
         }
     })
 }

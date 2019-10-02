@@ -2,7 +2,7 @@ const items = require('../test/items.json')
 
 const redis = require("redis")
 const client = redis.createClient({
-    // host: `redis-master`,
+    host: process.env.REDIS_HOST,
     port: 6379,
     retry_strategy: function (options) {
         if (options.error && options.error.code === 'ECONNREFUSED') {

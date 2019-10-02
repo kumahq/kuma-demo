@@ -1,13 +1,18 @@
-FROM node
+  
+FROM node:8-alpine
 
-WORKDIR /usr/src/app
+RUN apk update \
+ && apk upgrade \
+ && apk add bash curl
 
-COPY package*.json ./
+ADD . /kuma-demo-app-fe
+WORKDIR /kuma-demo-app-fe
 
-RUN npm install
+RUN echo Node `node --version` \
+  && echo NPM `npm --version`
 
-COPY . .
+RUN npm install -g yarn
 
-EXPOSE 8080
+RUN yarn
 
-CMD [ "npm", "run", "serve" ]
+CMD yarn serve --mode ci

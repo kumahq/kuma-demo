@@ -1,7 +1,5 @@
 const redis = require('./app/redis')
-redis.importData()
 const elastic = require('./app/elastic')
-elastic.importData()
 
 const express = require('express')
 const app = express()
@@ -16,10 +14,10 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/upload', (req, res) => {
+app.post('/upload', (req, res) => {
   redis.importData()
   elastic.importData()
-  console.log('Redis and Elastic data uploaded')
+  res.end('Files uploaded')
 })
 
 app.get('/items', (req, res) => {

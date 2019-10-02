@@ -197,8 +197,13 @@ spec:
         app: marketplace-api
     spec:
       containers:
-      - image: docker.io/kvn0218/marketplace-api:latest
+      - image: docker.io/kvn0218/marketplace-api:test
         name: marketplace-api
+        env:
+        - name: ES_HOST
+          value: "http://elasticsearch-loadbalancer:80"
+        - name: REDIS_HOST
+          value: "redis-master"
         imagePullPolicy: Always
         ports:
         - containerPort: 3001
