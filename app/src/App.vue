@@ -55,7 +55,44 @@
         </error>
       </div>
       <div v-if="dataIsLoaded">
-        <search-results :items="items" :query="searchQuery" />
+        <!-- results information -->
+        <div
+          v-if="items && items.length > 0"
+          class="results-info mb-4 mt-4 text-gray-600 font-bold"
+        >
+          <p>
+            Viewing {{ realPageCount }} of {{ items.length }} results
+            <span
+              v-if="searchQuery"
+            >for &quot;{{ searchQuery }}&quot;</span>
+          </p>
+        </div>
+        <!-- search results and initial products array -->
+        <search-results :items="paginatedData" :query="searchQuery" />
+        <!-- pagination controls -->
+        <div
+          class="border-t border-gray-300 pagination-controls flex items-center justify-between -mx-4 mb-8 pt-8"
+        >
+          <div class="mx-4">
+            <button
+              type="button"
+              class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
+              @click="prevPage"
+              :disabled="pageNumber === 0"
+            >Previous</button>
+          </div>
+          <div class="mx-4">
+            <p>Page {{ pageNumber + 1 }} of {{ realPageCount }} pages</p>
+          </div>
+          <div class="mx-4">
+            <button
+              type="button"
+              class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
+              @click="nextPage"
+              :disabled="pageNumber >= realPageCount -1"
+            >Next</button>
+          </div>
+        </div>
       </div>
       <div v-else class="loading-screen h-screen flex items-center justify-center text-pink">
         <fa-icon :icon="['fas', 'circle-notch']" size="5x" spin />
@@ -112,7 +149,10 @@ export default {
       productInitApiError: [],
       searchApiError: "",
       assetUploadError: "",
-      uploadHasAlreadyRun: false
+      uploadHasAlreadyRun: false,
+      pageNumber: 0, // starting page
+      pageSize: 10, // items per page
+      realPageCount: ""
     };
   },
   components: {
@@ -126,6 +166,13 @@ export default {
     // load all products initially
     this.loadAllProducts();
   },
+  computed: {
+    paginatedData() {
+      const start = this.pageNumber * this.pageSize;
+      const end = start + this.pageSize;
+      return this.items.slice(start, end);
+    }
+  },
   methods: {
     loadAllProducts() {
       productsApi({
@@ -136,6 +183,7 @@ export default {
           // populate the items array
           this.items = await response.data;
           this.dataIsLoaded = true;
+          this.calculatePageCount();
 
           if (response.message) {
             this.productInitApiError.push(response.message);
@@ -144,12 +192,6 @@ export default {
           if (response.data.msg) {
             this.productInitApiError.push(response.data.msg);
           }
-
-          // upload assets to the endpoints
-          // if (this.uploadHasAlreadyRun === false) {
-          //   await this.uploadAssets();
-          //   this.uploadHasAlreadyRun = true;
-          // }
         })
         .catch(error => {
           this.productInitApiError = error;
@@ -170,25 +212,31 @@ export default {
           } else {
             // otherwise load all products
             await this.loadAllProducts();
+            this.searchQuery = "";
           }
+
+          // if we're performing a search, we have to return to the first page
+          this.pageNumber = 0;
+
+          // figure out the actual page count based on the number of items
+          this.calculatePageCount();
         })
         .catch(error => {
           this.searchApiError = error;
           console.error("Search API Error:", error);
         });
     },
-    uploadAssets() {
-      assetUploadApi({
-        url: `${api}/upload`,
-        method: "POST"
-      })
-        .then(async response => {
-          await console.log(response.data);
-        })
-        .catch(error => {
-          this.assetUploadError = error;
-          console.error("Asset Upload API Error:", error);
-        });
+    calculatePageCount() {
+      let l = this.items.length;
+      let s = this.pageSize;
+      let value = Math.ceil(l / s);
+      this.realPageCount = value < this.pageSize ? value : this.pageSize;
+    },
+    nextPage() {
+      this.pageNumber++;
+    },
+    prevPage() {
+      this.pageNumber--;
     }
   }
 };
