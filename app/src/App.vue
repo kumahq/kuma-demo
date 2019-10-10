@@ -56,15 +56,13 @@
       </div>
       <div v-if="dataIsLoaded">
         <!-- results information -->
-        <div
-          v-if="items && items.length > 0"
-          class="results-info mb-4 mt-4 text-gray-600 font-bold"
-        >
+        <div v-if="items && items.length > 0" class="results-info mb-4 mt-4 text-gray-600">
           <p>
-            Viewing {{ realPageCount }} of {{ items.length }} results
-            <span
-              v-if="searchQuery"
-            >for &quot;{{ searchQuery }}&quot;</span>
+            Viewing {{ items.length }} results
+            <span v-if="searchQuery">
+              for
+              <strong class="bg-gray-200 rounded px-2 py-1">{{ searchQuery }}</strong>
+            </span>
           </p>
         </div>
         <!-- search results and initial products array -->
@@ -79,9 +77,10 @@
               class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
               @click="prevPage"
               :disabled="pageNumber === 0"
-            >Previous</button>
+              :class="{ 'opacity-50 cursor-not-allowed': pageNumber === 0 }"
+            >&larr; Previous</button>
           </div>
-          <div class="mx-4">
+          <div class="mx-4 text-gray-600">
             <p>Page {{ pageNumber + 1 }} of {{ realPageCount }} pages</p>
           </div>
           <div class="mx-4">
@@ -90,7 +89,8 @@
               class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
               @click="nextPage"
               :disabled="pageNumber >= realPageCount -1"
-            >Next</button>
+              :class="{ 'opacity-50 cursor-not-allowed': pageNumber >= realPageCount -1 }"
+            >Next &rarr;</button>
           </div>
         </div>
       </div>
@@ -183,6 +183,8 @@ export default {
           // populate the items array
           this.items = await response.data;
           this.dataIsLoaded = true;
+
+          // calculate the page count on initial product load
           this.calculatePageCount();
 
           if (response.message) {
