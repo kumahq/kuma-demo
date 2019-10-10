@@ -1,18 +1,18 @@
-  
-FROM node:8-alpine
+FROM node:lts-alpine
 
-RUN apk update \
- && apk upgrade \
- && apk add bash curl
+RUN npm install -g http-server
 
-ADD . /kuma-demo-app-fe
-WORKDIR /kuma-demo-app-fe
+WORKDIR /app
 
-RUN echo Node `node --version` \
-  && echo NPM `npm --version`
+COPY package*.json ./
 
-RUN npm install -g yarn
+RUN npm install --production
 
-RUN yarn
+COPY . .
 
-CMD yarn serve --mode ci
+RUN npm rebuild node-sass
+
+RUN npm run build
+
+EXPOSE 8080
+CMD [ "http-server", "dist" ]

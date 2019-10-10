@@ -11,22 +11,14 @@ const createClient = () => {
     })
 }
 
-const search = (itemName) => {
-    client.ping({
-        requestTimeout: 10,
-    }, (error) => {
-        if (error) {
-            console.error('elasticsearch cluster is down, unable to search')
-            return new Error(error)
-        }
-    })
-
+const search = async (itemName) => {
+    await createClient()
     let body = {
         size: 200,
         from: 0,
         query: {
             query_string: {
-                default_field: "name",
+                default_field: 'name',
                 query: `*${itemName}*`
             }
         }
@@ -35,10 +27,16 @@ const search = (itemName) => {
     return client.search({
         index: 'market-items',
         body: body
+    }, {
+        ignore: [404],
+        maxRetries: 3
+    }, (err, { body }) => {
+        if (err) console.log(err)
     })
 }
 
-const searchId = (itemId) => {
+const searchId = async (itemId) => {
+    await createClient()
     let body = {
         query: {
             match: {
@@ -50,6 +48,11 @@ const searchId = (itemId) => {
     return client.search({
         index: 'market-items',
         body: body
+    }, {
+        ignore: [404],
+        maxRetries: 3
+    }, (err, { body }) => {
+        if (err) console.log(err)
     })
 }
 
@@ -59,11 +62,9 @@ const createBulk = async () => {
 
     client.indices.create({
         index: 'market-items'
-    }, (error, response, status) => {
-        if (error) {
-            console.log(error)
-        } else {
-            console.log("created a new index", response)
+    }, (err, response, status) => {
+        if (err) {
+            return new Error('Creating ES Indices failed');
         }
     })
 
@@ -72,8 +73,8 @@ const createBulk = async () => {
 
         bulk.push({
             index: {
-                _index: "market-items",
-                _type: "clothing_list"
+                _index: 'market-items',
+                _type: 'clothing_list'
             }
         })
         bulk.push(item)
@@ -89,11 +90,7 @@ const importData = async () => {
         body: bulk
     }, (err, response) => {
         if (err) {
-            console.log("Failed Bulk operation", err)
-            return {}
-        } else {
-            console.log("Successfully imported, total items: ", bulk.length)
-            return {}
+            return new Error('Failed Bulk operation');
         }
     })
 }

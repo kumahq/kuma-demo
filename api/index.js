@@ -19,22 +19,18 @@ app.get('/', (req, res) => {
 })
 
 app.post('/upload', async (req, res) => {
-  console.log('Uploading items to redis endpoint')
   await redis.importData()
-  console.log('Uploading items to elasticsearch endpoint')
   await elastic.importData()
-  res.end('Files uploaded to Redis and ES!')
+  res.end('Mock data updated in Redis and ES!')
 })
 
 app.get('/items', (req, res) => {
   elastic.search(req.query.q)
     .then(results => {
-      console.log(`found ${results.hits.total.value} items in ${results.took}ms`);
       res.send(results.hits.hits)
     })
     .catch(err => {
-      console.log(err)
-      res.send([err])
+      res.send(err)
     })
 })
 
@@ -44,8 +40,7 @@ app.get('/items/:itemIndexId', (req, res) => {
       res.send(results.hits.hits)
     })
     .catch(err => {
-      console.log(err)
-      res.send([err])
+      res.send(err)
     }) 
 })
 
@@ -55,11 +50,8 @@ app.get('/items/:itemIndexId/reviews', (req, res) => {
       res.send(results)
     })
     .catch(err => {
-      console.log('Error fetching review from Redis :', err)
-      res.send([err])
+      res.send(err)
     })
 })
 
-app.listen(app.get('port'), () => {
-  console.log('Express server listening on port ' + app.get('port'))
-})
+app.listen(app.get('port'))

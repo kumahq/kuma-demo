@@ -142,3 +142,47 @@ spec:
     app: redis
     role: master
     tier: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuma-demo-api
+  namespace: kuma-demo
+spec:
+  selector:
+    app: kuma-demo-api
+  ports:
+  - name: api
+    port: 3001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuma-demo-app
+  namespace: kuma-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuma-demo-api
+  template:
+    metadata:
+      labels:
+        app: kuma-demo-api
+    spec:
+      containers:
+      - image: kvn0218/kuma-demo-api:fix
+        name: kuma-be
+        env:
+        - name: ES_HOST
+          value: http://elasticsearch:80
+        - name: REDIS_HOST
+          value: "redis-master"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+      - name: kuma-fe
+        image: kvn0218/kuma-demo-fe:fix
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
