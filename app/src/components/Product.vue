@@ -111,13 +111,13 @@ const cache = setupCache({
 });
 
 const reviewsApi = axios.create({
-  adapter: cache.adapter
+  // adapter: cache.adapter
 });
 
 export default {
   data() {
     return {
-      reviews: [],
+      reviews: Array,
       isModalVisible: false,
       modalApiError: "",
       isModalDataLoaded: false
@@ -159,13 +159,15 @@ export default {
         method: "GET"
       })
         .then(async response => {
-          const errorCheck = response.data[0].code;
+          // error checking and logging
+          const errorCheck = response.data.code;
           if (errorCheck && errorCheck.length) {
             this.modalApiError = errorCheck;
           } else {
             this.reviews = await response.data;
           }
 
+          // trigger the modal
           this.isModalDataLoaded = await true;
         })
         .catch(error => {
