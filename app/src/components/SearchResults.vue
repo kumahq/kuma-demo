@@ -1,6 +1,6 @@
 <template>
   <div class="search-results">
-    <ul v-if="items.length">
+    <ul v-if="items && items.length">
       <li v-for="item in items" :key="item._id">
         <product
           :index="item._source.index"
@@ -29,10 +29,7 @@
 import Product from "./Product.vue";
 
 export default {
-  props: {
-    items: Array,
-    query: String
-  },
+  props: ["items", "query"],
   components: {
     Product
   }

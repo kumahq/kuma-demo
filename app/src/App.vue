@@ -11,15 +11,21 @@
       </div>
     </div>
     <div class="content-wrapper container mx-auto max-w-6xl">
-      <div class="errors" v-if="productInitApiError || searchApiError || assetUploadError">
+      <div class="errors">
         <!-- initial product API errors -->
-        <error v-if="productInitApiError">
+        <error v-if="productInitApiError.keys().length > 0">
           <template v-slot:header>
-            <p>There was a Product API error:</p>
+            <p>There was a Product API issue:</p>
           </template>
           <template v-slot:body>
             <code>
-              <pre>{{ productInitApiError }}</pre>
+              <pre
+                v-for="(item, index) in productInitApiError"
+                :key="index"
+                class="overflow-x-auto pt-4 pb-4"
+              >
+                {{ item }}
+              </pre>
             </code>
           </template>
         </error>
@@ -31,7 +37,7 @@
           </template>
           <template v-slot:body>
             <code>
-              <pre>{{ searchApiError }}</pre>
+              <pre class="overflow-x-auto pt-4 pb-4">{{ searchApiError }}</pre>
             </code>
           </template>
         </error>
@@ -43,7 +49,7 @@
           </template>
           <template v-slot:body>
             <code>
-              <pre>{{ assetUploadError }}</pre>
+              <pre class="overflow-x-auto pt-4 pb-4">{{ assetUploadError }}</pre>
             </code>
           </template>
         </error>
@@ -81,12 +87,12 @@ const cache = setupCache({
 
 // setup the product API Elasticsearch call
 const productsApi = axios.create({
-  adapter: cache.adapter
+  // adapter: cache.adapter
 });
 
 // setup the asset upload endpoint
 const assetUploadApi = axios.create({
-  adapter: cache.adapter
+  // adapter: cache.adapter
 });
 
 export default {
@@ -103,7 +109,7 @@ export default {
       items: [],
       dataIsLoaded: false,
       searchQuery: "",
-      productInitApiError: "",
+      productInitApiError: [],
       searchApiError: "",
       assetUploadError: "",
       uploadHasAlreadyRun: false
@@ -130,6 +136,15 @@ export default {
           // populate the items array
           this.items = await response.data;
           this.dataIsLoaded = true;
+
+          if (response.message) {
+            this.productInitApiError.push(response.message);
+          }
+
+          if (response.data.msg) {
+            this.productInitApiError.push(response.data.msg);
+          }
+
           // upload assets to the endpoints
           // if (this.uploadHasAlreadyRun === false) {
           //   await this.uploadAssets();

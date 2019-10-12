@@ -114,7 +114,7 @@ spec:
     spec:
       containers:
       - name: master
-        image: redis
+        image: kvn0218/kuma-redis
         resources:
           requests:
             cpu: 100m
@@ -171,7 +171,7 @@ spec:
         app: kuma-demo-api
     spec:
       containers:
-      - image: kvn0218/kuma-demo-api:fix
+      - image: kvn0218/kuma-demo-api:fix2
         name: kuma-be
         env:
         - name: ES_HOST
@@ -182,7 +182,7 @@ spec:
         ports:
         - containerPort: 3001
       - name: kuma-fe
-        image: kvn0218/kuma-demo-fe:fix
+        image: kvn0218/kuma-demo-fe:fix2
         # imagePullPolicy: Always
         ports:
         - containerPort: 8080

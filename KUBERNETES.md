@@ -18,28 +18,28 @@ $ minikube start --kubernetes-version v1.15.4
 2.
 
 ```
-$ wget https://kong.bintray.com/kuma/kuma-0.2.1-darwin-amd64.tar.gz
---2019-10-06 16:58:34--  https://kong.bintray.com/kuma/kuma-0.2.1-darwin-amd64.tar.gz
-Resolving kong.bintray.com (kong.bintray.com)... 52.35.217.225, 54.201.76.60
-Connecting to kong.bintray.com (kong.bintray.com)|52.35.217.225|:443... connected.
+$ wget https://kong.bintray.com/kuma/kuma-0.2.2-darwin-amd64.tar.gz
+--2019-10-13 05:53:46--  https://kong.bintray.com/kuma/kuma-0.2.2-darwin-amd64.tar.gz
+Resolving kong.bintray.com (kong.bintray.com)... 52.88.33.18, 54.200.232.13
+Connecting to kong.bintray.com (kong.bintray.com)|52.88.33.18|:443... connected.
 HTTP request sent, awaiting response... 302
-Location: https://akamai.bintray.com/8e/8ef951bb416ac52e3033db1b4c5ececb9c92076d5f9a2c3fc9e983a503376de7?__gda__=exp=1570353035~hmac=4c5d5f126d705a267f07d0322f93ff32bf89928f584be95072e42305b9c4bd6a&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.2.1-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_RZbMi86-s_h7RlNn_7_VfLY-HUMhj8VvN4CPju8RvqAOYGpYg5yxiK2MOgSwmELzgHYP5Dybnqwl-UVQSnx_tgvPSFzo9fvKCdCQnYkzsiIPqLa8SVZKw&response-X-Checksum-Sha1=d1592fe993fcbf9c1c6f95cfe8b192a484d0f996&response-X-Checksum-Sha2=8ef951bb416ac52e3033db1b4c5ececb9c92076d5f9a2c3fc9e983a503376de7 [following]
---2019-10-06 16:58:35--  https://akamai.bintray.com/8e/8ef951bb416ac52e3033db1b4c5ececb9c92076d5f9a2c3fc9e983a503376de7?__gda__=exp=1570353035~hmac=4c5d5f126d705a267f07d0322f93ff32bf89928f584be95072e42305b9c4bd6a&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.2.1-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_RZbMi86-s_h7RlNn_7_VfLY-HUMhj8VvN4CPju8RvqAOYGpYg5yxiK2MOgSwmELzgHYP5Dybnqwl-UVQSnx_tgvPSFzo9fvKCdCQnYkzsiIPqLa8SVZKw&response-X-Checksum-Sha1=d1592fe993fcbf9c1c6f95cfe8b192a484d0f996&response-X-Checksum-Sha2=8ef951bb416ac52e3033db1b4c5ececb9c92076d5f9a2c3fc9e983a503376de7
-Resolving akamai.bintray.com (akamai.bintray.com)... 23.210.237.168
-Connecting to akamai.bintray.com (akamai.bintray.com)|23.210.237.168|:443... connected.
+Location: https://akamai.bintray.com/69/694567d6d0d64f5eb5a5841aea3b4c3d60c8f2a6e6c3ff79cd5d580edf22e12b?__gda__=exp=1570917947~hmac=68f26ab23b95f97acebfc4b33a1bc1e88aeca46a44b1bc349af851019c941d0a&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.2.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_SREBFG76q54ykX416x4BKSbGVrX5A-GfV55I-FdyX_0L9WI3EaLJdsXfRQ4V2pY3vP9viaRvtUxQEjLKVz_AEytCDaz5VW3oTvdhio0sq10KPgW3Z3hFN&response-X-Checksum-Sha1=01c56caae58a6d14a1ad24545ee0b25421c6d48e&response-X-Checksum-Sha2=694567d6d0d64f5eb5a5841aea3b4c3d60c8f2a6e6c3ff79cd5d580edf22e12b [following]
+--2019-10-13 05:53:47--  https://akamai.bintray.com/69/694567d6d0d64f5eb5a5841aea3b4c3d60c8f2a6e6c3ff79cd5d580edf22e12b?__gda__=exp=1570917947~hmac=68f26ab23b95f97acebfc4b33a1bc1e88aeca46a44b1bc349af851019c941d0a&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.2.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_SREBFG76q54ykX416x4BKSbGVrX5A-GfV55I-FdyX_0L9WI3EaLJdsXfRQ4V2pY3vP9viaRvtUxQEjLKVz_AEytCDaz5VW3oTvdhio0sq10KPgW3Z3hFN&response-X-Checksum-Sha1=01c56caae58a6d14a1ad24545ee0b25421c6d48e&response-X-Checksum-Sha2=694567d6d0d64f5eb5a5841aea3b4c3d60c8f2a6e6c3ff79cd5d580edf22e12b
+Resolving akamai.bintray.com (akamai.bintray.com)... 104.93.1.149
+Connecting to akamai.bintray.com (akamai.bintray.com)|104.93.1.149|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 44296374 (42M) [application/gzip]
-Saving to: ‘kuma-0.2.1-darwin-amd64.tar.gz’
+Length: 42892462 (41M) [application/gzip]
+Saving to: ‘kuma-0.2.2-darwin-amd64.tar.gz’
 
-kuma-0.2.1-darwin-amd 100%[=======================>]  42.24M  7.45MB/s    in 6.0s
+kuma-0.2.2-darwin-amd64.tar.g 100%[===============================================>]  40.91M  2.61MB/s    in 20s
 
-2019-10-06 16:58:41 (7.02 MB/s) - ‘kuma-0.2.1-darwin-amd64.tar.gz’ saved [44296374/44296374]
+2019-10-13 05:54:08 (2.09 MB/s) - ‘kuma-0.2.2-darwin-amd64.tar.gz’ saved [42892462/42892462]
 ```
 
 3.
 
 ```
-$ $ tar xvzf kuma-0.2.1-darwin-amd64.tar.gz
+$ tar xvzf kuma-0.2.2-darwin-amd64.tar.gz
 x ./
 x ./conf/
 x ./conf/kuma-cp.conf
@@ -51,7 +51,6 @@ x ./bin/kumactl
 x ./bin/kuma-cp
 x ./README
 x ./LICENSE
-
 ```
 
 4.
@@ -138,13 +137,7 @@ configmap/logstash-config created
 deployment.apps/logstash created
 ```
 
-8. Upload some sample data into Elasticsearch and Redis
-
-<pre><code>$ kubectl exec -ti <b>{KUMA_DEMO_APP_POD_NAME}</b> -c kuma-be -n kuma-demo -- curl -XPOST http://localhost:3001/upload
-Mock data updated in Redis and ES!
-</code></pre>
-
-9.
+8.
 
 <pre><code>$ kubectl port-forward <b>{KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080 3001
 Forwarding from 127.0.0.1:8080 -> 8080
@@ -155,7 +148,7 @@ Forwarding from [::1]:3001 -> 3001
 
 Now you can access the application through your web browser at http://localhost:3001.
 
-10.
+9.
 
 <pre><code>$ kubectl -n kuma-system port-forward <b>{KUMA_CP_POD_NAME}</b> 5681
 Forwarding from 127.0.0.1:5681 -> 5681
@@ -164,7 +157,7 @@ Forwarding from [::1]:5681 -> 5681
 
 Please refer to step 5 to copy the correct `{KUMA_CP_POD_NAME}`.
 
-11.
+10.
 
 ```
 $ kumactl config control-planes add --name=kuma-app --address=http://localhost:5681
@@ -172,7 +165,7 @@ added Control Plane "kuma-app"
 switched active Control Plane to "kuma-app"
 ```
 
-12.
+11.
 
 ```
 $ kumactl get dataplanes
@@ -182,7 +175,7 @@ default   kuma-demo-app-5b8674794f-7r2sf   app=kuma-demo-api pod-template-hash=5
 default   redis-master-6b88967745-8ct5c    app=redis pod-template-hash=6b88967745 role=master service=redis-master.kuma-demo.svc:6379 tier=backend
 ```
 
-13.
+12.
 
 ```
 $ kumactl get meshes
@@ -190,7 +183,7 @@ NAME      mTLS   DP ACCESS LOGS
 default   off    off
 ```
 
-14.
+13.
 
 ```
 $ kubectl apply -f kuma-demo-policy.yaml
@@ -200,7 +193,7 @@ trafficlog.kuma.io/everything created
 trafficpermission.kuma.io/everyone-to-everyone created
 ```
 
-15.
+14.
 
 ```
 kumactl get meshes
@@ -208,7 +201,7 @@ NAME      mTLS   DP ACCESS LOGS
 default   on     off
 ```
 
-16.
+15.
 
 ```
 $ kubectl delete pods --all -n kuma-demo
@@ -217,7 +210,7 @@ pod "kuma-demo-app-5b8674794f-7r2sf" deleted
 pod "redis-master-6b88967745-8ct5c" deleted
 ```
 
-17.
+16.
 
 ```
 kubectl get pods -n kuma-demo
@@ -227,13 +220,7 @@ kuma-demo-app-5b8674794f-4qrq7   3/3     Running   0          57s
 redis-master-6b88967745-z7cm5    2/2     Running   0          57s
 ```
 
-18.
-
-<pre><code>$ kubectl exec -ti <b>{KUMA_DEMO_APP_POD_NAME}</b> -c kuma-be -n kuma-demo -- curl -XPOST http://localhost:3001/upload
-Mock data updated in Redis and ES!
-</code></pre>
-
-19.
+17.
 
 <pre><code>$ kubectl port-forward <b>{KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080 3001
 Forwarding from 127.0.0.1:8080 -> 8080
