@@ -2,17 +2,21 @@ const items = require('../test/items.json')
 const elasticsearch = require('elasticsearch')
 
 let client;
+let data;
 
-const createClient = () => {
-    client = client || new elasticsearch.Client({
+const createClient = async () => {
+    client = client || await new elasticsearch.Client({
         hosts: [(process.env.ES_HOST || `http://localhost:9200`)],
         maxRetries: 30,
         requestTimeout: 30000
     })
+    return client
 }
 
 const search = async (itemName) => {
     await createClient()
+    data = data || await importData()
+
     let body = {
         size: 200,
         from: 0,
@@ -57,7 +61,6 @@ const searchId = async (itemId) => {
 }
 
 const createBulk = async () => {
-    await createClient()
     let bulk = []
 
     client.indices.create({
@@ -93,10 +96,10 @@ const importData = async () => {
             return new Error('Failed Bulk operation');
         }
     })
+    return bulk
 }
 
 module.exports = Object.assign({
     search,
-    searchId,
-    importData
+    searchId
 })
