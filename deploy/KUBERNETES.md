@@ -2,7 +2,7 @@
 
 ## Setup Environment
 
-1.
+1. Start a Kubernetes cluster with version 1.15 or higher
 
 ```
 $ minikube start --kubernetes-version v1.15.4
@@ -15,7 +15,7 @@ $ minikube start --kubernetes-version v1.15.4
 🏄  Done! kubectl is now configured to use "minikube"
 ```
 
-2.
+2. Download the latest version of Kuma
 
 ```
 $ wget https://kong.bintray.com/kuma/kuma-0.2.2-darwin-amd64.tar.gz
@@ -36,7 +36,7 @@ kuma-0.2.2-darwin-amd64.tar.g 100%[=============================================
 2019-10-13 05:54:08 (2.09 MB/s) - ‘kuma-0.2.2-darwin-amd64.tar.gz’ saved [42892462/42892462]
 ```
 
-3.
+3. Unbundle the files to get the following components:
 
 ```
 $ tar xvzf kuma-0.2.2-darwin-amd64.tar.gz
@@ -53,14 +53,14 @@ x ./README
 x ./LICENSE
 ```
 
-4.
+4. Go into the /bin directory where the kuma components will be:
 
 ```
 $ cd bin && ls
 envoy   kuma-cp   kuma-dp   kuma-tcp-echo kumactl
 ```
 
-5.
+5. Install the control plane using `kumactl`
 
 ```
 $ kumactl install control-plane | kubectl apply -f -
@@ -99,15 +99,15 @@ kuma-injector-9c96cddc8-745r7         1/1     Running   0          70s
 
 In the following steps, we will be using the pod name of the `kuma-control-plane-*************` pod. Please replace any `{KUMA_CP_POD_NAME}` with your pod name.
 
-6.
+6. Navigate into the directory where all the kuma-demo YAML files are:
 
 ```
 cd kuma-demo/deploy
 ```
-Note: This folder will eventually be moved into the Kuma main repository. It will contain all the necessary YAML files to deploy Kuma on Kubernetes and Universal.
 
+Note: This folder will eventually be moved into the Kuma main repository. It will contain all the necessary YAML files to deploy Kuma on Kubernetes and universal mode.
 
-7.
+7. Deploy Kuma's sample marketplace application
 
 ```
 $ kubectl apply -f kuma-demo-aio.yaml
@@ -135,7 +135,7 @@ redis-master-6b88967745-8ct5c    2/2     Running   0          7m23s
 
 In the following steps, we will be using the pod name of the `kuma-demo-app-*************` pod. Please replace any `{KUMA_DEMO_APP_POD_NAME}` with your pod name.
 
-8.
+8. Deploy the logstash service
 
 ```
 $ kubectl apply -f kuma-demo-log.yaml
@@ -145,7 +145,7 @@ configmap/logstash-config created
 deployment.apps/logstash created
 ```
 
-9.
+9. Port-forward the sample application to access the front-end UI at http://localhost:3001
 
 <pre><code>$ kubectl port-forward <b>{KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080 3001
 Forwarding from 127.0.0.1:8080 -> 8080
@@ -156,7 +156,9 @@ Forwarding from [::1]:3001 -> 3001
 
 Now you can access the application through your web browser at http://localhost:3001.
 
-10.
+The items on the front page are pulled from the Elasticsearch service. While the reviews for each item sit within the Redis service. You can query for individual items and look at their reviews. Happy shopping!
+
+10. Now we will port forward the kuma-control-plane so we can access it with `kumactl`
 
 <pre><code>$ kubectl -n kuma-system port-forward <b>{KUMA_CP_POD_NAME}</b> 5681
 Forwarding from 127.0.0.1:5681 -> 5681
@@ -165,7 +167,7 @@ Forwarding from [::1]:5681 -> 5681
 
 Please refer to step 5 to copy the correct `{KUMA_CP_POD_NAME}`.
 
-11.
+11. Now configure `kumactl` to point towards the control plane address
 
 ```
 $ kumactl config control-planes add --name=kuma-app --address=http://localhost:5681
@@ -173,7 +175,7 @@ added Control Plane "kuma-app"
 switched active Control Plane to "kuma-app"
 ```
 
-12.
+12. You can use `kumactl` to look at the dataplanes in the mesh. You should see three dataplanes:
 
 ```
 $ kumactl get dataplanes
@@ -183,7 +185,7 @@ default   kuma-demo-app-5b8674794f-7r2sf   app=kuma-demo-api pod-template-hash=5
 default   redis-master-6b88967745-8ct5c    app=redis pod-template-hash=6b88967745 role=master service=redis-master.kuma-demo.svc:6379 tier=backend
 ```
 
-13.
+13. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
 ```
 $ kumactl get meshes
@@ -191,7 +193,7 @@ NAME      mTLS   DP ACCESS LOGS
 default   off    off
 ```
 
-14.
+14. Let's enable mTLS and also create a traffic-permission policy. We will set a policy that allows traffic only between node application and our Elasticsearch service. The expected behavior is that the application will no longer be able to access Redis service for reviews.
 
 ```
 $ kubectl apply -f kuma-demo-policy.yaml
@@ -201,7 +203,7 @@ trafficlog.kuma.io/everything created
 trafficpermission.kuma.io/everyone-to-everyone created
 ```
 
-15.
+15. Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
 
 ```
 kumactl get meshes
@@ -209,7 +211,7 @@ NAME      mTLS   DP ACCESS LOGS
 default   on     off
 ```
 
-16.
+16. You can also get `traffic-permissions` to see that has been applied correctly:
 
 ```
 kumactl get traffic-permissions
@@ -217,9 +219,8 @@ MESH      NAME
 default   node-api-to-elasticsearch-only
 ```
 
-17.
+17. Now try to access the reviews on each item. They will not load because of the traffic-permissions you described in the `kuma-demo-policy.yaml` file. You can inspect the policy we created by using the following `kumactl` command:
 
-Now if you try to access the reviews in the UI at http://localhost:8080, it will no longer work because of our traffic permissions applied on step 14. You can also use `kumactl` to check what we set:
 ```
 $ kumactl get traffic-permissions -o yaml
 items:
@@ -233,4 +234,4 @@ items:
     - match:
         service: kuma-demo-api.kuma-demo.svc:3001
   type: TrafficPermission
-  ```
+```
