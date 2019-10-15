@@ -67,7 +67,7 @@
 
 <script>
 import axios from "axios";
-import { setupCache } from "axios-cache-adapter";
+// import { setupCache } from "axios-cache-adapter";
 import GlobalHeader from "./components/GlobalHeader.vue";
 import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
@@ -81,9 +81,9 @@ const api = "http://localhost:3001";
 const apiParam = "?q";
 
 // setup axios caching
-const cache = setupCache({
-  maxAge: 15 * 60 * 1000
-});
+// const cache = setupCache({
+//   maxAge: 15 * 60 * 1000
+// });
 
 // setup the product API Elasticsearch call
 const productsApi = axios.create({
