@@ -1,4 +1,4 @@
-const items = require('../test/items.json')
+const items = require('../db/items.json')
 const {
     promisify
 } = require('util')
@@ -41,15 +41,15 @@ const search = async (itemId) => {
     return res
 }
 
-// const importData = async () => {
-//     await createClient()
-//     let count = 0
-//     items.forEach(item => {
-//         client.set(item.index, JSON.stringify(item.reviews))
-//     })
-// }
+const importData = async () => {
+    await createClient()
+    let count = 0
+    items.forEach(item => {
+        client.set(item.index, JSON.stringify(item.reviews))
+    })
+}
 
 module.exports = Object.assign({
-    search
-    // importData
+    search,
+    importData
 })

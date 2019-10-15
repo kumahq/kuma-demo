@@ -57,7 +57,7 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.6.2
+        image: kvn0218/kuma-elastic-kubernetes:latest
         env:
         - name: KUBERNETES_CA_CERTIFICATE_FILE
           value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -171,7 +171,7 @@ spec:
         app: kuma-demo-api
     spec:
       containers:
-      - image: kvn0218/kuma-demo-api:fix2
+      - image: kvn0218/kuma-demo-api:latest
         name: kuma-be
         env:
         - name: ES_HOST
@@ -182,7 +182,7 @@ spec:
         ports:
         - containerPort: 3001
       - name: kuma-fe
-        image: kvn0218/kuma-demo-fe:fix2
-        # imagePullPolicy: Always
+        image: kvn0218/kuma-demo-fe:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

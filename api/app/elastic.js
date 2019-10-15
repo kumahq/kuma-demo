@@ -1,4 +1,4 @@
-const items = require('../test/items.json')
+const items = require('../db/items.json')
 const elasticsearch = require('elasticsearch')
 
 let client;
@@ -15,7 +15,6 @@ const createClient = async () => {
 
 const search = async (itemName) => {
     await createClient()
-    data = data || await importData()
 
     let body = {
         size: 200,
@@ -34,7 +33,9 @@ const search = async (itemName) => {
     }, {
         ignore: [404],
         maxRetries: 3
-    }, (err, { body }) => {
+    }, (err, {
+        body
+    }) => {
         if (err) console.log(err)
     })
 }
@@ -55,12 +56,16 @@ const searchId = async (itemId) => {
     }, {
         ignore: [404],
         maxRetries: 3
-    }, (err, { body }) => {
+    }, (err, {
+        body
+    }) => {
         if (err) console.log(err)
     })
 }
 
 const createBulk = async () => {
+    await createClient()
+
     let bulk = []
 
     client.indices.create({
@@ -88,7 +93,6 @@ const createBulk = async () => {
 
 const importData = async () => {
     const bulk = await createBulk()
-
     client.bulk({
         body: bulk
     }, (err, response) => {
@@ -101,5 +105,6 @@ const importData = async () => {
 
 module.exports = Object.assign({
     search,
-    searchId
+    searchId,
+    importData
 })

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "setup": "(cd app && npm install); (cd api && npm install)",
-    "api:elasticsearch": "docker run --rm -p 9200:9200 -p 9300:9300 -e 'discovery.type=single-node' docker.elastic.co/elasticsearch/elasticsearch:7.3.2",
-    "api:redis": "docker run --rm -p 6379:6379 --name redis1 redis",
+    "api:elasticsearch": "docker run --name elasticsearch --rm -p 9200:9200 -p 9300:9300 --privileged kvn0218/kuma-elastic",
+    "api:redis": "docker run --rm -p 6379:6379 --name redis1 kvn0218:kuma-redis",
     "api:start": "cd api && npm run start",
     "app:start": "cd app && npm run serve",
     "app:build": "cd app && npm run build"

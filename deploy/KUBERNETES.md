@@ -102,6 +102,14 @@ In the following steps, we will be using the pod name of the `kuma-control-plane
 6.
 
 ```
+cd kuma-demo/deploy
+```
+Note: This folder will eventually be moved into the Kuma main repository. It will contain all the necessary YAML files to deploy Kuma on Kubernetes and Universal.
+
+
+7.
+
+```
 $ kubectl apply -f kuma-demo-aio.yaml
 namespace/kuma-demo created
 serviceaccount/elasticsearch created
@@ -127,7 +135,7 @@ redis-master-6b88967745-8ct5c    2/2     Running   0          7m23s
 
 In the following steps, we will be using the pod name of the `kuma-demo-app-*************` pod. Please replace any `{KUMA_DEMO_APP_POD_NAME}` with your pod name.
 
-7.
+8.
 
 ```
 $ kubectl apply -f kuma-demo-log.yaml
@@ -137,7 +145,7 @@ configmap/logstash-config created
 deployment.apps/logstash created
 ```
 
-8.
+9.
 
 <pre><code>$ kubectl port-forward <b>{KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080 3001
 Forwarding from 127.0.0.1:8080 -> 8080
@@ -148,7 +156,7 @@ Forwarding from [::1]:3001 -> 3001
 
 Now you can access the application through your web browser at http://localhost:3001.
 
-9.
+10.
 
 <pre><code>$ kubectl -n kuma-system port-forward <b>{KUMA_CP_POD_NAME}</b> 5681
 Forwarding from 127.0.0.1:5681 -> 5681
@@ -157,7 +165,7 @@ Forwarding from [::1]:5681 -> 5681
 
 Please refer to step 5 to copy the correct `{KUMA_CP_POD_NAME}`.
 
-10.
+11.
 
 ```
 $ kumactl config control-planes add --name=kuma-app --address=http://localhost:5681
@@ -165,7 +173,7 @@ added Control Plane "kuma-app"
 switched active Control Plane to "kuma-app"
 ```
 
-11.
+12.
 
 ```
 $ kumactl get dataplanes
@@ -175,7 +183,7 @@ default   kuma-demo-app-5b8674794f-7r2sf   app=kuma-demo-api pod-template-hash=5
 default   redis-master-6b88967745-8ct5c    app=redis pod-template-hash=6b88967745 role=master service=redis-master.kuma-demo.svc:6379 tier=backend
 ```
 
-12.
+13.
 
 ```
 $ kumactl get meshes
@@ -183,7 +191,7 @@ NAME      mTLS   DP ACCESS LOGS
 default   off    off
 ```
 
-13.
+14.
 
 ```
 $ kubectl apply -f kuma-demo-policy.yaml
@@ -193,7 +201,7 @@ trafficlog.kuma.io/everything created
 trafficpermission.kuma.io/everyone-to-everyone created
 ```
 
-14.
+15.
 
 ```
 kumactl get meshes
@@ -201,36 +209,17 @@ NAME      mTLS   DP ACCESS LOGS
 default   on     off
 ```
 
-15.
-
-```
-$ kubectl delete pods --all -n kuma-demo
-pod "es-pkm29" deleted
-pod "kuma-demo-app-5b8674794f-7r2sf" deleted
-pod "redis-master-6b88967745-8ct5c" deleted
-```
-
 16.
 
 ```
-kubectl get pods -n kuma-demo
-NAME                             READY   STATUS    RESTARTS   AGE
-es-djlsb                         2/2     Running   0          57s
-kuma-demo-app-5b8674794f-4qrq7   3/3     Running   0          57s
-redis-master-6b88967745-z7cm5    2/2     Running   0          57s
+kumactl get traffic-permissions
+MESH      NAME
+default   node-api-to-elasticsearch-only
 ```
 
 17.
 
-<pre><code>$ kubectl port-forward <b>{KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080 3001
-Forwarding from 127.0.0.1:8080 -> 8080
-Forwarding from [::1]:8080 -> 8080
-Forwarding from 127.0.0.1:3001 -> 3001
-Forwarding from [::1]:3001 -> 3001
-Handling connection for 3001
-</code></pre>
-
-Now if you try to access the reviews in the UI at http://localhost:3001, it will no longer work because of our traffic permissions applied on step 14. You can also use `kumactl` to check what we set:
+Now if you try to access the reviews in the UI at http://localhost:8080, it will no longer work because of our traffic permissions applied on step 14. You can also use `kumactl` to check what we set:
 ```
 $ kumactl get traffic-permissions -o yaml
 items:
@@ -245,4 +234,3 @@ items:
         service: kuma-demo-api.kuma-demo.svc:3001
   type: TrafficPermission
   ```
-  
