@@ -160,7 +160,7 @@ The items on the front page are pulled from the Elasticsearch service. While the
 
 10. Now we will port forward the kuma-control-plane so we can access it with `kumactl`
 
-<pre><code>$ kubectl -n kuma-system port-forward <b>{KUMA_CP_POD_NAME}</b> 5681
+<pre><code>$ kubectl port-forward <b>{KUMA_CP_POD_NAME}</b> -n kuma-system 5681
 Forwarding from 127.0.0.1:5681 -> 5681
 Forwarding from [::1]:5681 -> 5681
 </code></pre>
