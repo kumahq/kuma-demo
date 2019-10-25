@@ -2,15 +2,17 @@
 
 #### Table of contents
 
-- [Setup](#setup)
-- [API](#api)
-  - [Docker](#docker---products-endpoint)
-  - [Redis](#redis---reviews-endpoint)
-  - [Run](#run-the-api)
-- [App](#app)
-  - [Run](#run-the-app)
-  - [Build](#build-the-app)
-  - [Notes](#app-notes)
+- [Kuma Demo](#kuma-demo)
+      - [Table of contents](#table-of-contents)
+  - [Setup](#setup)
+  - [API](#api)
+    - [Docker - Products endpoint](#docker---products-endpoint)
+    - [Redis - Reviews endpoint](#redis---reviews-endpoint)
+    - [Run the API](#run-the-api)
+  - [App](#app)
+    - [Run the app](#run-the-app)
+    - [Build the app](#build-the-app)
+    - [App notes](#app-notes)
 
 ## Setup
 
