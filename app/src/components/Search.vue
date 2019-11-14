@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     search(ev) {
-      const query = ev.target.value.trim().toLowerCase();
+      const query = ev.target.value;
       const key = event.keyCode || event.charCode;
       this.searchQuery = query;
       // only run the search query if the user is not pressing
