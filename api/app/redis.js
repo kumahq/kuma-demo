@@ -4,10 +4,8 @@ const {
 } = require('util')
 const redis = require('redis')
 
-let client;
-
 const createClient = () => {
-    client = client || redis.createClient({
+    return redis.createClient({
         host: process.env.REDIS_HOST,
         port: 6379,
         retry_strategy: function (options) {
@@ -17,17 +15,16 @@ const createClient = () => {
             if (options.total_retry_time > 1000) {
                 return new Error('Retry time exhausted');
             }
-            if (options.attempt > 5000) {
+            if (options.attempt > 1000) {
                 return new Error('Creating Redis client attempt failed, retrying again');
             }
-            return Math.min(options.attempt * 100, 3000);
+            return Math.min(options.attempt * 100, 1000);
         }
     });
-    return client
 };
 
 const search = async (itemId) => {
-    await createClient()
+    let client = await createClient()
     client.on('error', (err) => {
         return new Error('Cannot reach /search endpoint, Redis is currently down')
     })
@@ -42,8 +39,7 @@ const search = async (itemId) => {
 }
 
 const importData = async () => {
-    await createClient()
-    let count = 0
+    let client = await createClient()
     items.forEach(item => {
         client.set(item.index, JSON.stringify(item.reviews))
     })

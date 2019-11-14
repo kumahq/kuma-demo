@@ -95,15 +95,9 @@
 
 <script>
 import axios from "axios";
-import { setupCache } from "axios-cache-adapter";
 import Reviews from "./Reviews.vue";
 import Modal from "./Modal.vue";
 import Error from "./Error.vue";
-
-// axios caching
-const cache = setupCache({
-  maxAge: 15 * 60 * 1000
-});
 
 const reviewsApi = axios.create({
   // adapter: cache.adapter

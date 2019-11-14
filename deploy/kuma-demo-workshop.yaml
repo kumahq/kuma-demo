@@ -1,3 +1,4 @@
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -158,7 +159,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kuma-demo-app
+  name: kuma-demo-api
   namespace: kuma-demo
 spec:
   replicas: 1
@@ -171,18 +172,53 @@ spec:
         app: kuma-demo-api
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:local
-        name: kuma-be
+      - image: kvn0218/kuma-demo-be:lts
+        name: kuma-demo-api
         env:
         - name: ES_HOST
           value: http://elasticsearch:80
         - name: REDIS_HOST
           value: "redis-master"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3001
-      - name: kuma-fe
-        image: kvn0218/kuma-demo-fe:local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuma-demo-ui
+  namespace: kuma-demo
+spec:
+  selector:
+    app: kuma-demo-ui
+  ports:
+  - name: ui
+    port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuma-demo-ui
+  namespace: kuma-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuma-demo-ui
+  template:
+    metadata:
+      labels:
+        app: kuma-demo-ui
+    spec:
+      containers:
+      - image: kvn0218/kuma-demo-fe:v1
+        name: kuma-demo-ui
+        env:
+        - name: VUE_APP_NODE_HOST
+          value: "http://kuma-demo-api:3001"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
+EOF
+
+kuma-demo-api.kuma-demo.svc:3001
