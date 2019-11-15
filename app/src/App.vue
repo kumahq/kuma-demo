@@ -270,4 +270,8 @@ body {
 .loading-screen {
   margin-top: -#{$topbar-height};
 }
+
+.header-wrap {
+  z-index: 998; // 1 below the modal
+}
 </style>
