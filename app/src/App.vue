@@ -13,7 +13,7 @@
     <div class="content-wrapper container mx-auto max-w-6xl">
       <div class="errors">
         <!-- initial product API errors -->
-        <error v-if="productInitApiError.keys().length > 0">
+        <error v-if="productInitApiError && productInitApiError.keys().length > 0">
           <template v-slot:header>
             <p>There was a Product API issue:</p>
           </template>
@@ -111,7 +111,8 @@ import SearchResults from "./components/SearchResults.vue";
 import Error from "./components/Error.vue";
 
 // the API endpoint
-const api = "http://localhost:3001";
+const api = "";
+// const api = "http://localhost:3001";
 
 // API search query param
 const apiParam = "?q";
