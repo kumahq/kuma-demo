@@ -1,5 +1,8 @@
 <template>
-  <div class="product mb-8 pt-8 border-t border-gray-300 md:flex flex-row -mx-4">
+  <div
+    class="product mb-8 pt-8 border-t border-gray-300 md:flex flex-row -mx-4"
+    :class="{ 'special-offer': specialOffer }"
+  >
     <div class="md:w-1/5 px-4">
       <h2 class="product__title text-2xl text-center font-bold mb-4 md:hidden">{{ name }}</h2>
       <div class="product__image bg-white">
@@ -10,7 +13,15 @@
         />
       </div>
       <div class="product__actions mt-4">
-        <p class="text-center mt-4 font-bold text-3xl">{{ price }}</p>
+
+        <p v-if="specialOffer" class="text-center mt-4 font-bold">
+          <span class="text-gray-500 line-through text-xl">{{ cleanPrice }}</span><br>
+          <span class="text-pink text-3xl">{{ discountedPrice }}</span>
+        </p>
+        <p v-else class="text-center mt-4 font-bold text-3xl">
+          {{ cleanPrice }}
+        </p>
+
         <p class="text-center mt-4">
           <a
             class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
@@ -22,7 +33,9 @@
       </div>
     </div>
     <div class="md:w-4/5 px-4">
-      <h2 class="product__title text-3xl font-bold mb-4 hidden md:block">{{ name }}</h2>
+      <h2 class="product__title text-3xl font-bold mb-4 hidden md:block">
+        {{ name }}
+      </h2>
       <h3
         class="product__company text-xl text-pink font-bold italic mb-4 mt-4 md:mt-0 text-center md:text-left"
       >Made by {{ company }}</h3>
@@ -108,7 +121,7 @@ export default {
     return {
       reviews: Array,
       isModalVisible: false,
-      modalApiError: "",
+      modalApiError: null,
       isModalDataLoaded: false
     };
   },
@@ -122,12 +135,27 @@ export default {
     size: String,
     category: String,
     name: String,
-    detail: String
+    detail: String,
+    specialOffer: Boolean
   },
   components: {
     Reviews,
     Modal,
     Error
+  },
+  computed: {
+    cleanPrice () {
+      const price = parseInt(this.price.replace('$','')).toFixed(2);
+
+      return `$${price}`
+    },
+    discountedPrice () {
+      const basePrice = this.cleanPrice.replace('$','');
+      const discount = 50 / 100;
+      const adjusted = (basePrice - (basePrice * discount))
+
+      return `$${adjusted.toFixed(2)}`
+    }
   },
   methods: {
     showModal() {
@@ -144,16 +172,18 @@ export default {
     },
     fetchReviews(id) {
       reviewsApi({
-        url: `http://localhost:3001/items/${id}/reviews/`,
+        url: `${process.env.VUE_APP_REDIS_ENDPOINT}/items/${id}/reviews/`,
         method: "GET"
       })
         .then(async response => {
           // error checking and logging
           const errorCheck = response.data.code;
+          
           if (errorCheck && errorCheck.length) {
             this.modalApiError = errorCheck;
           } else {
             this.reviews = await response.data;
+            this.modalApiError = null;
           }
 
           // trigger the modal
@@ -167,3 +197,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.special-offer {
+  background: #fff;
+  border: 4px solid #FF5D8C !important;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.35);
+}
+</style>

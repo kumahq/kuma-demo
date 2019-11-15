@@ -12,6 +12,7 @@
           :size="item._source.size"
           :price="item._source.price"
           :company="item._source.company"
+          :specialOffer="item._source.specialOffer"
         />
       </li>
     </ul>
@@ -19,7 +20,7 @@
       v-else
       class="no-results h-screen flex items-center justify-center text-4xl text-pink font-bold"
     >
-      <p v-if="query">No search results for {{ query }}!</p>
+      <p v-if="query && query.length">No search results for {{ query }}!</p>
       <p v-else>No search results!</p>
     </div>
   </div>
