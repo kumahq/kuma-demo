@@ -19,3 +19,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# vagrant 
+.vagrant
+.sync
+*-cloudimg-console.log
