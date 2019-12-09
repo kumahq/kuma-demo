@@ -109,23 +109,14 @@ import GlobalFooter from "./components/GlobalFooter.vue";
 import Search from "./components/Search.vue";
 import SearchResults from "./components/SearchResults.vue";
 import Error from "./components/Error.vue";
-
 // the API endpoint
-const api = "http://localhost:3001";
-
+const api = process.env.VUE_APP_NODE_HOST || "http://localhost:3001";
 // API search query param
 const apiParam = "?q";
-
 // setup the product API Elasticsearch call
 const productsApi = axios.create({
   // adapter: cache.adapter
 });
-
-// setup the asset upload endpoint
-const assetUploadApi = axios.create({
-  // adapter: cache.adapter
-});
-
 export default {
   name: "app",
   metaInfo: {
@@ -177,14 +168,11 @@ export default {
           // populate the items array
           this.items = await response.data;
           this.dataIsLoaded = true;
-
           // calculate the page count on initial product load
           this.calculatePageCount();
-
           if (response.message) {
             this.productInitApiError.push(response.message);
           }
-
           if (response.data.msg) {
             this.productInitApiError.push(response.data.msg);
           }
@@ -210,10 +198,8 @@ export default {
             await this.loadAllProducts();
             this.searchQuery = "";
           }
-
           // if we're performing a search, we have to return to the first page
           this.pageNumber = 0;
-
           // figure out the actual page count based on the number of items
           this.calculatePageCount();
         })
@@ -240,22 +226,17 @@ export default {
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap");
-
 $topbar-height: 8rem;
-
 // Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body {
   font-family: "Roboto", "Avenir", Helvetica, Arial, sans-serif;
 }
-
 .content-wrapper {
   padding-top: $topbar-height;
 }
-
 .loading-screen {
   margin-top: -#{$topbar-height};
 }

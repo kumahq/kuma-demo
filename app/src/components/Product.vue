@@ -98,11 +98,10 @@ import axios from "axios";
 import Reviews from "./Reviews.vue";
 import Modal from "./Modal.vue";
 import Error from "./Error.vue";
-
+let api = (process.env.VUE_APP_NODE_HOST || "http://localhost:3001");
 const reviewsApi = axios.create({
   // adapter: cache.adapter
 });
-
 export default {
   data() {
     return {
@@ -144,7 +143,7 @@ export default {
     },
     fetchReviews(id) {
       reviewsApi({
-        url: `http://localhost:3001/items/${id}/reviews/`,
+        url: `${api}/items/${id}/reviews/`,
         method: "GET"
       })
         .then(async response => {
@@ -155,7 +154,6 @@ export default {
           } else {
             this.reviews = await response.data;
           }
-
           // trigger the modal
           this.isModalDataLoaded = await true;
         })
