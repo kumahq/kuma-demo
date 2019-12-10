@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
-# Update apt-get
-apt-get update -y
+# Set env variables
+export REDIS_HOST="http://192.168.33.50"
+echo "REDIS_HOST='http://192.168.33.50'" >> /home/vagrant/.bashrc
+export REDIS_PORT=1000
+echo 'export REDIS_PORT=1000' >> /home/vagrant/.bashrc
+export ES_HOST="http://192.168.33.40:1000"
+echo "
 
-# Update Ubuntu
-# apt-get -y upgrade
-# apt-get -y dist-upgrade
+export ES_HOST="http://192.168.33.40:1000"
+export ES_HOST='http://192.168.33.40:1000'
+" >> /home/vagrant/.bashrc
 
 # Get latest version of node
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
@@ -16,8 +21,8 @@ apt-get install -y nodejs build-essential
 # Update npm
 npm install npm -g
 
-# Install yarn
-npm install -g yarn
+# # Install yarn
+# npm install -g yarn
 
 # Install Forever to run App in background
 npm install forever -g

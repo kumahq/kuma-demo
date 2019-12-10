@@ -7,7 +7,13 @@
 # $4 = "#{box[:local_port]}"
 
 # Add to PATH
+export PATH=$PATH:/home/vagrant/kuma/bin
 echo "export PATH=$PATH:/home/vagrant/kuma/bin" >> /home/vagrant/.bashrc
+
+# Adding Kuma-cp to /etc/hosts
+echo "
+192.168.33.10 kuma-cp
+" >> /etc/hosts
 
 mkdir /home/vagrant/.kumactl && touch /home/vagrant/.kumactl/config
 
@@ -26,7 +32,7 @@ controlPlanes:
   name: local
 - coordinates:
     apiServer:
-      url: http://$1:5681
+      url: http://kuma-cp:5681
   name: kuma-cp
 currentContext: kuma-cp
 " >> /home/vagrant/.kumactl/config
@@ -40,26 +46,29 @@ wget -nv https://kong.bintray.com/kuma/kuma-0.3.0-ubuntu-amd64.tar.gz
 # Extract the archive
 tar xvzf kuma-0.3.0-ubuntu-amd64.tar.gz
 
-# generate on the client side
-/home/vagrant/kuma/bin/kumactl generate tls-certificate \
---cert-file=/home/vagrant/kuma/certs/server/cert.pem \
---key-file=/home/vagrant/kuma/certs/server/key.pem \
---type=client
+kumactl config control-planes add --name=universal --address=http://kuma-cp:5681 --overwrite
 
-                                
+# create Dataplane (update in future)
+echo "type: Dataplane
+mesh: default
+name: $2
+networking:
+  inbound:
+  - interface: $3:1000:$4
+    tags:
+      service: $2" | /home/vagrant/kuma/bin/kumactl apply -f -
 
-/home/vagrant/kuma/bin/kumactl config control-planes add \
---name kuma-cp --address http://$1:5681 \
---dataplane-token-client-cert /home/vagrant/kuma/certs/server/cert.pem \
---dataplane-token-client-key /home/vagrant/kuma/certs/server/key.pem
+# start Dataplane
+touch /etc/systemd/system/kuma-dp.service
+cat > /etc/systemd/system/kuma-dp.service <<EOL
+[Service]
+ConditionPathExists=/home/vagrant/kuma/certs/kuma-dp/$2/token
+Environment=KUMA_DATAPLANE_MESH=default
+Environment=KUMA_DATAPLANE_NAME=$2
+Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
+Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/home/vagrant/kuma/certs/kuma-dp/$2/token
+ExecStart=/home/vagrant/kuma/bin/kuma-dp run
+EOL
 
-
-
-# echo "type: Dataplane
-# mesh: default
-# name: dp-$2
-# networking:
-#   inbound:
-#   - interface: $3:1000:$4
-#     tags:
-#       service: $2" | /home/vagrant/kuma/bin/kumactl apply -f -
+systemctl start kuma-dp
+systemctl status kuma-dp
