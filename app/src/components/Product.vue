@@ -1,5 +1,15 @@
 <template>
-  <div class="product mb-8 pt-8 border-t border-gray-300 md:flex flex-row -mx-4">
+  <div
+    class="product mb-8 pt-8 border-t border-gray-300 md:flex flex-row -mx-4"
+    :class="{ 'special-offer': specialOffer }"
+  >
+    <div
+      v-if="specialOffer"
+      class="ribbon"
+    >
+      <span>Sale!</span>
+    </div>
+
     <div class="md:w-1/5 px-4">
       <h2 class="product__title text-2xl text-center font-bold mb-4 md:hidden">{{ name }}</h2>
       <div class="product__image bg-white">
@@ -10,7 +20,15 @@
         />
       </div>
       <div class="product__actions mt-4">
-        <p class="text-center mt-4 font-bold text-3xl">{{ price }}</p>
+
+        <p v-if="specialOffer" class="text-center mt-4 font-bold">
+          <span class="text-gray-500 line-through text-xl">{{ cleanPrice }}</span><br>
+          <span class="text-pink text-3xl">{{ discountedPrice }}</span>
+        </p>
+        <p v-else class="text-center mt-4 font-bold text-3xl">
+          {{ cleanPrice }}
+        </p>
+
         <p class="text-center mt-4">
           <a
             class="inline-block md:block bg-green hover:bg-green-lighter text-white text-center font-bold py-2 px-4 rounded"
@@ -22,7 +40,9 @@
       </div>
     </div>
     <div class="md:w-4/5 px-4">
-      <h2 class="product__title text-3xl font-bold mb-4 hidden md:block">{{ name }}</h2>
+      <h2 class="product__title text-3xl font-bold mb-4 hidden md:block">
+        {{ name }}
+      </h2>
       <h3
         class="product__company text-xl text-pink font-bold italic mb-4 mt-4 md:mt-0 text-center md:text-left"
       >Made by {{ company }}</h3>
@@ -98,16 +118,17 @@ import axios from "axios";
 import Reviews from "./Reviews.vue";
 import Modal from "./Modal.vue";
 import Error from "./Error.vue";
-let api = (process.env.VUE_APP_NODE_HOST || "http://localhost:3001");
+
 const reviewsApi = axios.create({
   // adapter: cache.adapter
 });
+
 export default {
   data() {
     return {
       reviews: Array,
       isModalVisible: false,
-      modalApiError: "",
+      modalApiError: null,
       isModalDataLoaded: false
     };
   },
@@ -121,12 +142,27 @@ export default {
     size: String,
     category: String,
     name: String,
-    detail: String
+    detail: String,
+    specialOffer: Boolean
   },
   components: {
     Reviews,
     Modal,
     Error
+  },
+  computed: {
+    cleanPrice () {
+      const price = parseInt(this.price.replace('$','')).toFixed(2);
+
+      return `$${price}`
+    },
+    discountedPrice () {
+      const basePrice = this.cleanPrice.replace('$','');
+      const discount = 50 / 100;
+      const adjusted = (basePrice - (basePrice * discount))
+
+      return `$${adjusted.toFixed(2)}`
+    }
   },
   methods: {
     showModal() {
@@ -143,17 +179,20 @@ export default {
     },
     fetchReviews(id) {
       reviewsApi({
-        url: `${api}/items/${id}/reviews/`,
+        url: `${process.env.VUE_APP_REDIS_ENDPOINT}/items/${id}/reviews/`,
         method: "GET"
       })
         .then(async response => {
           // error checking and logging
           const errorCheck = response.data.code;
+          
           if (errorCheck && errorCheck.length) {
             this.modalApiError = errorCheck;
           } else {
             this.reviews = await response.data;
+            this.modalApiError = null;
           }
+
           // trigger the modal
           this.isModalDataLoaded = await true;
         })
@@ -165,3 +204,58 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.special-offer {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border: 4px solid #FF5D8C !important;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.35);
+}
+
+.ribbon {
+  $dims: 85px;
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  width: $dims;
+  height: $dims; 
+  text-align: right;
+
+  span {
+    text-transform: uppercase; 
+    text-align: center;
+    color: #fff;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 42px;
+    transform: rotate(45deg);
+    width: 200px;
+    display: block;
+    background: #FF5D8C;
+    background: linear-gradient(#FF5D8C 0%, darken(#FF5D8C, 15%) 100%);
+    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 34px;
+    right: -44px;
+  }
+}
+
+@media (max-width: 780px) {
+  .ribbon {
+
+    span {
+      font-size: 24px;
+      line-height: 36px;
+      width: 150px;
+      top: 16px;
+      right: -36px;
+    }
+  }
+}
+</style>
