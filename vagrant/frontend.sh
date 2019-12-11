@@ -12,11 +12,7 @@ apt-get install -y nodejs build-essential
 # Update npm
 npm install npm -g
 
-# Install yarn
-# npm install -g yarn
-
 # Vue CLI
-# yarn add global @vue/cli
 npm install -g @vue/cli
 
 # Install Forever to run App in background
