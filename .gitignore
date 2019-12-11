@@ -20,7 +20,8 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# vagrant 
-.vagrant
-.sync
+# vagrant
+/vagrant
+!/vagrant/*.sh
+!Vagrantfile
 *-cloudimg-console.log
