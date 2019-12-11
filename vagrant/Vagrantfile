@@ -1,0 +1,67 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Control-plane IP
+kuma_cp_ip= "192.168.33.10"
+
+boxes = [
+  {
+    name: "kuma-cp",
+    ip: "#{kuma_cp_ip}",
+    box: "ubuntu/xenial64",
+    script: "./kuma-cp.sh"
+  },
+  {
+    name: "frontend",
+    ip: "192.168.33.20",
+    box: "ubuntu/xenial64",
+    file: "app",
+    script: "./frontend.sh",
+    local_port: "8080"
+  },
+  {
+    name: "backend",
+    ip: "192.168.33.30",
+    box: "ubuntu/xenial64",
+    file: "api",
+    script: "./backend.sh",
+    local_port: "3001"
+  },
+  {
+    name: "elastic",
+    ip: "192.168.33.40",
+    box: "elastic/ubuntu-16.04-x86_64",
+    script: "./elastic.sh",
+    local_port: "9200"
+  },
+  {
+    name: "redis",
+    ip: "192.168.33.50",
+    box: "ubuntu/xenial64",
+    script: "./redis.sh",
+    local_port: "6379"
+  }
+]
+
+Vagrant.configure("2") do |config|
+
+  config.vm.synced_folder "./", "/home/vagrant/kuma"
+
+  boxes.each do |box|
+    
+    config.vm.define box[:name] do |srv|
+      srv.vm.box = box[:box]
+      srv.vm.hostname = box[:name]
+      srv.vm.network :private_network, ip: box[:ip]
+
+      if box[:file]
+        srv.vm.provision "file", source: "../#{box[:file]}", destination: "$HOME/#{box[:file]}"
+      end
+
+      srv.vm.provision :shell, path: box[:script]
+      
+    end
+
+  end
+
+end

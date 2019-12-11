@@ -7,7 +7,7 @@ const redis = require('redis')
 const createClient = () => {
     return redis.createClient({
         host: process.env.REDIS_HOST,
-        port: 6379,
+        port: process.env.REDIS_PORT,
         retry_strategy: function (options) {
             if (options.error && options.error.code === 'ECONNREFUSED') {
                 return new Error('The Redis server refused the connection');

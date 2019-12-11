@@ -15,7 +15,7 @@ RUN npm rebuild node-sass
 
 RUN npm run build
 
-RUN apk add curl
+RUN apk add curl jq
 
 EXPOSE 8080
 CMD [ "http-server", "dist" ]
