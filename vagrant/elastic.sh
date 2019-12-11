@@ -8,8 +8,6 @@ sudo apt-get update
 
 sudo apt-get install elasticsearch
 
-# sudo vi /etc/elasticsearch/elasticsearch.yml
-
 sudo /bin/systemctl enable elasticsearch.service
 
 sudo systemctl start elasticsearch.service
