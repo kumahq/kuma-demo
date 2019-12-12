@@ -1,3 +1,6 @@
+# docker build . -t kvn0218/kuma-demo-be:v1
+# docker push kvn0218/kuma-demo-be:v1
+
 FROM node:lts-alpine
 
 WORKDIR /usr/src/app

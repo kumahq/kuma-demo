@@ -4,6 +4,8 @@ const elastic = require('./app/elastic')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+let specialOffers = process.env.ES_SPECIAL_OFFER || true
+let totalOffers = process.env.ES_TOTAL_OFFER || 1
 
 app.use(bodyParser.json())
 app.set('port', process.env.PORT || 3001)
@@ -15,7 +17,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/', (req, res) => {
-  res.send('Hello World! Made with <3 by the OCTO team at Kong Inc.')
+  res.send('(v1) Hello World! Marketplace with sales and reviews made with <3 by the OCTO team at Kong Inc.')
 })
 
 app.post('/upload', async (req, res) => {
@@ -26,13 +28,25 @@ app.post('/upload', async (req, res) => {
 
 app.get('/items', (req, res) => {
   elastic.search(req.query.q)
-    .then(results => {
-      res.send(results.hits.hits)
+    .then(async results => {
+      if (specialOffers == true) {
+        res.send(addOffer(results.hits.hits))
+      } else {
+        res.send(results.hits.hits)
+      }
     })
     .catch(err => {
       res.send(err)
     })
 })
+
+let addOffer = (arr) => {
+  let items = arr
+  for (i = 0; i < totalOffers; i++) {
+    items[i]._source.specialOffer = true
+  }
+  return items
+}
 
 app.get('/items/:itemIndexId', (req, res) => {
   elastic.searchId(req.params.itemIndexId)
