@@ -12,20 +12,18 @@
     </div>
     <div class="content-wrapper container mx-auto max-w-6xl">
       <div class="errors">
-        <!-- initial product API errors -->
-        <error v-if="productInitApiError.keys().length > 0">
+
+        <!-- product API errors and logs -->
+        <error v-if="productInitApiLog1 || productInitApiLog2">
           <template v-slot:header>
-            <p>There was a Product API issue:</p>
+            <p>There are Product API issues:</p>
           </template>
           <template v-slot:body>
-            <code>
-              <pre
-                v-for="(item, index) in productInitApiError"
-                :key="index"
-                class="overflow-x-auto pt-4 pb-4"
-              >
-                {{ item }}
-              </pre>
+            <code v-if="productInitApiLog1">
+              <pre>{{ productInitApiLog1 }}</pre>
+            </code>
+            <code v-if="productInitApiLog2">
+              <pre>{{ productInitApiLog2 }}</pre>
             </code>
           </template>
         </error>
@@ -111,7 +109,7 @@ import SearchResults from "./components/SearchResults.vue";
 import Error from "./components/Error.vue";
 
 // the API endpoint
-const api = "http://localhost:3001";
+const api = process.env.VUE_APP_ES_ENDPOINT;
 
 // API search query param
 const apiParam = "?q";
@@ -140,7 +138,8 @@ export default {
       items: [],
       dataIsLoaded: false,
       searchQuery: "",
-      productInitApiError: [],
+      productInitApiLog1: null,
+      productInitApiLog2: null,
       searchApiError: "",
       assetUploadError: "",
       uploadHasAlreadyRun: false,
@@ -162,9 +161,16 @@ export default {
   },
   computed: {
     paginatedData() {
-      const start = this.pageNumber * this.pageSize;
-      const end = start + this.pageSize;
-      return this.items.slice(start, end);
+      const items = this.items
+
+      if (items && items.length > 0) {
+        const start = this.pageNumber * this.pageSize;
+        const end = start + this.pageSize;
+
+        return items.slice(start, end);
+      } else {
+        console.error('No items to paginate!')
+      }
     }
   },
   methods: {
@@ -181,16 +187,21 @@ export default {
           // calculate the page count on initial product load
           this.calculatePageCount();
 
+          // quick and dirty error handling
           if (response.message) {
-            this.productInitApiError.push(response.message);
+            this.productInitApiLog1 = response.message;
+          } else {
+            this.productInitApiLog1 = null;
           }
 
           if (response.data.msg) {
-            this.productInitApiError.push(response.data.msg);
+            this.productInitApiLog2 = response.data.msg;
+          } else {
+            this.productInitApiLog2 = null
           }
         })
         .catch(error => {
-          this.productInitApiError = error;
+          this.productInitApiLog1 = error;
           console.error("Product API Error:", error);
         });
     },
@@ -258,5 +269,9 @@ body {
 
 .loading-screen {
   margin-top: -#{$topbar-height};
+}
+
+.header-wrap {
+  z-index: 998; // 1 below the modal
 }
 </style>
