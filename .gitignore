@@ -21,7 +21,8 @@ yarn-error.log*
 *.sw?
 
 # vagrant
-/vagrant
+/vagrant/*
 !/vagrant/*.sh
+!/vagrant/README.md
 !Vagrantfile
 *-cloudimg-console.log

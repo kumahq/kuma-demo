@@ -4,6 +4,7 @@
 export REDIS_HOST=127.0.0.1
 export REDIS_PORT=26379
 export ES_HOST=http://127.0.0.1:29200
+export ES_TOTAL_OFFER=0
 
 # Get latest version of node
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
@@ -76,6 +77,7 @@ networking:
   - interface: 192.168.33.30:13001:3001
     tags:
       service: backend
+      version: v0
   outbound:
   - interface: :26379
     service: redis

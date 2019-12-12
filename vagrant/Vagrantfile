@@ -16,30 +16,26 @@ boxes = [
     ip: "192.168.33.20",
     box: "ubuntu/xenial64",
     file: "app",
-    script: "./frontend.sh",
-    local_port: "8080"
+    script: "./frontend.sh"
   },
   {
     name: "backend",
     ip: "192.168.33.30",
     box: "ubuntu/xenial64",
     file: "api",
-    script: "./backend.sh",
-    local_port: "3001"
+    script: "./backend.sh"
   },
   {
     name: "elastic",
     ip: "192.168.33.40",
     box: "elastic/ubuntu-16.04-x86_64",
-    script: "./elastic.sh",
-    local_port: "9200"
+    script: "./elastic.sh"
   },
   {
     name: "redis",
     ip: "192.168.33.50",
     box: "ubuntu/xenial64",
-    script: "./redis.sh",
-    local_port: "6379"
+    script: "./redis.sh"
   }
 ]
 

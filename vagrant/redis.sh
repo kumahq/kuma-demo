@@ -79,17 +79,17 @@ networking:
       service: redis
 type: Dataplane" | /home/vagrant/kuma/bin/kumactl apply -f -
 
-# start Dataplane
-touch /etc/systemd/system/kuma-dp.service
-cat > /etc/systemd/system/kuma-dp.service <<EOL
-[Service]
-ConditionPathExists=/home/vagrant/kuma/certs/kuma-dp/redis/token
-Environment=KUMA_DATAPLANE_MESH=default
-Environment=KUMA_DATAPLANE_NAME=redis
-Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
-Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/home/vagrant/kuma/certs/kuma-dp/redis/token
-ExecStart=/home/vagrant/kuma/bin/kuma-dp run --admin-port=9901
-EOL
+### Start Dataplane (moved into the README so people can see how to do it)
+# touch /etc/systemd/system/kuma-dp.service
+# cat > /etc/systemd/system/kuma-dp.service <<EOL
+# [Service]
+# ConditionPathExists=/home/vagrant/kuma/certs/kuma-dp/redis/token
+# Environment=KUMA_DATAPLANE_MESH=default
+# Environment=KUMA_DATAPLANE_NAME=redis
+# Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
+# Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/home/vagrant/kuma/certs/kuma-dp/redis/token
+# ExecStart=/home/vagrant/kuma/bin/kuma-dp run --admin-port=9901
+# EOL
 
-systemctl start kuma-dp
-systemctl status kuma-dp
+# systemctl start kuma-dp
+# systemctl status kuma-dp
