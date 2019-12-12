@@ -49,6 +49,9 @@ Vagrant.configure("2") do |config|
       srv.vm.box = box[:box]
       srv.vm.hostname = box[:name]
       srv.vm.network :private_network, ip: box[:ip]
+      if box[:name] == "frontend" 
+        srv.vm.network "forwarded_port", guest: 8080, host: 8080, guest_ip: "127.0.0.1"
+      end
 
       if box[:file]
         srv.vm.provision "file", source: "../#{box[:file]}", destination: "$HOME/#{box[:file]}"
