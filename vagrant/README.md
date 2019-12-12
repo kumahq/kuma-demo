@@ -133,14 +133,14 @@ Mock data updated in Redis and ES!
 
 ### 12. Visit the application via browser:
 
-You can now shop at Kuma's marketplace if you go to http://192.168.33.20:18080. All the traffic between the machines are routed through Kuma's dataplane. But if you click on `[Read Reviews]` for each item, it won't load because we do not have a dataplane set up for that machine.
+You can now shop at Kuma's marketplace if you go to http://192.168.33.20:8080. All the traffic between the machines are routed through Kuma's dataplane. But if you click on `[Read Reviews]` for each item, it won't load because we do not have a dataplane set up for that machine.
 
 ### 13. Access Redis Machine
 
 First, ssh into the Redis machine using the following command:
 
 ```bash
-$ vagrant ssh redis
+$ vagrant ssh redisi thi
 Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-170-generic x86_64)
 ```
 
@@ -213,7 +213,13 @@ default   elastic    service=elastic              Online   35m44s               
 default   redis      service=redis                Online   1m12s                1m12s              6               0
 ```
 
-You can also verify that it is working by accessing the frontend webpage at http://192.168.33.20:18080.
+Hit the upload endpoint one more time so this time Redis will be populated as well:
+```bash
+$ curl -X POST http://192.168.33.30:13001/upload
+Mock data updated in Redis and ES!
+```
+
+You can also verify that it is working by accessing the frontend webpage at http://192.168.33.20:8080.
 
 ### 15. Let's enable mTLS using `kumactl`:
 
@@ -236,11 +242,11 @@ NAME      mTLS
 default   on
 ```
 
-If you try to access the webpage now, it won't work because everything is encrypted.
+If you try to access the [marketplace](http://192.168.33.20:8080), it won't work because everything is encrypted.
 
 ### 16. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
-cat <<EOF | kumactl apply -f -
+$ cat <<EOF | kumactl apply -f -
 type: TrafficPermission
 name: permission-all
 mesh: default
@@ -252,3 +258,53 @@ destinations:
       service: '*'
 EOF
 ```
+
+### 17. Granular control:
+
+Imagine if someone was spamming fake reviews to compromise the integrity of our marketplace. We can easily take down our Redis service by using more granular traffic-permissions.
+
+First, we have to delete the existing permission that allows traffic between all services:
+```
+$ kumactl delete traffic-permission permission-all
+deleted TrafficPermission "permission-all"
+```
+
+Next, apply the two policies below. In the first one,we allow the frontend to communicate with the backend. And in the second one, we allow the backend to communicate with Elasticsearch. By not providing any permissions to Redis, traffic won't be allowed to that service.
+
+```
+$ cat <<EOF | kumactl apply -f - 
+type: TrafficPermission
+name: frontend-to-backend
+mesh: default
+sources:
+  - match:
+      service: 'frontend'
+destinations:
+  - match:
+      service: 'backend'
+EOF
+```
+and
+```
+$ cat <<EOF | kumactl apply -f - 
+type: TrafficPermission
+name: backend-to-elasticsearch
+mesh: default
+sources:
+  - match:
+      service: 'backend'
+destinations:
+  - match:
+      service: 'elastic'
+EOF
+```
+
+Use `kumactl` to check that the policies are in place:
+```
+kumactl get traffic-permissions
+MESH      NAME
+default   frontend-to-backend
+default   backend-to-elasticsearch
+```
+
+And now if we go back to our [marketplace](http://192.168.33.20:8080), everything will work except the reviews.
