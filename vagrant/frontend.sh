@@ -42,28 +42,6 @@ echo "
 192.168.33.10 kuma-cp
 " >> /etc/hosts
 
-mkdir /home/vagrant/.kumactl && touch /home/vagrant/.kumactl/config
-
-echo "
-contexts:
-- controlPlane: local
-  name: local
-- controlPlane: kuma-cp
-  credentials:
-    dataplaneTokenApi: {}
-  name: kuma-cp
-controlPlanes:
-- coordinates:
-    apiServer:
-      url: http://localhost:5681
-  name: local
-- coordinates:
-    apiServer:
-      url: http://kuma-cp:5681
-  name: kuma-cp
-currentContext: kuma-cp
-" >> /home/vagrant/.kumactl/config
-
 # Navigate to new direcotry
 cd /home/vagrant/kuma
 

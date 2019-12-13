@@ -12,7 +12,7 @@ We'll be using Vagrant to deploy our application and demonstrate Kuma's capabili
 $ cd examples/universal/kuma-demo/
 ```
 
-### 3. Deploy Kuma's sample marketplace application in minikube
+### 3. Deploy Kuma's sample marketplace application
 
 You can deploy the sample marketplace application via the Vagrantfile provided in this directory.
 
@@ -140,7 +140,7 @@ You can now shop at Kuma's marketplace if you go to http://192.168.33.20:8080. A
 First, ssh into the Redis machine using the following command:
 
 ```bash
-$ vagrant ssh redisi thi
+$ vagrant ssh redis
 Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-170-generic x86_64)
 ```
 
