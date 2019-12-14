@@ -50,39 +50,40 @@ VM, run `vagrant status NAME`.
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
 ```
-$ wget https://kong.bintray.com/kuma/kuma-0.3.0-darwin-amd64.tar.gz
---2019-11-18 07:46:55--  https://kong.bintray.com/kuma/kuma-0.3.0-darwin-amd64.tar.gz
-Resolving kong.bintray.com (kong.bintray.com)... 52.36.38.54, 54.149.74.157
-Connecting to kong.bintray.com (kong.bintray.com)|52.36.38.54|:443... connected.
+$ wget https://kong.bintray.com/kuma/kuma-0.3.1-darwin-amd64.tar.gz
+--2019-12-14 02:46:22--  https://kong.bintray.com/kuma/kuma-0.3.1-darwin-amd64.tar.gz
+Resolving kong.bintray.com (kong.bintray.com)... 3.124.133.231, 52.29.129.139
+Connecting to kong.bintray.com (kong.bintray.com)|3.124.133.231|:443... connected.
 HTTP request sent, awaiting response... 302
-Location: https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1 [following]
---2019-11-18 07:46:55--  https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1
-Resolving akamai.bintray.com (akamai.bintray.com)... 23.35.181.234
-Connecting to akamai.bintray.com (akamai.bintray.com)|23.35.181.234|:443... connected.
+Location: https://akamai.bintray.com/dc/dc68a6fabafa80119b185e5cf607113777037534e2261c6d12130ce89d41f05f?__gda__=exp=1576292302~hmac=c2980feed263671a9b1df64ab971509dc7c25814b882e01c1e4ae2f6470e61b0&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.1-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX18JO7J1vJsYfKyb7WAyEPygRS-qklLQAEPHO4ZpeosQIh3LDasvWp5jbd4lv4h_RjYbGOK3T0ktZLIvDkYncXBzUxQqAL5visXQjIg1IHfR2IBYxEFmsNNT&response-X-Checksum-Sha1=625e852b137a620980fcddb839ece0856bd06c1f&response-X-Checksum-Sha2=dc68a6fabafa80119b185e5cf607113777037534e2261c6d12130ce89d41f05f [following]
+--2019-12-14 02:46:22--  https://akamai.bintray.com/dc/dc68a6fabafa80119b185e5cf607113777037534e2261c6d12130ce89d41f05f?__gda__=exp=1576292302~hmac=c2980feed263671a9b1df64ab971509dc7c25814b882e01c1e4ae2f6470e61b0&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.1-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX18JO7J1vJsYfKyb7WAyEPygRS-qklLQAEPHO4ZpeosQIh3LDasvWp5jbd4lv4h_RjYbGOK3T0ktZLIvDkYncXBzUxQqAL5visXQjIg1IHfR2IBYxEFmsNNT&response-X-Checksum-Sha1=625e852b137a620980fcddb839ece0856bd06c1f&response-X-Checksum-Sha2=dc68a6fabafa80119b185e5cf607113777037534e2261c6d12130ce89d41f05f
+Resolving akamai.bintray.com (akamai.bintray.com)... 92.122.149.209
+Connecting to akamai.bintray.com (akamai.bintray.com)|92.122.149.209|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 38017379 (36M) [application/gzip]
-Saving to: ‘kuma-0.3.0-darwin-amd64.tar.gz’
+Length: 42443207 (40M) [application/gzip]
+Saving to: ‘kuma-0.3.1-darwin-amd64.tar.gz’
 
-kuma-0.3.0-darwin-amd64.tar.gz            100%[====================================================================================>]  36.26M  5.02MB/s    in 8.0s
+kuma-0.3.1-darwin-amd64.tar.gz                 100%[=================================================================================================>]  40.48M  2.75MB/s    in 19s
 
-2019-11-18 07:47:04 (4.52 MB/s) - ‘kuma-0.3.0-darwin-amd64.tar.gz’ saved [38017379/38017379]
+2019-12-14 02:46:43 (2.09 MB/s) - ‘kuma-0.3.1-darwin-amd64.tar.gz’ saved [42443207/42443207]
 ```
 
 ### 5. Unbundle the files to get the following components:
 
 ```
-$ tar xvzf kuma-0.3.0-darwin-amd64.tar.gz
+$ tar xvzf kuma-0.3.1-darwin-amd64.tar.gz
 x ./
-x ./conf/
-x ./conf/kuma-cp.conf
+x ./LICENSE
+x ./NOTICE
 x ./bin/
-x ./bin/kuma-dp
-x ./bin/envoy
 x ./bin/kuma-tcp-echo
 x ./bin/kumactl
+x ./bin/kuma-dp
+x ./bin/envoy
 x ./bin/kuma-cp
 x ./README
-x ./LICENSE
+x ./conf/
+x ./conf/kuma-cp.conf
 ```
 
 ### 6. Go into the ./bin directory where the kuma components will be:
@@ -128,6 +129,7 @@ default   off
 
 ```bash
 $ curl -X POST http://192.168.33.30:13001/upload
+
 Mock data updated in Redis and ES!
 ```
 

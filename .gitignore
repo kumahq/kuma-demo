@@ -20,9 +20,13 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# vagrant
+# vagrant - ignore sync folder
 /vagrant/*
-!/vagrant/*.sh
+!/vagrant/frontend/
+!/vagrant/backend/
+!/vagrant/elastic/
+!/vagrant/control-plane/
+!/vagrant/redis/
 !/vagrant/README.md
 !Vagrantfile
-*-cloudimg-console.log
+

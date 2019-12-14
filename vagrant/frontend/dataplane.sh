@@ -1,39 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# set env variable
-export VUE_APP_ES_ENDPOINT=
-export VUE_APP_REDIS_ENDPOINT=
-
-# Get latest version of node
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-
-# Install node & build-essential (for make)
-apt-get install -y nodejs build-essential
-
-# Update npm
-npm install npm -g
-
-# Vue CLI
-npm install -g @vue/cli
-
-# Install Forever to run App in background
-npm install forever http-server -g
-
-# Navigate to backend directory
-cd /home/vagrant/app
-
-# Install dependencies
-npm install
-
-# Build application
-npm run build
-
-# Serve application
-forever start -c http-server dist -P http://127.0.0.1:23001
-
-# KUMA-DP
-
-# Add to PATH
+# Add Kuma to PATH to make it easier to use `kumactl`
 export PATH=$PATH:/home/vagrant/kuma/bin
 echo "export PATH=$PATH:/home/vagrant/kuma/bin" >> /home/vagrant/.bashrc
 
@@ -42,15 +9,16 @@ echo "
 192.168.33.10 kuma-cp
 " >> /etc/hosts
 
-# Navigate to new direcotry
+# Navigate to the Kuma direcotry
 cd /home/vagrant/kuma
 
-# Download Kuma
-wget -nv https://kong.bintray.com/kuma/kuma-0.3.0-ubuntu-amd64.tar.gz
+# Download latest version of Kuma for Ubuntu, please check out https://kuma.io/install for more options
+wget -nv https://kong.bintray.com/kuma/kuma-0.3.1-ubuntu-amd64.tar.gz
 
-# Extract the archive
-tar xvzf kuma-0.3.0-ubuntu-amd64.tar.gz
+# Extract the Kuma archive
+tar xvzf kuma-0.3.1-ubuntu-amd64.tar.gz
 
+# Using kumactl which was in the archive, set the virtual machine `kuma-cp` as the main control-plane
 kumactl config control-planes add --name=universal --address=http://kuma-cp:5681 --overwrite
 
 # create Dataplane (update in future)
@@ -64,10 +32,12 @@ networking:
   outbound:
   - interface: :23001
     service: backend
-type: Dataplane" | /home/vagrant/kuma/bin/kumactl apply -f -
+type: Dataplane" | kumactl apply -f -
 
-# start Dataplane
+# Create a service unit file for Kuma's dataplane
 touch /etc/systemd/system/kuma-dp.service
+
+# Add the following configurations to the service file
 cat > /etc/systemd/system/kuma-dp.service <<EOL
 [Service]
 ConditionPathExists=/home/vagrant/kuma/certs/kuma-dp/frontend/token
@@ -78,5 +48,5 @@ Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/home/vagrant/kuma/certs/kuma-dp/f
 ExecStart=/home/vagrant/kuma/bin/kuma-dp run --admin-port=9901
 EOL
 
+# Start the `kuma-dp` service on the local machine
 systemctl start kuma-dp
-systemctl status kuma-dp
