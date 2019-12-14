@@ -32,15 +32,6 @@ boxes = [
       "./backend/bootstrap.sh",
       "./backend/dataplane.sh"
     ]
-  },
-  {
-    name: "elastic",
-    ip: "192.168.33.40",
-    box: "elastic/ubuntu-16.04-x86_64",
-    script: [
-      "./elastic/bootstrap.sh",
-      "./elastic/dataplane.sh"
-    ]
   }
 ]
 
@@ -48,6 +39,7 @@ KUMA_VERSION = "0.3.1"
 KUMA_HOME    = "/opt/kuma"
 
 KUMA_CONTROL_PLANE_IP = "192.168.33.10"
+ELASTIC_IP            = "192.168.33.40"
 REDIS_IP              = "192.168.33.50"
 
 Vagrant.configure("2") do |config|
@@ -75,6 +67,18 @@ Vagrant.configure("2") do |config|
   
     end
 
+  end
+
+  config.vm.define "elastic" do |node|
+    node.vm.box = "elastic/ubuntu-16.04-x86_64"
+    node.vm.hostname = "elastic"
+    node.vm.network :private_network, ip: ELASTIC_IP
+    node.vm.provision "update_etc_hosts", type: "shell", path: "common/update_etc_hosts.sh", env: { "KUMA_CONTROL_PLANE_IP" => KUMA_CONTROL_PLANE_IP }
+    node.vm.provision "install_elastic", type: "shell", path: "elastic/app/install.sh"
+    node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
+    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/elastic/kuma/kuma-dp.service"}
+    node.vm.provision "configure_kumactl", type: "shell", path: "common/configure_kumactl.sh", privileged: false
+    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/elastic/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => ELASTIC_IP}, privileged: false
   end
 
   config.vm.define "redis" do |node|
