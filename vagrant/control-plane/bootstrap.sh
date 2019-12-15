@@ -65,8 +65,8 @@ done
 # Create a dataplane token for each service (each service has its own dataplane)
 mkdir -p /vagrant/.vagrant.data/frontend/var/secrets/kuma.io/kuma-dp/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=frontend > /vagrant/.vagrant.data/frontend/var/secrets/kuma.io/kuma-dp/token
-mkdir -p /home/vagrant/kuma/certs/kuma-dp/backend/
-/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=backend > /home/vagrant/kuma/certs/kuma-dp/backend/token
+mkdir -p /vagrant/.vagrant.data/backend/var/secrets/kuma.io/kuma-dp/
+/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=backend > /vagrant/.vagrant.data/backend/var/secrets/kuma.io/kuma-dp/token
 mkdir -p /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=elastic > /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/token
 mkdir -p /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/
