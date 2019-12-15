@@ -1,0 +1,11 @@
+type: Dataplane
+mesh: default
+name: frontend
+networking:
+  inbound:
+  - interface: {{ DATAPLANE_IP }}:18080:8080
+    tags:
+      service: frontend
+  outbound:
+  - interface: :23001
+    service: backend
