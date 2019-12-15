@@ -14,16 +14,6 @@ boxes = [
     ]
   },
   {
-    name: "frontend",
-    ip: "192.168.33.20",
-    box: "ubuntu/xenial64",
-    file: "app",
-    script: [
-      "./frontend/bootstrap.sh",
-      "./frontend/dataplane.sh"
-    ]
-  },
-  {
     name: "backend",
     ip: "192.168.33.30",
     box: "ubuntu/xenial64",
@@ -39,6 +29,7 @@ KUMA_VERSION = "0.3.1"
 KUMA_HOME    = "/opt/kuma"
 
 KUMA_CONTROL_PLANE_IP = "192.168.33.10"
+FRONTEND_IP           = "192.168.33.20"
 ELASTIC_IP            = "192.168.33.40"
 REDIS_IP              = "192.168.33.50"
 
@@ -67,6 +58,21 @@ Vagrant.configure("2") do |config|
   
     end
 
+  end
+
+  config.vm.define "frontend" do |node|
+    node.vm.synced_folder "../app", "/home/vagrant/kuma-demo/frontend"
+    node.vm.box = "ubuntu/xenial64"
+    node.vm.hostname = "frontend"
+    node.vm.network :private_network, ip: FRONTEND_IP
+    node.vm.provision "update_etc_hosts", type: "shell", path: "common/update_etc_hosts.sh", env: { "KUMA_CONTROL_PLANE_IP" => KUMA_CONTROL_PLANE_IP }
+    #node.vm.provision "mount_frontend", type: "file", source: "../app", destination: "/home/vagrant/kuma-demo/frontend", run: "always"
+    node.vm.provision "install_frontend", type: "shell", path: "frontend/app/install.sh"
+    node.vm.provision "start_frontend", type: "shell", path: "frontend/app/start.sh", privileged: false, run: "always"
+    node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
+    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/frontend/kuma/kuma-dp.service"}
+    node.vm.provision "configure_kumactl", type: "shell", path: "common/configure_kumactl.sh", privileged: false
+    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/frontend/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => FRONTEND_IP}, privileged: false
   end
 
   config.vm.define "elastic" do |node|

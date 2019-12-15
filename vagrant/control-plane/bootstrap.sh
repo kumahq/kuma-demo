@@ -63,8 +63,8 @@ for i in `seq 1 60`; do
 done
 
 # Create a dataplane token for each service (each service has its own dataplane)
-mkdir -p /home/vagrant/kuma/certs/kuma-dp/frontend/
-/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=frontend > /home/vagrant/kuma/certs/kuma-dp/frontend/token
+mkdir -p /vagrant/.vagrant.data/frontend/var/secrets/kuma.io/kuma-dp/
+/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=frontend > /vagrant/.vagrant.data/frontend/var/secrets/kuma.io/kuma-dp/token
 mkdir -p /home/vagrant/kuma/certs/kuma-dp/backend/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=backend > /home/vagrant/kuma/certs/kuma-dp/backend/token
 mkdir -p /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/
