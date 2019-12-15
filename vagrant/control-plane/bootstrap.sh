@@ -67,7 +67,7 @@ mkdir -p /home/vagrant/kuma/certs/kuma-dp/frontend/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=frontend > /home/vagrant/kuma/certs/kuma-dp/frontend/token
 mkdir -p /home/vagrant/kuma/certs/kuma-dp/backend/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=backend > /home/vagrant/kuma/certs/kuma-dp/backend/token
-mkdir -p /home/vagrant/kuma/certs/kuma-dp/elastic/
-/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=elastic > /home/vagrant/kuma/certs/kuma-dp/elastic/token
+mkdir -p /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/
+/home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=elastic > /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/token
 mkdir -p /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/
 /home/vagrant/kuma/bin/kumactl generate dataplane-token --dataplane=redis > /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/token

@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+
+set -e
 
 cat << "EOF"
 oooooooooooo ooooo              .o.        .oooooo..o ooooooooooooo ooooo   .oooooo.   
@@ -11,17 +13,17 @@ o888ooooood8 o888ooooood8 o88o     o8888o 8""88888P'      o888o     o888o  `Y8bo
 EOF
 
 # Get Elasticsearch
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
 #  Update your system with unsupported packages
-sudo add-apt-repository "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
-sudo apt-get update
+add-apt-repository "deb https://artifacts.elastic.co/packages/6.x/apt stable main"
+apt-get update
 
 # Install package into system
-sudo apt-get install elasticsearch
+apt-get install -y elasticsearch
 
 # Enable the Elasticsearch service
-sudo /bin/systemctl enable elasticsearch.service
+systemctl enable elasticsearch.service
 
 # Start the Elasticsearch service
-sudo systemctl start elasticsearch.service
+systemctl start elasticsearch.service

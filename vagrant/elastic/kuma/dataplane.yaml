@@ -1,0 +1,8 @@
+type: Dataplane
+mesh: default
+name: elastic
+networking:
+  inbound:
+  - interface: {{ DATAPLANE_IP }}:19200:9200
+    tags:
+      service: elastic
