@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+
+set -e
 
 cat << "EOF"
 ooooooooo.   oooooooooooo oooooooooo.   ooooo  .oooooo..o 
@@ -18,14 +20,14 @@ apt-get update
 apt-get install -y redis-server
 
 # Create a new version of the redis.conf file
-sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.old
-sudo cat /etc/redis/redis.conf.old | grep -v bind > /etc/redis/redis.conf
+cp /etc/redis/redis.conf /etc/redis/redis.conf.old
+cat /etc/redis/redis.conf.old | grep -v bind > /etc/redis/redis.conf
 
-# Add to config of Redis
+# Configure Redis to listen on localhost only
 echo "bind 127.0.0.1" >> /etc/redis/redis.conf
 
-# Update the redis-server
-sudo update-rc.d redis-server defaults
+# Ensure the `redis-server` service starts whenever the system boots
+systemctl enable redis-server.service
 
-# Star the redis-server
-sudo /etc/init.d/redis-server start
+# Start `redis-server` service right away
+systemctl start redis-server.service

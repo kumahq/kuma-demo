@@ -21,7 +21,9 @@ yarn-error.log*
 *.sw?
 
 # vagrant - ignore sync folder
+.vagrant.data/
 /vagrant/*
+!/vagrant/common/
 !/vagrant/frontend/
 !/vagrant/backend/
 !/vagrant/elastic/
