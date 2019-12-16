@@ -1,5 +1,5 @@
 [Unit]
-Description=Deploy Kuma Control Plane
+Description=Kuma Control Plane
 After=network.target
 Documentation=https://kuma.io
 
