@@ -5,7 +5,8 @@ set -e
 for i in `seq 1 60`; do
     echo "try #$i: "
     if curl --silent --show-error --fail http://localhost:5681 ; then
-        break
+        exit 0
     fi
     sleep 1
 done
+exit 1

@@ -24,7 +24,7 @@ cp ${KUMA_CP_UNIT_FILE} /etc/systemd/system/kuma-cp.service
 # and actual service unit files on disk.
 systemctl daemon-reload
 
-# Ensure the `redis-server` service starts whenever the system boots
+# Ensure the `kuma-cp` service starts whenever the system boots
 systemctl enable kuma-cp
 
 # Start the `kuma-cp` service on the local machine

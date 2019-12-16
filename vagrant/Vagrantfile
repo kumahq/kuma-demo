@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
     node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
     node.vm.provision "create_tls_cert", type: "shell", path: "control-plane/kuma/create_tls_cert.sh"
     node.vm.provision "install_kuma-cp", type: "shell", path: "control-plane/kuma/install_kuma-cp.sh", env: {"KUMA_CP_UNIT_FILE" => "/vagrant/control-plane/kuma/kuma-cp.service"}
-    node.vm.provision "check_kuma-cp.sh", type: "shell", path: "control-plane/kuma/check_kuma-cp.sh", privileged: false
+    node.vm.provision "await_kuma-cp", type: "shell", path: "control-plane/kuma/await_kuma-cp.sh", privileged: false
     node.vm.provision "create_dp_token", type: "shell", path: "control-plane/kuma/create_dp_token.sh", privileged: false
   end
 
