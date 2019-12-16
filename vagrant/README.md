@@ -93,7 +93,7 @@ $ cd bin && ls
 envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 ```
 
-### 8. Setup `kumactl` to point to our control-plane machine
+### 7. Setup `kumactl` to point to our control-plane machine
 
 The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. On Universal you will be able to also make changes via the HTTP API, while on Kubernetes the HTTP API is read-only.
 
@@ -105,7 +105,7 @@ added Control Plane "vagrant"
 switched active Control Plane to "vagrant"
 ```
 
-### 9. You can use `kumactl` to look at the dataplanes in the mesh.
+### 8. You can use `kumactl` to look at the dataplanes in the mesh.
 
 ```
 $ ./kumactl inspect dataplanes
@@ -113,11 +113,12 @@ MESH      NAME       TAGS                         STATUS   LAST CONNECTED AGO   
 default   frontend   service=frontend             Online   3m49s                2m36s              4               0
 default   backend    service=backend version=v0   Online   2m36s                25s                5               0
 default   elastic    service=elastic              Online   1m29s                1m28s              2               0
+default   redis      service=redis                Online   1m01s                1m01s              2               0
 ```
 
-There are only 3 dataplanes. Our script automatically deploys dataplanes along the services in each machine, except for Redis. We will use Redis as a example of how to deploy the dataplane on step [#14](#14.-Dataplane-for-Redis).
+There are 4 dataplanes which correlates with each component of our application.
 
-### 10. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
+### 9. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
 ```
 $ ./kumactl get meshes
@@ -125,7 +126,7 @@ NAME      mTLS
 default   off
 ```
 
-### 11. Upload some mock data into our databases:
+### 10. Upload some mock data into our databases:
 
 ```bash
 $ curl -X POST http://192.168.33.30:13001/upload
@@ -133,97 +134,11 @@ $ curl -X POST http://192.168.33.30:13001/upload
 Mock data updated in Redis and ES!
 ```
 
-### 12. Visit the application via browser:
+### 11. Visit the application via browser:
 
-You can now shop at Kuma's marketplace if you go to http://192.168.33.20:8080. All the traffic between the machines are routed through Kuma's dataplane. But if you click on `[Read Reviews]` for each item, it won't load because we do not have a dataplane set up for that machine.
+You can now shop at Kuma's marketplace if you go to http://192.168.33.20:8080. All the traffic between the machines are routed through Kuma's dataplane.
 
-### 13. Access Redis Machine
-
-First, ssh into the Redis machine using the following command:
-
-```bash
-$ vagrant ssh redis
-Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.4.0-170-generic x86_64)
-```
-
-### 14. Dataplane for Redis
-
-`kumactl` will be installed in this machine. So for our first step, create the dataplane resource for the control-plane to know that this dataplane will exist and where to look for it. Use `kumactl apply` as shown below:
-
-```$ echo "mesh: default
-name: redis
-networking:
-  inbound:
-  - interface: 192.168.33.50:16379:6379
-    tags:
-      service: redis
-type: Dataplane" | kumactl apply -f -
-```
-
-Next thing we need to do is create a service unite file so we can run `kuma-dp` with systemd:
-
-```bash
-$ sudo bash -c 'cat > /etc/systemd/system/kuma-dp.service ' << EOF
-[Service]
-ConditionPathExists=/home/vagrant/kuma/certs/kuma-dp/redis/token
-Environment=KUMA_DATAPLANE_MESH=default
-Environment=KUMA_DATAPLANE_NAME=redis
-Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
-Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/home/vagrant/kuma/certs/kuma-dp/redis/token
-ExecStart=/home/vagrant/kuma/bin/kuma-dp run --admin-port=9901
-EOF
-```
-
-Once we have the service unit file created, use systemctl to start the `kuma-dp` service:
-
-```
-$ sudo systemctl start kuma-dp
-```
-
-and systemctl status command should help us verify that it is up and running correctly:
-
-```
-$ sudo systemctl status kuma-dp
-● kuma-dp.service
-   Loaded: loaded (/etc/systemd/system/kuma-dp.service; static; vendor preset: enabled)
-   Active: active (running) since Thu 2019-12-12 11:27:09 UTC; 12s ago
- Main PID: 2625 (kuma-dp)
-    Tasks: 20
-   Memory: 11.8M
-      CPU: 143ms
-   CGroup: /system.slice/kuma-dp.service
-           ├─2625 /home/vagrant/kuma/bin/kuma-dp run --admin-port=9901
-           └─2636 /home/vagrant/kuma/bin/envoy -c /tmp/kuma-dp-307190745/bootstrap.yaml --drain-time-s 30 --disable-hot-restart
-```
-
-Once that is complete, you can exit out of the machine:
-
-```
-$ exit
-```
-
-### 15. Check Dataplanes
-
-Use `kumactl` to check that the Redis dataplane is up and running in our mesh:
-
-```
-$ kumactl inspect dataplanes
-MESH      NAME       TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
-default   frontend   service=frontend             Online   38m4s                32m7s              11              0
-default   backend    service=backend version=v0   Online   36m51s               9m43s              14              0
-default   elastic    service=elastic              Online   35m44s               32m8s              4               0
-default   redis      service=redis                Online   1m12s                1m12s              6               0
-```
-
-Hit the upload endpoint one more time so this time Redis will be populated as well:
-```bash
-$ curl -X POST http://192.168.33.30:13001/upload
-Mock data updated in Redis and ES!
-```
-
-You can also verify that it is working by accessing the frontend webpage at http://192.168.33.20:8080.
-
-### 15. Let's enable mTLS using `kumactl`:
+### 12. Let's enable mTLS using `kumactl`:
 
 ```
 $ cat <<EOF | kumactl apply -f -
@@ -246,7 +161,7 @@ default   on
 
 If you try to access the [marketplace](http://192.168.33.20:8080), it won't work because everything is encrypted.
 
-### 16. Now let's enable traffic-permission for all services so our application will work like it use to:
+### 13. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
 $ cat <<EOF | kumactl apply -f -
 type: TrafficPermission
@@ -261,7 +176,7 @@ destinations:
 EOF
 ```
 
-### 17. Granular control:
+### 14. Granular control:
 
 Imagine if someone was spamming fake reviews to compromise the integrity of our marketplace. We can easily take down our Redis service by using more granular traffic-permissions.
 
