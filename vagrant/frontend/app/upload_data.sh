@@ -6,7 +6,7 @@ set -e
 for i in `seq 1 60`; do
     echo "try #$i: "
     if curl -X POST --silent --show-error --fail localhost:23001/upload ; then
-        echo "Access Kuma Marketplace at http://192.168.33.20:8080/"
+        echo "Access Kuma Marketplace at http://192.168.33.20:18080/"
         exit 0
     fi
     sleep 1
