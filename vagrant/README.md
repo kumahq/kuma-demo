@@ -6,13 +6,7 @@
 
 We'll be using Vagrant to deploy our application and demonstrate Kuma's capabilities in universal mode. Please follow Vagrant's [installation guide](https://www.vagrantup.com/intro/getting-started/install.html) to have it set up correctly before proceeding on this guide.
 
-### 2. Navigate into the directory where all the kuma-demo YAML files are:
-
-```
-$ cd examples/universal/kuma-demo/
-```
-
-### 3. Deploy Kuma's sample marketplace application
+### 2. Deploy Kuma's sample marketplace application
 
 You can deploy the sample marketplace application via the Vagrantfile provided in this directory.
 
@@ -45,7 +39,7 @@ above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
 ```
 
-### 4. Download the latest version of Kuma
+### 3. Download the latest version of Kuma
 
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
@@ -68,7 +62,7 @@ kuma-0.3.1-darwin-amd64.tar.gz                 100%[============================
 2019-12-14 02:46:43 (2.09 MB/s) - ‘kuma-0.3.1-darwin-amd64.tar.gz’ saved [42443207/42443207]
 ```
 
-### 5. Unbundle the files to get the following components:
+### 4. Unbundle the files to get the following components:
 
 ```
 $ tar xvzf kuma-0.3.1-darwin-amd64.tar.gz
@@ -86,14 +80,14 @@ x ./conf/
 x ./conf/kuma-cp.conf
 ```
 
-### 6. Go into the ./bin directory where the kuma components will be:
+### 5. Go into the ./bin directory where the kuma components will be:
 
 ```
 $ cd bin && ls
 envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 ```
 
-### 7. Setup `kumactl` to point to our control-plane machine
+### 6. Setup `kumactl` to point to our control-plane machine
 
 The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. On Universal you will be able to also make changes via the HTTP API, while on Kubernetes the HTTP API is read-only.
 
@@ -105,7 +99,7 @@ added Control Plane "vagrant"
 switched active Control Plane to "vagrant"
 ```
 
-### 8. You can use `kumactl` to look at the dataplanes in the mesh.
+### 7. You can use `kumactl` to look at the dataplanes in the mesh.
 
 ```
 $ ./kumactl inspect dataplanes
@@ -118,7 +112,7 @@ default   redis      service=redis                Online   1m01s                
 
 There are 4 dataplanes which correlates with each component of our application.
 
-### 9. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
+### 8. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
 ```
 $ ./kumactl get meshes
@@ -126,19 +120,11 @@ NAME      mTLS
 default   off
 ```
 
-### 10. Upload some mock data into our databases:
-
-```bash
-$ curl -X POST http://192.168.33.30:13001/upload
-
-Mock data updated in Redis and ES!
-```
-
-### 11. Visit the application via browser:
+### 9. Visit the application via browser:
 
 You can now shop at Kuma's marketplace if you go to http://192.168.33.20:8080. All the traffic between the machines are routed through Kuma's dataplane.
 
-### 12. Let's enable mTLS using `kumactl`:
+### 10. Let's enable mTLS using `kumactl`:
 
 ```
 $ cat <<EOF | kumactl apply -f -
@@ -161,7 +147,7 @@ default   on
 
 If you try to access the [marketplace](http://192.168.33.20:8080), it won't work because everything is encrypted.
 
-### 13. Now let's enable traffic-permission for all services so our application will work like it use to:
+### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
 $ cat <<EOF | kumactl apply -f -
 type: TrafficPermission
@@ -176,7 +162,7 @@ destinations:
 EOF
 ```
 
-### 14. Granular control:
+### 12. Granular control:
 
 Imagine if someone was spamming fake reviews to compromise the integrity of our marketplace. We can easily take down our Redis service by using more granular traffic-permissions.
 

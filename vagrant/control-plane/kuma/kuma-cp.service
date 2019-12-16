@@ -1,5 +1,5 @@
 [Unit]
-Description=Kuma Control Plane
+Description=Kuma Control Plane in Universal mode
 After=network.target
 Documentation=https://kuma.io
 
