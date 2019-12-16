@@ -12,12 +12,7 @@ oooo    oooo ooooo     ooo ooo        ooooo       .o.                 .oooooo.  
 o888o  o888o    `YbodP'    o8o        o888o o88o     o8888o          `Y8bood8P'  o888o        
 EOF
 
-if [ -z "${KUMA_CP_UNIT_FILE}" ]; then
-  echo "Error: environment variable KUMA_CP_UNIT_FILE is not set"
-  exit 1
-fi
-
-cp ${KUMA_CP_UNIT_FILE} /etc/systemd/system/kuma-cp.service
+cp /vagrant/control-plane/kuma/kuma-cp.service /etc/systemd/system/kuma-cp.service
 
 # Always run the `systemctl daemon-reload` command after creating new unit files or modifying existing unit files.
 # Otherwise, the `systemctl start` or `systemctl enable` commands could fail due to a mismatch between states of systemd
