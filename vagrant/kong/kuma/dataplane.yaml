@@ -1,0 +1,10 @@
+type: Dataplane
+mesh: default
+name: kong
+networking:
+  gateway:
+    tags:
+      service: kong
+  outbound:
+  - interface: :28080
+    service: frontend 
