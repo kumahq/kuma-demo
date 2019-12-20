@@ -120,9 +120,15 @@ NAME      mTLS
 default   off
 ```
 
-### 9. Visit the application via browser:
+### 9. Port-forward our application:
 
-You can now shop at Kuma's marketplace if you go to http://192.168.33.20:18080. All the traffic between the machines are routed through Kuma's dataplane.
+To shop at Kuma's marketplace, you first need to port-forward the `frontend` machine. Run:
+
+```
+$ vagrant ssh frontend -- -L 127.0.0.1:8080:127.0.0.1:8080
+```
+
+Now you can access the application if you go to http://localhost:8080. All the traffic between the machines are routed through Kuma's dataplane.
 
 ### 10. Let's enable mTLS using `kumactl`:
 
@@ -145,7 +151,7 @@ NAME      mTLS
 default   on
 ```
 
-If you try to access the marketplace via http://192.168.33.20:18080, it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via http://localhost:8080, it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
 
 ### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
@@ -212,4 +218,4 @@ default   frontend-to-backend
 default   backend-to-elasticsearch
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.20:18080), everything will work except the reviews.
+And now if we go back to our [marketplace](http://localhost:8080), everything will work except the reviews.
