@@ -1,47 +1,37 @@
 # Universal Deployment Guide
 
+In directory, you will find the necessary files and instruction to get Kuma up and running in universal mode via Vagrant. 
+
+When running in Universal mode, there is two ways to store Kuma's state: in-memory or PostgreSQL. The first option stores all the state in-memory. This means that restarting Kuma will delete all the data. Only recommend when playing with Kuma locally. We will be using this option for the following demo. The second option is to utilize a PostgreSQL database to store its state. The PostgreSQL database and schema will have to be initialized accordingly to the installation instructions. 
+
+## Summary
+
+- [🛠 Setup Environment](#Setup-Environment)
+  - [💻 Vagrant Setup](#1.-Vagrant-Setup)
+  - [🐻 Kuma Setup](#2.-Kuma-Setup)
+- [🚀 Launch Marketplace Application](#Launch-Marketplace-Application)
+
+
 ## Setup Environment
+
+Before we deploy our sample application and improve it with Kuma, we need two dependencies on our local machine for this universal deployment guide.
 
 ### 1. Vagrant Setup
 
 We'll be using Vagrant to deploy our application and demonstrate Kuma's capabilities in universal mode. Please follow Vagrant's [installation guide](https://www.vagrantup.com/intro/getting-started/install.html) to have it set up correctly before proceeding on this guide.
 
-### 2. Deploy Kuma's sample marketplace application
+### 2. Kuma Setup
 
-You can deploy the sample marketplace application via the Vagrantfile provided in this directory.
+The second thing we need to setup on our local machine is Kuma's `kumactl`. The `kumactl` executable is a very important component in your journey with Kuma. It allows to:
 
-```
-$ vagrant up
-```
+* Retrieve the state of Kuma and the configured policies in every environment.
+* On Universal environments, it allows to change the state of Kuma by applying new policies with the kumactl apply [..] command.
+* On Kubernetes it is read-only, because you are supposed to change the state of Kuma by leveraging Kuma's CRDs.
+* It provides helpers to install Kuma on Kubernetes, and to configure the PostgreSQL schema on Universal (kumactl install [..]).
 
-This will deploy our demo marketplace application and Kuma split across multiple machines:
+#### 2a. Download the latest version of Kuma
 
-1. The first machine hosts the Kuma control plane.
-2. The second machine will host our frontend application that allows you to visually interact with the marketplace
-3. The third machine will host our backend application that handles the logic of our application
-4. The fourth machine will host the Elasticsearch service that stores all the items in our marketplace
-5. The fifth machine will host Redis service that stores reviews for each item
-
-To check if the machines are up and running after the `vagrant up` command, use `vagrant status`:
-
-```
-$ vagrant status
-Current machine states:
-
-kuma-cp                   running (virtualbox)
-frontend                  running (virtualbox)
-backend                   running (virtualbox)
-elastic                   running (virtualbox)
-redis                     running (virtualbox)
-
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
-```
-
-### 3. Download the latest version of Kuma
-
-The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
+The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install). `kumactl` is bundled in the Kuma package. 
 
 ```
 $ wget https://kong.bintray.com/kuma/kuma-0.3.1-darwin-amd64.tar.gz
@@ -62,7 +52,7 @@ kuma-0.3.1-darwin-amd64.tar.gz                 100%[============================
 2019-12-14 02:46:43 (2.09 MB/s) - ‘kuma-0.3.1-darwin-amd64.tar.gz’ saved [42443207/42443207]
 ```
 
-### 4. Unbundle the files to get the following components:
+#### 2b. Unbundle the files to get the following components:
 
 ```
 $ tar xvzf kuma-0.3.1-darwin-amd64.tar.gz
@@ -80,18 +70,16 @@ x ./conf/
 x ./conf/kuma-cp.conf
 ```
 
-### 5. Go into the ./bin directory where the kuma components will be:
+#### 2c. Go into the ./bin directory where the kuma components will be:
 
 ```
 $ cd bin && ls
 envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 ```
 
-### 6. Setup `kumactl` to point to our control-plane machine
+#### 2d. Setup `kumactl` to point to our control-plane machine
 
-The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. On Universal you will be able to also make changes via the HTTP API, while on Kubernetes the HTTP API is read-only.
-
-You can configure `kumactl` to point to any remote kuma-cp instance. Configure your local `kumactl` to point to our Vagrant machine by running:
+The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. You can configure `kumactl` to point to any remote kuma-cp instance. Configure your local `kumactl` to point to our Vagrant machine by running:
 
 ```
 $ ./kumactl config control-planes add --name=vagrant --address=http://192.168.33.10:5681
@@ -99,123 +87,20 @@ added Control Plane "vagrant"
 switched active Control Plane to "vagrant"
 ```
 
-### 7. You can use `kumactl` to look at the dataplanes in the mesh.
-
+#### 2e. [Optional] Add `kumactl` bin directory to PATH
+If you want to call `kumactl` from other directories, just add this bin directory to your PATH:
 ```
-$ ./kumactl inspect dataplanes
-MESH      NAME       TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
-default   frontend   service=frontend             Online   3m49s                2m36s              4               0
-default   backend    service=backend version=v0   Online   2m36s                25s                5               0
-default   elastic    service=elastic              Online   1m29s                1m28s              2               0
-default   redis      service=redis                Online   1m01s                1m01s              2               0
+export PATH=$PATH:$(pwd)
 ```
 
-There are 4 dataplanes which correlates with each component of our application.
+## Launch Marketplace Application
 
-### 8. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
+We built out a marketplace application to help illustrate how Kuma would work in a real-world example. The marketplace application has a ton of items for sale and reviews left by previous shoppers. Here is a sample diagram of how the application would work. The frontend would hit a backend API. And that backend API would query either Elasticsearch for items or Redis for reviews.
 
-```
-$ ./kumactl get meshes
-NAME      mTLS
-default   off
-```
+![Marketplace Application](https://2tjosk2rxzc21medji3nfn1g-wpengine.netdna-ssl.com/wp-content/uploads/2019/11/diagram-12.jpg "Kuma Marketplace")
 
-### 9. Port-forward our application:
+Since each component of the application will be in its own virtual machine, we offer a lightweight deployment that will only use the backend and Redis component of the application. This means you will ***NOT*** be able to visualize the application via the GUI and see the items for sale. If your machine has sufficient resources, we recommend sticking with the full application since it will illustrate Kuma's potential better.
 
-To shop at Kuma's marketplace, you first need to port-forward the `frontend` machine. Run:
+### Full Application
 
-```
-$ vagrant ssh frontend -- -L 127.0.0.1:8080:127.0.0.1:8080
-```
-
-Now you can access the application if you go to http://localhost:8080. All the traffic between the machines are routed through Kuma's dataplane.
-
-### 10. Let's enable mTLS using `kumactl`:
-
-```
-$ cat <<EOF | kumactl apply -f -
-type: Mesh
-name: default
-mtls:
-  enabled: true
-  ca:
-    builtin: {}
-EOF
-```
-
-Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
-
-```
-$ ./kumactl get meshes
-NAME      mTLS
-default   on
-```
-
-If you try to access the marketplace via http://localhost:8080, it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
-
-### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
-```
-$ cat <<EOF | kumactl apply -f -
-type: TrafficPermission
-name: permission-all
-mesh: default
-sources:
-  - match:
-      service: '*'
-destinations:
-  - match:
-      service: '*'
-EOF
-```
-
-And now if we go back to our [marketplace](http://192.168.33.20:18080), everything will work since we allow all services to send traffic to one another.
-
-### 12. Granular control:
-
-Imagine if someone was spamming fake reviews to compromise the integrity of our marketplace. We can easily take down our Redis service by using more granular traffic-permissions.
-
-First, we have to delete the existing permission that allows traffic between all services:
-```
-$ kumactl delete traffic-permission permission-all
-deleted TrafficPermission "permission-all"
-```
-
-Next, apply the two policies below. In the first one,we allow the frontend to communicate with the backend. And in the second one, we allow the backend to communicate with Elasticsearch. By not providing any permissions to Redis, traffic won't be allowed to that service.
-
-```
-$ cat <<EOF | kumactl apply -f - 
-type: TrafficPermission
-name: frontend-to-backend
-mesh: default
-sources:
-  - match:
-      service: 'frontend'
-destinations:
-  - match:
-      service: 'backend'
-EOF
-```
-and
-```
-$ cat <<EOF | kumactl apply -f - 
-type: TrafficPermission
-name: backend-to-elasticsearch
-mesh: default
-sources:
-  - match:
-      service: 'backend'
-destinations:
-  - match:
-      service: 'elastic'
-EOF
-```
-
-Use `kumactl` to check that the policies are in place:
-```
-kumactl get traffic-permissions
-MESH      NAME
-default   frontend-to-backend
-default   backend-to-elasticsearch
-```
-
-And now if we go back to our [marketplace](http://localhost:8080), everything will work except the reviews.
+### Lite Application
