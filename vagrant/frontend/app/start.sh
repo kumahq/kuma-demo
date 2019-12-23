@@ -9,4 +9,4 @@ export VUE_APP_REDIS_ENDPOINT=
 cd /home/vagrant/kuma-demo/frontend
 
 # Serve the application on localhost 
-forever start -c http-server dist -P http://127.0.0.1:23001
+forever start -c http-server dist -a 127.0.0.1 -p 8080 -P http://127.0.0.1:23001
