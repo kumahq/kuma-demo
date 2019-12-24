@@ -19,3 +19,16 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# vagrant - ignore sync folder
+.vagrant.data/
+/vagrant/*
+!/vagrant/common/
+!/vagrant/frontend/
+!/vagrant/backend/
+!/vagrant/elastic/
+!/vagrant/control-plane/
+!/vagrant/redis/
+!/vagrant/README.md
+!Vagrantfile
+
