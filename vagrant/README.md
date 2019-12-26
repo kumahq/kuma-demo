@@ -1,22 +1,24 @@
 # Universal Deployment Guide
 
-In directory, you will find the necessary files and instruction to get Kuma up and running in universal mode via Vagrant. 
+In this repository, you will find the necessary files and instruction to get Kuma up and running in universal mode via Vagrant. 
 
-When running in Universal mode, there is two ways to store Kuma's state: in-memory or PostgreSQL. The first option stores all the state in-memory. This means that restarting Kuma will delete all the data. Only recommend when playing with Kuma locally. We will be using this option for the following demo. The second option is to utilize a PostgreSQL database to store its state. The PostgreSQL database and schema will have to be initialized accordingly to the installation instructions. 
+When running in universal mode, there are two ways to store Kuma's state: in-memory or PostgreSQL. The first option stores all the state in-memory. This means that all data will be deleted on restart. This mode is only recommended for use when running locally. The second option is to utilize a PostgreSQL database to store state.The PostgreSQL database and schema will have to be initialized according to the installation instructions.
+
+For the purposes of this demo we will use in-memory.
 
 ### 1. Vagrant Setup
 
-We'll be using Vagrant to deploy our application and demonstrate Kuma's capabilities in universal mode. Please follow Vagrant's [installation guide](https://www.vagrantup.com/intro/getting-started/install.html) to have it set up correctly before proceeding on this guide.
+We'll be using Vagrant to deploy our application and demonstrate Kuma's capabilities in universal mode. Please follow Vagrant's [installation guide](https://www.vagrantup.com/intro/getting-started/install.html) to have it set up correctly before proceeding.
 
-### 2. Deploy Kuma's sample marketplace application
+### 2. Run Kuma's sample marketplace application
 
-You can deploy the sample marketplace application via the Vagrantfile provided in this directory.
+Run the following command to run the sample marketplace application via the Vagrantfile provided in this repository:
 
 ```
 $ vagrant up
 ```
 
-This will deploy our demo marketplace application and Kuma split across multiple machines:
+This will start our demo marketplace application and Kuma split across multiple machines:
 
 1. The first machine hosts the Kuma control plane.
 2. The second machine will host our frontend application that allows you to visually interact with the marketplace
@@ -91,7 +93,7 @@ envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 
 ### 6. Setup `kumactl` to point to our control-plane machine
 
-The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. On Universal you will be able to also make changes via the HTTP API, while on Kubernetes the HTTP API is read-only.
+The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. In universal mode you will be able to also make changes via the HTTP API, while in Kubernetes mode the HTTP API is read-only.
 
 You can configure `kumactl` to point to any remote kuma-cp instance. Configure your local `kumactl` to point to our Vagrant machine by running:
 
@@ -130,7 +132,7 @@ To shop at Kuma's marketplace, you first need to port-forward the `frontend` mac
 $ vagrant ssh frontend -- -L 127.0.0.1:8080:127.0.0.1:8080
 ```
 
-Now you can access the application if you go to http://localhost:8080. All the traffic between the machines are routed through Kuma's dataplane.
+Now you can access the application if you go to [http://localhost:8080](http://localhost:8080). All the traffic between the machines are routed through Kuma's dataplane.
 
 ### 10. Let's enable mTLS using `kumactl`:
 
@@ -153,7 +155,7 @@ NAME      mTLS
 default   on
 ```
 
-If you try to access the marketplace via http://localhost:8080, it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via [http://localhost:8080](http://localhost:8080), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
 
 ### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
