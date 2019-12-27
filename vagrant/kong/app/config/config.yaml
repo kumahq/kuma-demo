@@ -16,7 +16,7 @@ _format_version: "1.1"
 
 services:
 - name: frontend
-  url: http://localhost:3001
+  url: http://localhost:28080
   routes:
   - name: frontent-root-route
     paths:
