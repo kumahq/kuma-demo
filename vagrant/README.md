@@ -25,6 +25,7 @@ This will start our demo marketplace application and Kuma split across multiple 
 3. The third machine will host our backend application that handles the logic of our application
 4. The fourth machine will host the Elasticsearch service that stores all the items in our marketplace
 5. The fifth machine will host Redis service that stores reviews for each item
+6. The sixth machine will be the Kong Gateway acting as an ingress to your mesh
 
 To check if the machines are up and running after the `vagrant up` command, use `vagrant status`:
 
@@ -32,11 +33,12 @@ To check if the machines are up and running after the `vagrant up` command, use 
 $ vagrant status
 Current machine states:
 
-kuma-cp                   running (virtualbox)
-frontend                  running (virtualbox)
-backend                   running (virtualbox)
-elastic                   running (virtualbox)
+kuma-control-plane        running (virtualbox)
 redis                     running (virtualbox)
+elastic                   running (virtualbox)
+backend                   running (virtualbox)
+frontend                  running (virtualbox)
+kong                      running (virtualbox)
 
 This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
@@ -108,13 +110,14 @@ switched active Control Plane to "vagrant"
 ```
 $ ./kumactl inspect dataplanes
 MESH      NAME       TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
-default   frontend   service=frontend             Online   3m49s                2m36s              4               0
-default   backend    service=backend version=v0   Online   2m36s                25s                5               0
-default   elastic    service=elastic              Online   1m29s                1m28s              2               0
-default   redis      service=redis                Online   1m01s                1m01s              2               0
+default   redis      service=redis                Online   9m34s                9m33s              2               0
+default   elastic    service=elastic              Online   7m34s                7m33s              2               0
+default   backend    service=backend version=v0   Online   6m3s                 6m2s               3               0
+default   frontend   service=frontend             Online   2m46s                2m44s              3               0
+default   kong       service=kong                 Online   53s                  52s                3               0
 ```
 
-There are 4 dataplanes which correlates with each component of our application.
+There are 5 dataplanes which correlates with each component of our application.
 
 ### 8. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
@@ -124,15 +127,9 @@ NAME      mTLS
 default   off
 ```
 
-### 9. Port-forward our application:
+### 9. View our application:
 
-To shop at Kuma's marketplace, you first need to port-forward the `frontend` machine. Run:
-
-```
-$ vagrant ssh frontend -- -L 127.0.0.1:8080:127.0.0.1:8080
-```
-
-Now you can access the application if you go to [http://localhost:8080](http://localhost:8080). All the traffic between the machines are routed through Kuma's dataplane.
+To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.60:8000/](http://192.168.33.60:8000/). All the traffic between the machines are routed through Kuma's dataplane.
 
 ### 10. Let's enable mTLS using `kumactl`:
 
@@ -155,7 +152,7 @@ NAME      mTLS
 default   on
 ```
 
-If you try to access the marketplace via [http://localhost:8080](http://localhost:8080), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via [http://192.168.33.60:8000](http://192.168.33.60:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
 
 ### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
@@ -172,7 +169,7 @@ destinations:
 EOF
 ```
 
-And now if we go back to our [marketplace](http://localhost:8080), everything will work since we allow all services to send traffic to one another.
+And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work since we allow all services to send traffic to one another.
 
 ### 12. Granular control:
 
@@ -222,4 +219,4 @@ default   frontend-to-backend
 default   backend-to-elasticsearch
 ```
 
-And now if we go back to our [marketplace](http://localhost:8080), everything will work except the reviews.
+And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work except the reviews.
