@@ -1,0 +1,14 @@
+type: Dataplane
+mesh: default
+name: backend-v1
+networking:
+  inbound:
+  - interface: {{ DATAPLANE_IP }}:13001:3001
+    tags:
+      service: backend
+      version: v1
+  outbound:
+  - interface: :26379
+    service: redis
+  - interface: :29200
+    service: elastic
