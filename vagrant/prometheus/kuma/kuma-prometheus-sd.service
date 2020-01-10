@@ -1,0 +1,19 @@
+[Unit]
+Description=Prometheus SD deployed next to the "prometheus" to integrate with Kuma.
+After=network.target
+Documentation=https://kuma.io
+
+[Service]
+Environment=KUMA_MONITORING_ASSIGNMENT_CLIENT_NAME=prometheus
+Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
+Environment=KUMA_PROMETHEUS_OUTPUT_FILE=/var/run/kuma.io/kuma-prometheus-sd/kuma.file_sd.json
+ExecStart=/opt/kuma/bin/kuma-prometheus-sd run
+Restart=always
+RestartSec=1s
+# disable rate limiting on start attempts
+StartLimitIntervalSec=0
+StartLimitBurst=0
+User=prometheus
+
+[Install]
+WantedBy=multi-user.target
