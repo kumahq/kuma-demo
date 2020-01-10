@@ -129,7 +129,7 @@ default   off
 
 ### 9. View our application:
 
-To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.60:8000/](http://192.168.33.60:8000/). All the traffic between the machines are routed through Kuma's dataplane.
+To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.70:8000](http://192.168.33.70:8000). All the traffic between the machines are routed through Kuma's dataplane.
 
 ### 10. Let's enable mTLS using `kumactl`:
 
@@ -152,7 +152,7 @@ NAME      mTLS
 default   on
 ```
 
-If you try to access the marketplace via [http://192.168.33.60:8000](http://192.168.33.60:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
 
 ### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
@@ -169,7 +169,7 @@ destinations:
 EOF
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work since we allow all services to send traffic to one another.
+And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work since we allow all services to send traffic to one another.
 
 ### 12. Granular control:
 
@@ -219,4 +219,4 @@ default   frontend-to-backend
 default   backend-to-elasticsearch
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work except the reviews.
+And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews.
