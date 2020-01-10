@@ -90,9 +90,9 @@ Vagrant.configure("2") do |config|
     node.vm.provision "start_backend", type: "shell", path: "backend-v1/app/start.sh", privileged: false, run: "always"
     node.vm.provision "await_backend", type: "shell", path: "common/await_service.sh", env: {"SERVICE_URL" => "http://localhost:3001"}, privileged: false, run: "always"
     node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
-    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/backend/kuma/kuma-dp.service"}
+    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/backend-v1/kuma/kuma-dp.service"}
     node.vm.provision "configure_kumactl", type: "shell", path: "common/configure_kumactl.sh", privileged: false
-    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/backend/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => BACKEND_V1_IP}, privileged: false, run: "always"
+    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/backend-v1/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => BACKEND_V1_IP}, privileged: false, run: "always"
     node.vm.provision "await_kuma-dp", type: "shell", path: "common/await_service.sh", env: {"SERVICE_URL" => "http://localhost:9901/ready"}, privileged: false, run: "always"
   end
 
@@ -106,9 +106,9 @@ Vagrant.configure("2") do |config|
     node.vm.provision "start_backend", type: "shell", path: "backend-v2/app/start.sh", privileged: false, run: "always"
     node.vm.provision "await_backend", type: "shell", path: "common/await_service.sh", env: {"SERVICE_URL" => "http://localhost:3001"}, privileged: false, run: "always"
     node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
-    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/backend/kuma/kuma-dp.service"}
+    node.vm.provision "install_kuma-dp", type: "shell", path: "common/install_kuma-dp.sh", env: {"KUMA_DP_UNIT_FILE" => "/vagrant/backend-v2/kuma/kuma-dp.service"}
     node.vm.provision "configure_kumactl", type: "shell", path: "common/configure_kumactl.sh", privileged: false
-    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/backend/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => BACKEND_V2_IP}, privileged: false, run: "always"
+    node.vm.provision "register_dataplane", type: "shell", path: "common/register_dataplane.sh", env: {"KUMA_DATAPLANE_FILE" => "/vagrant/backend-v2/kuma/dataplane.yaml", "KUMA_DATAPLANE_IP" => BACKEND_V2_IP}, privileged: false, run: "always"
     node.vm.provision "await_kuma-dp", type: "shell", path: "common/await_service.sh", env: {"SERVICE_URL" => "http://localhost:9901/ready"}, privileged: false, run: "always"
   end
 
