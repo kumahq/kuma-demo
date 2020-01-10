@@ -30,6 +30,7 @@ yarn-error.log*
 !/vagrant/control-plane/
 !/vagrant/redis/
 !/vagrant/prometheus
+!/vagrant/kong/
 !/vagrant/README.md
 !Vagrantfile
 

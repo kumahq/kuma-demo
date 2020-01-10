@@ -19,3 +19,7 @@ kumactl generate dataplane-token --dataplane=elastic > /vagrant/.vagrant.data/el
 # Redis
 mkdir -p /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/
 kumactl generate dataplane-token --dataplane=redis > /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/token
+
+# Kong
+mkdir -p /vagrant/.vagrant.data/kong/var/secrets/kuma.io/kuma-dp/
+kumactl generate dataplane-token --dataplane=kong > /vagrant/.vagrant.data/kong/var/secrets/kuma.io/kuma-dp/token
