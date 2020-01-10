@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus Time Series Collection and Processing Server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yaml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+
+[Install]
+WantedBy=multi-user.target
