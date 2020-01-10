@@ -3,8 +3,8 @@
 set -e
 
 # Create directory and set proper permissions for generated files by kuma-prometheus-sd
-mkdir -p /tmp/kuma.io/kuma-prometheus-sd/
-chown prometheus:prometheus /tmp/kuma.io/kuma-prometheus-sd/
+mkdir -p /var/run/kuma.io/kuma-prometheus-sd/
+chown prometheus:prometheus /var/run/kuma.io/kuma-prometheus-sd/
 
 cp /vagrant/prometheus/kuma/kuma-prometheus-sd.service /etc/systemd/system/kuma-prometheus-sd.service
 

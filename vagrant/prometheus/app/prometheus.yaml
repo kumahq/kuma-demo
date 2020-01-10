@@ -4,4 +4,4 @@ scrape_configs:
   file_sd_configs:
   - refresh_interval: 1s
     files:
-    - /tmp/kuma.io/kuma-prometheus-sd/kuma.file_sd.json
+    - /var/run/kuma.io/kuma-prometheus-sd/kuma.file_sd.json
