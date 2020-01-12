@@ -318,6 +318,8 @@ spec:
       env: prod
   template:
     metadata:
+      annotations:
+        ingress.kubernetes.io/service-upstream: "true"
       labels:
         app: kuma-demo-frontend
         version: v8
