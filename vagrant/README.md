@@ -220,3 +220,59 @@ default   backend-to-elasticsearch
 ```
 
 And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews.
+
+### 13. If we wanted to enable the Redis service again in the future, just add an additional traffic-permission back like this:
+```
+$ cat <<EOF | kumactl apply -f - 
+type: TrafficPermission
+name: backend-to-elasticsearch
+mesh: default
+sources:
+  - match:
+      service: 'backend'
+destinations:
+  - match:
+      service: 'redis'
+EOF
+```
+
+### 14. Adding traffic routing to our service mesh. 
+
+Earlier when we ran `vagrant up`, we deployed two versions of the backend application: `backend` and `backend-v1`. The original `backend` service is a normal marketplace, and the `backend-v1` is a marketplace with sales and special offers. You can ch
+
+```           
+                               ----> backend-v0  :  service=backend, version=v0
+                             /
+(browser) -> Kong -> frontend  
+                             \
+                               ----> backend-v1  :  service=backend, version=v1
+``` 
+
+### 15. Traffic routing to limit amount of special offers on Kuma marketplace:
+To avoid going broke, let's limit the amount of special offers that appear on our marketplace. To do so, apply this TrafficRoute policy:
+
+```bash
+$ cat <<EOF | kumactl apply -f -
+type: TrafficRoute
+name: frontend-to-backend
+mesh: default
+sources:
+- match:
+    service: frontend
+destinations:
+- match:
+    service: backend
+conf:
+# it is NOT a percentage. just a positive weight
+- weight: 80
+  destination:
+    service: backend
+    version: v0
+# we're NOT checking if total of all weights is 100  
+- weight: 20
+  destination:
+    service: backend
+    version: v1
+EOF
+```
+And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 20% of the requests will land you on the `backend-v1` service and place the first item on sale.
