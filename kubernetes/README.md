@@ -16,13 +16,7 @@ $ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-dem
 🏄  Done! kubectl is now configured to use "kuma-demo"
 ```
 
-### 2. Navigate into the directory where all the kuma-demo YAML files are:
-
-```
-$ cd examples/kubernetes/kuma-demo/
-```
-
-### 3. Deploy Kuma's sample marketplace application in minikube
+### 2. Deploy Kuma's sample marketplace application in minikube
 You can deploy the sample marketplace application via the [bit.ly](http://bit.ly/kuma101) link as shown below or via the `kuma-demo-aio.yaml` file in this directory.
 ```
 $ kubectl apply -f http://bit.ly/kuma101
@@ -60,7 +54,7 @@ redis-master-5b5978b77f-pmhnz           1/1     Running   0          32s
 
 In the following steps, we will be using the pod name of the `kuma-demo-app-*************` pod. Please replace any `${KUMA_DEMO_APP_POD_NAME}` variables with your pod name.
 
-### 4. Port-forward the sample application to access the front-end UI at http://localhost:8080
+### 3. Port-forward the sample application to access the front-end UI at http://localhost:8080
 
 <pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080:80
 Forwarding from 127.0.0.1:8080 -> 80
@@ -72,7 +66,7 @@ Now you can access the marketplace application through your web browser at http:
 The items on the front page are pulled from the Elasticsearch service. While the reviews for each item sit within the Redis service. You can query for individual items and look at their reviews.
 
 
-### 5. Download the latest version of Kuma
+### 4. Download the latest version of Kuma
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
 ```
@@ -94,7 +88,7 @@ kuma-0.3.0-darwin-amd64.tar.gz            100%[=================================
 2019-11-18 07:47:04 (4.52 MB/s) - ‘kuma-0.3.0-darwin-amd64.tar.gz’ saved [38017379/38017379]
 ```
 
-### 6. Unbundle the files to get the following components:
+### 5. Unbundle the files to get the following components:
 
 ```
 $ tar xvzf kuma-0.3.0-darwin-amd64.tar.gz
@@ -111,14 +105,14 @@ x ./README
 x ./LICENSE
 ```
 
-### 7. Go into the ./bin directory where the kuma components will be:
+### 6. Go into the ./bin directory where the kuma components will be:
 
 ```
 $ cd bin && ls
 envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 ```
 
-### 8. Install the control plane using `kumactl`
+### 7. Install the control plane using `kumactl`
 
 ```
 $ ./kumactl install control-plane | kubectl apply -f -
@@ -160,7 +154,7 @@ kuma-injector-9c96cddc8-745r7         1/1     Running   0          70s
 
 In the following steps, we will be using the pod name of the `kuma-control-plane-*************` pod. Please replace any `${KUMA_CP_POD_NAME}` with your pod name.
 
-### 9. Delete the existing kuma-demo pods so they restart:
+### 8. Delete the existing kuma-demo pods so they restart:
 
 ```
 $ kubectl delete pods --all -n kuma-demo
@@ -181,7 +175,7 @@ kuma-demo-backend-v0-7dcb8dc8fd-7ttjm   2/2     Running   0          37s
 redis-master-5b5978b77f-hwjvd           2/2     Running   0          37s
 ```
 
-### 10. Port-forward the sample application again to access the front-end UI at http://localhost:8080
+### 9. Port-forward the sample application again to access the front-end UI at http://localhost:8080
 
 <pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080:80
 Forwarding from 127.0.0.1:8080 -> 80
@@ -190,16 +184,16 @@ Forwarding from [::1]:8080 -> 80
 
 Now you can access the marketplace application through your web browser at http://localhost:8080 with Envoy handling all the traffic between the services. Happy shopping!
 
-### 11.  Now we will port forward the kuma-control-plane so we can access it with `kumactl`
+### 10.  Now we will port forward the kuma-control-plane so we can access it with `kumactl`
 
-<pre><code>$ kubectl -n kuma-system port-forward <b>${KUMA_CP_POD_NAME}</b> 5681
+<pre><code>$ kubectl -n kuma-system port-forward <b>${KUMA_CP_POD_NAME}</b> 5681 
 Forwarding from 127.0.0.1:5681 -> 5681
 Forwarding from [::1]:5681 -> 5681
 </code></pre>
 
 Please refer to step 7 to copy the correct `${KUMA_CP_POD_NAME}`.
 
-### 12.  Now configure `kumactl` to point towards the control plane address
+### 11.  Now configure `kumactl` to point towards the control plane address
 
 ```
 $ ./kumactl config control-planes add --name=minikube --address=http://localhost:5681
@@ -207,7 +201,7 @@ added Control Plane "minikube"
 switched active Control Plane to "minikube"
 ```
 
-### 13. You can use `kumactl` to look at the dataplanes in the mesh. You should see three dataplanes that correlates with our pods in Kubernetes:
+### 12. You can use `kumactl` to look at the dataplanes in the mesh. You should see three dataplanes that correlates with our pods in Kubernetes:
 
 ```
 $ ./kumactl inspect dataplanes
@@ -218,7 +212,7 @@ default   kuma-demo-app-7bb5d85c8c-5sqxl          app=kuma-demo-frontend pod-tem
 default   kuma-demo-backend-v0-7dcb8dc8fd-7ttjm   app=kuma-demo-backend pod-template-hash=7dcb8dc8fd service=backend.kuma-demo.svc:3001 version=v0   Online   1m47s                1m46s              3               0
 ```
 
-### 14. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
+### 13. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
 ```
 $ ./kumactl get meshes
@@ -226,7 +220,7 @@ NAME      mTLS
 default   off
 ```
 
-### 15.  Let's enable mTLS.
+### 14.  Let's enable mTLS.
 
 ```
 $ cat <<EOF | kubectl apply -f - 
@@ -251,7 +245,7 @@ NAME      mTLS
 default   on
 ```
 
-### 16.  Now let's enable traffic-permission for all services so our application will work like it use to:
+### 15.  Now let's enable traffic-permission for all services so our application will work like it use to:
 
 ```
 $ cat <<EOF | kubectl apply -f - 
@@ -280,7 +274,7 @@ default   everything
 
 Now that we have traffic permission that allows any source to talk to any destination, our application should work like it use to. 
 
-### 17. Deploy the logstash service.
+### 16. Deploy the logstash service.
 You can deploy the logtash service via the [bit.ly](http://bit.ly/logkuma) link as shown below or via the `kuma-demo-log.yaml` file in this directory.
 ```
 $ kubectl apply -f http://bit.ly/logkuma
@@ -290,7 +284,7 @@ configmap/logstash-config created
 deployment.apps/logstash created
 ```
 
-### 18. Let's add logging for traffic between all services and send them to logstash: 
+### 17. Let's add logging for traffic between all services and send them to logstash: 
 ```
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
@@ -337,7 +331,7 @@ EOF
 ```
 Logs will be sent to https://kumademo.loggly.com/
 
-### 19. Now let's take down our Redis service because someone is spamming fake reviews. We can easily accomplish that by changing our traffic-permissions:
+### 18. Now let's take down our Redis service because someone is spamming fake reviews. We can easily accomplish that by changing our traffic-permissions:
 
 ```
 $ kubectl delete trafficpermission -n kuma-demo --all
@@ -377,7 +371,7 @@ EOF
 
 This traffic-permission will only allow traffic from the kuma-demo-api service to the Elasticsearch service. Now try to access the reviews on each item. They will not load because of the traffic-permissions you described in the the policy above.
 
-### 19.5. If we wanted to enable the Redis service again in the future, just change the traffic-permission back like this:
+### 19. If we wanted to enable the Redis service again in the future, just change the traffic-permission back like this:
 ```
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
@@ -727,3 +721,7 @@ You can visit the [Prometheus dashboard](http://localhost:9090/) to query the me
 
 This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 ![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
+
+### 30. Visualize mesh with Kuma GUI
+
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
