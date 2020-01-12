@@ -123,8 +123,8 @@ There are 5 dataplanes which correlates with each component of our application.
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   off
+NAME      mTLS   CA        METRICS
+default   off    builtin   off
 ```
 
 ### 9. View our application:
@@ -148,8 +148,8 @@ Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   on
+NAME      mTLS   CA        METRICS
+default   on     builtin   off
 ```
 
 If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
@@ -276,3 +276,35 @@ conf:
 EOF
 ```
 And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 20% of the requests will land you on the `backend-v1` service and place the first item on sale.
+
+### 16. Let's enable Prometheus using `kumactl`:
+
+```
+$ cat <<EOF | kumactl apply -f -
+type: Mesh
+name: default
+mtls:
+  enabled: true
+  ca:
+    builtin: {}
+metrics:
+  prometheus: {}
+EOF
+```
+You can check that Prometheus is turned on by checking the `default` mesh:
+```
+$ kumactl get meshes
+NAME      mTLS   CA        METRICS
+default   on     builtin   prometheus
+```
+
+### 17. Query metrics on Prometheus dashboard
+
+You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found.
+
+This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
+![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
+
+### 18. Visualize mesh with Kuma GUI
+
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
