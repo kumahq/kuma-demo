@@ -70,28 +70,28 @@ The items on the front page are pulled from the Elasticsearch service. While the
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
 ```
-$ wget https://kong.bintray.com/kuma/kuma-0.3.0-darwin-amd64.tar.gz
---2019-11-18 07:46:55--  https://kong.bintray.com/kuma/kuma-0.3.0-darwin-amd64.tar.gz
+$ wget https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
+--2019-11-18 07:46:55--  https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
 Resolving kong.bintray.com (kong.bintray.com)... 52.36.38.54, 54.149.74.157
 Connecting to kong.bintray.com (kong.bintray.com)|52.36.38.54|:443... connected.
 HTTP request sent, awaiting response... 302 
-Location: https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1 [following]
---2019-11-18 07:46:55--  https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1
+Location: https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1 [following]
+--2019-11-18 07:46:55--  https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1
 Resolving akamai.bintray.com (akamai.bintray.com)... 23.35.181.234
 Connecting to akamai.bintray.com (akamai.bintray.com)|23.35.181.234|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38017379 (36M) [application/gzip]
-Saving to: ‘kuma-0.3.0-darwin-amd64.tar.gz’
+Saving to: ‘kuma-0.3.2-darwin-amd64.tar.gz’
 
-kuma-0.3.0-darwin-amd64.tar.gz            100%[====================================================================================>]  36.26M  5.02MB/s    in 8.0s    
+kuma-0.3.2-darwin-amd64.tar.gz            100%[====================================================================================>]  36.26M  5.02MB/s    in 8.0s    
 
-2019-11-18 07:47:04 (4.52 MB/s) - ‘kuma-0.3.0-darwin-amd64.tar.gz’ saved [38017379/38017379]
+2019-11-18 07:47:04 (4.52 MB/s) - ‘kuma-0.3.2-darwin-amd64.tar.gz’ saved [38017379/38017379]
 ```
 
 ### 5. Unbundle the files to get the following components:
 
 ```
-$ tar xvzf kuma-0.3.0-darwin-amd64.tar.gz
+$ tar xvzf kuma-0.3.2-darwin-amd64.tar.gz
 x ./
 x ./conf/
 x ./conf/kuma-cp.conf
@@ -186,9 +186,11 @@ Now you can access the marketplace application through your web browser at http:
 
 ### 10.  Now we will port forward the kuma-control-plane so we can access it with `kumactl`
 
-<pre><code>$ kubectl -n kuma-system port-forward <b>${KUMA_CP_POD_NAME}</b> 5681 
+<pre><code>$ kubectl -n kuma-system port-forward <b>${KUMA_CP_POD_NAME}</b> 5681 5683
 Forwarding from 127.0.0.1:5681 -> 5681
 Forwarding from [::1]:5681 -> 5681
+Forwarding from 127.0.0.1:5683 -> 5683
+Forwarding from [::1]:5683 -> 5683
 </code></pre>
 
 Please refer to step 7 to copy the correct `${KUMA_CP_POD_NAME}`.
@@ -724,4 +726,4 @@ This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 
 ### 30. Visualize mesh with Kuma GUI
 
-Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane pod. We port-forwarded this port [earlier](#10-now-we-will-port-forward-the-kuma-control-plane-so-we-can-access-it-with-kumactl) so now we can access the GUI at [http://localhost:5683/](http://localhost:5683/).
