@@ -297,6 +297,8 @@ kind: Service
 metadata:
   name: frontend
   namespace: kuma-demo
+  annotations:
+    ingress.kubernetes.io/service-upstream: "true"
 spec:
   selector:
     app: kuma-demo-frontend
@@ -318,8 +320,6 @@ spec:
       env: prod
   template:
     metadata:
-      annotations:
-        ingress.kubernetes.io/service-upstream: "true"
       labels:
         app: kuma-demo-frontend
         version: v8

@@ -750,7 +750,20 @@ service/kong-validation-webhook created
 deployment.apps/ingress-kong created
 ```
 
-On Kubernetes, `Dataplane` entities are automatically generated. To inject gateway Dataplane, the API Gateway's Pod needs to have the `kuma.io/gateway: enabled` annotation. Our `kuma-demo-kong.yaml` already includes this annotataion so you don't need to do this manually.
+On Kubernetes, `Dataplane` entities are automatically generated. To inject gateway Dataplane, the API Gateway's Pod needs to have the following `kuma.io/gateway: enabled` annotation:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-kong
+  ...
+spec:
+  template:
+    metadata:
+      annotations:
+        kuma.io/gateway: enabled
+```
+ Our `kuma-demo-kong.yaml` already includes this annotataion so you don't need to do this manually.
 
 After Kong is deployed, export the proxy IP:
 ```
@@ -767,7 +780,7 @@ http://192.168.64.29:30409
 
 Create an Ingress rule to proxy to the marketplace frontend service:
 
-```
+```bash
 echo "
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -790,8 +803,15 @@ By default, Kong Ingress Controller distributes traffic amongst all the Pods of 
 However, in some use-cases, the load-balancing should be left up to kube-proxy, or a sidecar component in the case of Service Mesh deployments. We want the load-balancing to be left to Kuma so the following annotation has been included in our `kuma-demo-aio.yaml` frontend service resource:
 
 ```yaml
-annotations:
-  ingress.kubernetes.io/service-upstream: "true"
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: kuma-demo
+  annotations:
+    ingress.kubernetes.io/service-upstream: "true"
+spec:
+  ...
 ```
 
 Remember to add this annotation to the appropriate services when you deploy Kong with Kuma.
