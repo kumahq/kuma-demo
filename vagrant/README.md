@@ -182,7 +182,20 @@ deleted TrafficPermission "permission-all"
 ```
 
 Next, apply the two policies below. In the first one,we allow the frontend to communicate with the backend. And in the second one, we allow the backend to communicate with Elasticsearch. By not providing any permissions to Redis, traffic won't be allowed to that service.
-
+```
+$ cat <<EOF | kumactl apply -f - 
+type: TrafficPermission
+name: kong-to-frontend
+mesh: default
+sources:
+  - match:
+      service: 'kong'
+destinations:
+  - match:
+      service: 'frontend'
+EOF
+```
+and
 ```
 $ cat <<EOF | kumactl apply -f - 
 type: TrafficPermission
@@ -213,10 +226,11 @@ EOF
 
 Use `kumactl` to check that the policies are in place:
 ```
-kumactl get traffic-permissions
+$ kumactl get traffic-permissions
 MESH      NAME
 default   frontend-to-backend
 default   backend-to-elasticsearch
+default   kong-to-frontend
 ```
 
 And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews.
