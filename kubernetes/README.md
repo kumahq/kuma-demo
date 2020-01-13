@@ -4,7 +4,7 @@
 
 ### 1. Start a Kubernetes cluster with at least 4GB of memory. We've tested Kuma on Kubernetes v1.13.0 - v1.16.x, so use anything older than v1.13.0 with caution. In this demo, we'll be using v1.15.4. 
 
-```
+```bash
 $ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-demo
 😄  [kuma-demo] minikube v1.5.2 on Darwin 10.15.1
 ✨  Automatically selected the 'hyperkit' driver (alternates: [virtualbox])
@@ -17,9 +17,9 @@ $ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-dem
 ```
 
 ### 2. Deploy Kuma's sample marketplace application in minikube
-You can deploy the sample marketplace application via the [bit.ly](http://bit.ly/kuma101) link as shown below or via the `kuma-demo-aio.yaml` file in this directory.
-```
-$ kubectl apply -f http://bit.ly/kuma101
+You can deploy the sample marketplace application using the `kuma-demo-aio.yaml` file in this directory.
+```bash
+$ kubectl apply -f kuma-demo-aio.yaml
 namespace/kuma-demo created
 serviceaccount/elasticsearch created
 service/elasticsearch created
@@ -43,7 +43,7 @@ This will deploy our demo marketplace application split across multiple pods:
 
 Check the pods are up and running by checking the `kuma-demo` namespace
 
-```
+```bash
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-v6g88                                1/1     Running   0          32s
@@ -69,7 +69,7 @@ The items on the front page are pulled from the Elasticsearch service. While the
 ### 4. Download the latest version of Kuma
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
-```
+```bash
 $ wget https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
 --2020-01-13 11:56:39--  https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
 Resolving kong.bintray.com (kong.bintray.com)... 52.41.227.164, 34.214.70.158
@@ -90,7 +90,7 @@ kuma-0.3.2-darwin-amd64.tar.gz      100%[=======================================
 
 ### 5. Unbundle the files to get the following components:
 
-```
+```bash
 $ tar xvzf kuma-0.3.2-darwin-amd64.tar.gz
 x ./
 x ./README
@@ -110,14 +110,14 @@ x ./conf/kuma-cp.conf
 
 ### 6. Go into the ./bin directory where the kuma components will be:
 
-```
+```bash
 $ cd bin && ls
 envoy			kuma-cp			kuma-dp			kuma-prometheus-sd	kuma-tcp-echo		kumactl
 ```
 
 ### 7. Install the control plane using `kumactl`
 
-```
+```bash
 $ ./kumactl install control-plane | kubectl apply -f -
 namespace/kuma-system created
 secret/kuma-sds-tls-cert created
@@ -152,7 +152,7 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/kuma-validating-webh
 
 You can check the pods are up and running by checking the `kuma-system` namespace
 
-```
+```bash
 $ kubectl get pods -n kuma-system
 NAME                                  READY   STATUS    RESTARTS   AGE
 kuma-control-plane-7bcc56c869-lzw9t   1/1     Running   0          70s
@@ -163,7 +163,7 @@ In the following steps, we will be using the pod name of the `kuma-control-plane
 
 ### 8. Delete the existing kuma-demo pods so they restart:
 
-```
+```bash
 $ kubectl delete pods --all -n kuma-demo
 pod "es-v6g88" deleted
 pod "kuma-demo-app-7bb5d85c8c-8kl2z" deleted
@@ -173,7 +173,7 @@ pod "redis-master-5b5978b77f-pmhnz" deleted
 
 And check the pods are up and running again with an additional container. The additional container is the Envoy sidecar proxy that Kuma is injecting into each pod.
 
-```
+```bash
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-5snv2                                2/2     Running   0          37s
@@ -204,7 +204,7 @@ Please refer to step 7 to copy the correct `${KUMA_CP_POD_NAME}`.
 
 ### 11.  Now configure `kumactl` to point towards the control plane address
 
-```
+```bash
 $ ./kumactl config control-planes add --name=minikube --address=http://localhost:5681
 added Control Plane "minikube"
 switched active Control Plane to "minikube"
@@ -212,7 +212,7 @@ switched active Control Plane to "minikube"
 
 ### 12. You can use `kumactl` to look at the dataplanes in the mesh. You should see three dataplanes that correlates with our pods in Kubernetes:
 
-```
+```bash
 $ ./kumactl inspect dataplanes
 MESH      NAME                                    TAGS                                                                                               STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
 default   redis-master-5b5978b77f-hwjvd           app=redis pod-template-hash=5b5978b77f role=master service=redis.kuma-demo.svc:6379 tier=backend   Online   2m7s                 2m3s               8               0
@@ -223,7 +223,7 @@ default   kuma-demo-backend-v0-7dcb8dc8fd-7ttjm   app=kuma-demo-backend pod-temp
 
 ### 13. You can also use `kumactl` to look at the mesh. As shown below, our default mesh does not have mTLS enabled.
 
-```
+```bash
 $ ./kumactl get meshes
 NAME      mTLS   CA        METRICS
 default   off    builtin   off
@@ -231,7 +231,7 @@ default   off    builtin   off
 
 ### 14.  Let's enable mTLS.
 
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: Mesh
@@ -247,7 +247,7 @@ EOF
 
 Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
 
-```
+```bash
 $ ./kumactl get meshes
 NAME      mTLS   CA        METRICS
 default   on     builtin   off
@@ -255,7 +255,7 @@ default   on     builtin   off
 
 ### 15.  Now let's enable traffic-permission for all services so our application will work like it use to:
 
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -274,7 +274,7 @@ EOF
 ```
 
 Using `kumactl`, you can check the traffic permissions like this:
-```
+```bash
 $ ./kumactl get traffic-permissions
 MESH      NAME
 default   everything
@@ -284,7 +284,7 @@ Now that we have traffic permission that allows any source to talk to any destin
 
 ### 16. Deploy the logstash service.
 You can deploy the logtash service via the [bit.ly](http://bit.ly/logkuma) link as shown below or via the `kuma-demo-log.yaml` file in this directory.
-```
+```bash
 $ kubectl apply -f http://bit.ly/logkuma
 namespace/logging created
 service/logstash created
@@ -293,7 +293,7 @@ deployment.apps/logstash created
 ```
 
 ### 17. Let's add logging for traffic between all services and send them to logstash: 
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: Mesh
@@ -340,11 +340,11 @@ Logs will be sent to https://kumademo.loggly.com/
 
 ### 18. Now let's take down our Redis service because someone is spamming fake reviews. We can easily accomplish that by changing our traffic-permissions:
 
-```
+```bash
 $ kubectl delete trafficpermission -n kuma-demo --all
 ```
 
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -379,7 +379,7 @@ EOF
 This traffic-permission will only allow traffic from the kuma-demo-api service to the Elasticsearch service. Now try to access the reviews on each item. They will not load because of the traffic-permissions you described in the the policy above.
 
 ### 19. If we wanted to enable the Redis service again in the future, just change the traffic-permission back like this:
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -398,16 +398,16 @@ EOF
 ```
 
 ### 20. Let's explore adding traffic routing to our service mesh. But before we do, we need to scale up the v1 and v2 deployment of our sample application:
-```
+```bash
 $ kubectl scale deployment kuma-demo-backend-v1 -n kuma-demo --replicas=1
 deployment.extensions/kuma-demo-backend-v1 scaled
 ```
-```
+```bash
 $ kubectl scale deployment kuma-demo-backend-v2 -n kuma-demo --replicas=1
 deployment.extensions/kuma-demo-backend-v2 scaled
 ```
 and check all the pods are running like this:
-```
+```bash
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-v6t5t                                2/2     Running   0          5h56m
@@ -427,11 +427,11 @@ redis-master-b688d4f4-jjvvt             2/2     Running   0          5h56m
 ```
 
 ### 21. Define a handy alias that will can help show the power of Kuma's traffic routing:
-```
+```bash
 $ alias benchmark='echo "NUM_REQ NUM_SPECIAL_OFFERS"; kubectl -n kuma-demo exec $( kubectl -n kuma-demo get pods -l app=kuma-demo-frontend -o=jsonpath="{.items[0].metadata.name}" ) -c kuma-fe -- sh -c '"'"'for i in `seq 1 100`; do curl -s http://backend:3001/items?q | jq -c ".[] | select(._source.specialOffer == true)" | wc -l ; done | sort | uniq -c | sort -k2n'"'"''
 ```
 This alias will help send 100 request from `front-end` to `backend` and count the number of special offers in the response. Then it will group the request by the number of special offers. Here is an example of the output before we start configuring our traffic-routing.
-```
+```bash
 $ benchmark
 NUM_REQ    NUM_SPECIAL_OFFERS
 34         0
@@ -485,7 +485,7 @@ NUM_REQ    NUM_SPECIAL_OFFERS
 ```
 And clean the traffic route before we try more things:
 ```bash
-kubectl delete trafficroute -n kuma-demo --all
+$ ubectl delete trafficroute -n kuma-demo --all
 ```
 
 ### 23. Resolving Collisions - Identical Selectors
@@ -516,7 +516,7 @@ EOF
 and 
 
 ```bash
-cat <<EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: kuma.io/v1alpha1
 kind: TrafficRoute
 metadata:
@@ -547,7 +547,7 @@ NUM_REQ    NUM_SPECIAL_OFFERS
 Due to ordering by name, the `TrafficRoute` with the name of `route-1` takes priority and all the traffic is routed to our `v2` application with 2 special offers.
 Let's clean the traffic route before we try more things:
 ```bash
-kubectl delete trafficroute -n kuma-demo --all
+$ kubectl delete trafficroute -n kuma-demo --all
 ```
 
 ### 24. Resolving Collisions - Extra Tags
@@ -555,7 +555,7 @@ kubectl delete trafficroute -n kuma-demo --all
 In the scenario where one route has more tag, what would happen? Apply these two routes and find out:
 
 ```bash
-cat <<EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: kuma.io/v1alpha1
 kind: TrafficRoute
 metadata:
@@ -578,7 +578,7 @@ EOF
 ```
 and
 ```bash
-cat <<EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: kuma.io/v1alpha1
 kind: TrafficRoute
 metadata:
@@ -608,27 +608,24 @@ NUM_REQ    NUM_SPECIAL_OFFERS
 ```
 Once again, our `route-2` traffic routing policy triumphs. In the scenario where one route has more tags, Kuma will prioritize that route.
 
-
-
-
 ### 25. Deploying Prometheus on Kubernetes
 
 You can utilize Prometheus to scrape metrics from Kuma mesh. But before we can do so, first we need to deploy Prometheus in our Kubernetes environment. This demo will be using [Helm](https://helm.sh/) to do so. First, you need to add a chart repository. One popular starting location is the official Helm stable charts:
 
-```
+```bash
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 "stable" has been added to your repositories
 ```
 
 To install the Prometheus chart, you can run the helm install command. First, update the chart repositories and then install the Prometheus chart.
-```
+```bash
 $ helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "stable" chart repository
 Update Complete. ⎈ Happy Helming!⎈
 ```
 And
-```
+```bash
 $ helm install kuma-prometheus stable/prometheus
 NAME: kuma-prometheus
 LAST DEPLOYED: Wed Jan  8 21:40:22 2020
@@ -673,7 +670,7 @@ For more information on running Prometheus, visit:
 https://prometheus.io/
 ```
 Lastly, get pods in your `default` namespace ot check that Prometheus has been deployed successfully.
-```
+```bash
 $ kubectl get pods -n default
 NAME                                                  READY   STATUS    RESTARTS   AGE
 kuma-prometheus-alertmanager-567646f954-xc8lq         2/2     Running   0          2m9s
@@ -685,7 +682,7 @@ kuma-prometheus-server-66fdb4cc9d-qt44v               2/2     Running   0       
 
 ### 26. Enable Prometheus metrics on the `mesh` object
 
-```
+```bash
 $ cat <<EOF | kubectl apply -f - 
 apiVersion: kuma.io/v1alpha1
 kind: Mesh
@@ -703,7 +700,7 @@ EOF
 
 ### 27. Delete all existing pods in `kuma-demo` so it restarts
 
-```
+```bash
 $ kubectl delete pods --all -n kuma-demo
 pod "es-wjhz4" deleted
 pod "kuma-demo-app-7f799bbfdf-724w9" deleted
@@ -735,7 +732,7 @@ Kuma ships with an internal GUI that will help you visualize the mesh and its po
 
 The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Use the `kuma-demo-kong.yaml` file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
 
-```
+```bash
 $ kubectl apply -f kuma-demo-kong.yaml
 customresourcedefinition.apiextensions.k8s.io/kongconsumers.configuration.konghq.com created
 customresourcedefinition.apiextensions.k8s.io/kongcredentials.configuration.konghq.com created
@@ -766,12 +763,12 @@ spec:
  Our `kuma-demo-kong.yaml` already includes this annotataion so you don't need to do this manually.
 
 After Kong is deployed, export the proxy IP:
-```
+```bash
 export PROXY_IP=$(minikube service -p kuma-demo -n kuma-demo kong-proxy --url | head -1)
 ```
 
 And lastly to check that the proxy IP has been exported, run:
-```
+```bash
 $ echo $PROXY_IP
 http://192.168.64.29:30409
 ```
@@ -781,7 +778,7 @@ http://192.168.64.29:30409
 Create an Ingress rule to proxy to the marketplace frontend service:
 
 ```bash
-echo "
+$ cat <<EOF | kubectl apply -f - 
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -795,7 +792,7 @@ spec:
         backend:
           serviceName: frontend
           servicePort: 80
-" | kubectl apply -f -
+EOF
 ```
 
 By default, Kong Ingress Controller distributes traffic amongst all the Pods of a Kubernetes Service by forwarding the requests directly to Pod IP addresses. One can choose the load-balancing strategy to use by specifying a KongIngress resource.
@@ -816,6 +813,25 @@ spec:
 
 Remember to add this annotation to the appropriate services when you deploy Kong with Kuma.
 
-### 33. Access the marketplace through Kong
+### 33. Add traffic permission for Kong to the frontend service:
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  namespace: kuma-demo
+  name: kong-to-frontend
+spec:
+  sources:
+  - match:
+      service: kong-proxy.kuma-demo.svc:80
+  destinations:
+  - match:
+      service: frontend.kuma-demo.svc:80
+EOF
+```
+
+### 34. Access the marketplace through Kong
 
 Now if we visit the `$PROXY_IP`, you will land in the same marketplace application we deployed earlier.
