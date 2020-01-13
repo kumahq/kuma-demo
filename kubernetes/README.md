@@ -727,3 +727,59 @@ This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 ### 30. Visualize mesh with Kuma GUI
 
 Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane pod. We port-forwarded this port [earlier](#10-now-we-will-port-forward-the-kuma-control-plane-so-we-can-access-it-with-kumactl) so now we can access the GUI at [http://localhost:5683/](http://localhost:5683/).
+
+### 31. Kong Gateway Integration 
+
+The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). When you use a Dataplane with a service, both inbound traffic to a service and outbound traffic from the service flows through the Dataplane. This API Gateway should be deployed as any other service within the mesh. Use the `kuma-demo-kong.yaml` file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
+
+```
+$ kubectl apply -f kuma-demo-kong.yaml
+customresourcedefinition.apiextensions.k8s.io/kongconsumers.configuration.konghq.com created
+customresourcedefinition.apiextensions.k8s.io/kongcredentials.configuration.konghq.com created
+customresourcedefinition.apiextensions.k8s.io/kongingresses.configuration.konghq.com created
+customresourcedefinition.apiextensions.k8s.io/kongplugins.configuration.konghq.com created
+serviceaccount/kong-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/kong-ingress-clusterrole created
+clusterrolebinding.rbac.authorization.k8s.io/kong-ingress-clusterrole-nisa-binding created
+configmap/kong-server-blocks created
+service/kong-proxy created
+service/kong-validation-webhook created
+deployment.apps/ingress-kong created
+```
+
+After it is deployed, export the proxy IP:
+```
+export PROXY_IP=$(minikube service -p kuma-demo -n kuma-demo kong-proxy --url | head -1)
+```
+
+And lastly to check that the proxy IP has been exported, run:
+```
+$ echo $PROXY_IP
+http://192.168.64.29:30409
+```
+
+### 32. Add ingress rules for Kong for Kubernetes
+
+Create an Ingress rule to proxy the marketplace created previously:
+
+```
+echo "
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: marketplace
+  namespace: kuma-demo
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: frontend
+          servicePort: 80
+" | kubectl apply -f -
+```
+
+### 33. Access the marketplace through Kong
+
+Now if we visit the `$PROXY_IP`, you will land in the same marketplace application we deployed earlier.
