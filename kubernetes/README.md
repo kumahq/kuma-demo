@@ -71,21 +71,21 @@ The following command will download the Mac compatible version of Kuma. To find 
 
 ```
 $ wget https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
---2019-11-18 07:46:55--  https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
-Resolving kong.bintray.com (kong.bintray.com)... 52.36.38.54, 54.149.74.157
-Connecting to kong.bintray.com (kong.bintray.com)|52.36.38.54|:443... connected.
-HTTP request sent, awaiting response... 302 
-Location: https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1 [following]
---2019-11-18 07:46:55--  https://akamai.bintray.com/3a/3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1?__gda__=exp=1574092735~hmac=69b07d97c61a32e3f09e9072f740b3472f86bf663a84f3a808142bcf7541da72&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-wOkJsEzHavzEbyKAyRNRIaEgd96BSSg_Fa7UU3OhI_p-1NSKjEepZrhEAl7IRPiU5LqI6KDH4rX7QxYihgWtBtGY2rlIY51TCbTYnklZZvXx4xQo-mDE2&response-X-Checksum-Sha1=6df196169311c66a544eccfdd73931b6f3b83593&response-X-Checksum-Sha2=3afc187b8e3daa912648fcbe16f0aa9c2eb90b4b0df4f0a5d47d74ae426371b1
-Resolving akamai.bintray.com (akamai.bintray.com)... 23.35.181.234
-Connecting to akamai.bintray.com (akamai.bintray.com)|23.35.181.234|:443... connected.
+--2020-01-13 11:56:39--  https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
+Resolving kong.bintray.com (kong.bintray.com)... 52.41.227.164, 34.214.70.158
+Connecting to kong.bintray.com (kong.bintray.com)|52.41.227.164|:443... connected.
+HTTP request sent, awaiting response... 302
+Location: https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f [following]
+--2020-01-13 11:56:40--  https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f
+Resolving akamai.bintray.com (akamai.bintray.com)... 173.222.181.233
+Connecting to akamai.bintray.com (akamai.bintray.com)|173.222.181.233|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 38017379 (36M) [application/gzip]
+Length: 48354601 (46M) [application/gzip]
 Saving to: ‘kuma-0.3.2-darwin-amd64.tar.gz’
 
-kuma-0.3.2-darwin-amd64.tar.gz            100%[====================================================================================>]  36.26M  5.02MB/s    in 8.0s    
+kuma-0.3.2-darwin-amd64.tar.gz      100%[===================================================================>]  46.11M  5.36MB/s    in 9.3s
 
-2019-11-18 07:47:04 (4.52 MB/s) - ‘kuma-0.3.2-darwin-amd64.tar.gz’ saved [38017379/38017379]
+2020-01-13 11:56:50 (4.96 MB/s) - ‘kuma-0.3.2-darwin-amd64.tar.gz’ saved [48354601/48354601]
 ```
 
 ### 5. Unbundle the files to get the following components:
@@ -93,23 +93,26 @@ kuma-0.3.2-darwin-amd64.tar.gz            100%[=================================
 ```
 $ tar xvzf kuma-0.3.2-darwin-amd64.tar.gz
 x ./
+x ./README
+x ./bin/
+x ./bin/kuma-cp
+x ./bin/envoyl
+x ./bin/kumactl
+x ./bin/kuma-prometheus-sds
+x ./bin/kuma-tcp-echo
+x ./bin/kuma-dp
+x ./NOTICE
+x ./LICENSE
+x ./NOTICE-kuma-init
 x ./conf/
 x ./conf/kuma-cp.conf
-x ./bin/
-x ./bin/kuma-dp
-x ./bin/envoy
-x ./bin/kuma-tcp-echo
-x ./bin/kumactl
-x ./bin/kuma-cp
-x ./README
-x ./LICENSE
 ```
 
 ### 6. Go into the ./bin directory where the kuma components will be:
 
 ```
 $ cd bin && ls
-envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
+envoy			kuma-cp			kuma-dp			kuma-prometheus-sd	kuma-tcp-echo		kumactl
 ```
 
 ### 7. Install the control plane using `kumactl`
@@ -117,30 +120,34 @@ envoy   kuma-cp   kuma-dp   kuma-tcp-echo   kumactl
 ```
 $ ./kumactl install control-plane | kubectl apply -f -
 namespace/kuma-system created
+secret/kuma-sds-tls-cert created
 secret/kuma-admission-server-tls-cert created
 secret/kuma-injector-tls-cert created
-secret/kuma-sds-tls-cert created
 configmap/kuma-control-plane-config created
 configmap/kuma-injector-config created
+serviceaccount/kuma-injector created
 serviceaccount/kuma-control-plane created
-customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/dataplanes.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/meshes.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/proxytemplates.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/trafficlogs.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io configured
-customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io configured
-clusterrole.rbac.authorization.k8s.io/kuma:control-plane unchanged
-clusterrolebinding.rbac.authorization.k8s.io/kuma:control-plane unchanged
+customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/dataplanes.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/healthchecks.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/meshes.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/proxytemplates.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/trafficlogs.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io created
+clusterrole.rbac.authorization.k8s.io/kuma:control-plane created
+clusterrole.rbac.authorization.k8s.io/kuma:injector created
+clusterrolebinding.rbac.authorization.k8s.io/kuma:control-plane created
+clusterrolebinding.rbac.authorization.k8s.io/kuma:injector created
 role.rbac.authorization.k8s.io/kuma:control-plane created
 rolebinding.rbac.authorization.k8s.io/kuma:control-plane created
 service/kuma-injector created
 service/kuma-control-plane created
 deployment.apps/kuma-control-plane created
 deployment.apps/kuma-injector created
-mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-admission-mutating-webhook-configuration configured
-mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-injector-webhook-configuration configured
-validatingwebhookconfiguration.admissionregistration.k8s.io/kuma-validating-webhook-configuration configured
+mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-admission-mutating-webhook-configuration created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-injector-webhook-configuration created
+validatingwebhookconfiguration.admissionregistration.k8s.io/kuma-validating-webhook-configuration created
 ```
 
 You can check the pods are up and running by checking the `kuma-system` namespace
@@ -218,8 +225,8 @@ default   kuma-demo-backend-v0-7dcb8dc8fd-7ttjm   app=kuma-demo-backend pod-temp
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   off
+NAME      mTLS   CA        METRICS
+default   off    builtin   off
 ```
 
 ### 14.  Let's enable mTLS.
@@ -230,7 +237,6 @@ apiVersion: kuma.io/v1alpha1
 kind: Mesh
 metadata:
   name: default
-  namespace: kuma-system
 spec:
   mtls:
     ca:
@@ -243,8 +249,8 @@ Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   on
+NAME      mTLS   CA        METRICS
+default   on     builtin   off
 ```
 
 ### 15.  Now let's enable traffic-permission for all services so our application will work like it use to:
@@ -293,7 +299,6 @@ apiVersion: kuma.io/v1alpha1
 kind: Mesh
 metadata:
   name: default
-  namespace: kuma-system
 spec:
   mtls:
     ca:
@@ -608,7 +613,7 @@ Once again, our `route-2` traffic routing policy triumphs. In the scenario where
 
 ### 25. Deploying Prometheus on Kubernetes
 
-You can utalize Prometheus to scrape metrics from Kuma mesh. But before we can do so, first we need to deploy Prometheus in our Kubernetes environment. This demo will be using [Helm](https://helm.sh/) to do so. First, you need to add a chart repository. One popular starting location is the official Helm stable charts:
+You can utilize Prometheus to scrape metrics from Kuma mesh. But before we can do so, first we need to deploy Prometheus in our Kubernetes environment. This demo will be using [Helm](https://helm.sh/) to do so. First, you need to add a chart repository. One popular starting location is the official Helm stable charts:
 
 ```
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
@@ -686,7 +691,6 @@ apiVersion: kuma.io/v1alpha1
 kind: Mesh
 metadata:
   name: default
-  namespace: kuma-system
 spec:
   mtls:
     ca:
@@ -711,11 +715,10 @@ pod "redis-master-6d4cf995c5-ss2j8" deleted
 
 ### 28. Port-forward the Prometheus server pod to access the GUI
 
-```
-$ kubectl port-forward kuma-prometheus-server-66fdb4cc9d-qt44v -n default 9090
+<pre><code>$ kubectl port-forward <b>${PROMETHEUS_SERVER_POD_NAME}</b> -n default 9090
 Forwarding from 127.0.0.1:9090 -> 9090
 Forwarding from [::1]:9090 -> 9090
-```
+</code></pre>
 
 ### 29. Access Prometheus dashboard to query metrics
 
