@@ -733,7 +733,7 @@ Kuma ships with an internal GUI that will help you visualize the mesh and its po
 
 ### 31. Kong Gateway Integration 
 
-The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). When you use a Dataplane with a service, both inbound traffic to a service and outbound traffic from the service flows through the Dataplane. This API Gateway should be deployed as any other service within the mesh. Use the `kuma-demo-kong.yaml` file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
+The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Use the `kuma-demo-kong.yaml` file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
 
 ```
 $ kubectl apply -f kuma-demo-kong.yaml
@@ -750,7 +750,9 @@ service/kong-validation-webhook created
 deployment.apps/ingress-kong created
 ```
 
-After it is deployed, export the proxy IP:
+On Kubernetes, `Dataplane` entities are automatically generated. To inject gateway Dataplane, the API Gateway's Pod needs to have the `kuma.io/gateway: enabled` annotation. Our `kuma-demo-kong.yaml` already includes this annotataion so you don't need to do this manually.
+
+After Kong is deployed, export the proxy IP:
 ```
 export PROXY_IP=$(minikube service -p kuma-demo -n kuma-demo kong-proxy --url | head -1)
 ```
@@ -763,7 +765,7 @@ http://192.168.64.29:30409
 
 ### 32. Add ingress rules for Kong for Kubernetes
 
-Create an Ingress rule to proxy the marketplace created previously:
+Create an Ingress rule to proxy to the marketplace frontend service:
 
 ```
 echo "
@@ -782,6 +784,17 @@ spec:
           servicePort: 80
 " | kubectl apply -f -
 ```
+
+By default, Kong Ingress Controller distributes traffic amongst all the Pods of a Kubernetes Service by forwarding the requests directly to Pod IP addresses. One can choose the load-balancing strategy to use by specifying a KongIngress resource.
+
+However, in some use-cases, the load-balancing should be left up to kube-proxy, or a sidecar component in the case of Service Mesh deployments. We want the load-balancing to be left to Kuma so the following annotation has been included in our `kuma-demo-aio.yaml` frontend service resource:
+
+```yaml
+annotations:
+  ingress.kubernetes.io/service-upstream: "true"
+```
+
+Remember to add this annotation to the appropriate services when you deploy Kong with Kuma.
 
 ### 33. Access the marketplace through Kong
 
