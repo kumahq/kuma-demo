@@ -26,6 +26,7 @@ yarn-error.log*
 !/vagrant/common/
 !/vagrant/frontend/
 !/vagrant/backend/
+!/vagrant/backend-v1/
 !/vagrant/elastic/
 !/vagrant/control-plane/
 !/vagrant/redis/

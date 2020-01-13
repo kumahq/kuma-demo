@@ -12,6 +12,10 @@ kumactl generate dataplane-token --dataplane=frontend > /vagrant/.vagrant.data/f
 mkdir -p /vagrant/.vagrant.data/backend/var/secrets/kuma.io/kuma-dp/
 kumactl generate dataplane-token --dataplane=backend > /vagrant/.vagrant.data/backend/var/secrets/kuma.io/kuma-dp/token
 
+# Backend-v1
+mkdir -p /vagrant/.vagrant.data/backend-v1/var/secrets/kuma.io/kuma-dp/
+kumactl generate dataplane-token --dataplane=backend-v1 > /vagrant/.vagrant.data/backend-v1/var/secrets/kuma.io/kuma-dp/token
+
 # Elasticsearch
 mkdir -p /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/
 kumactl generate dataplane-token --dataplane=elastic > /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/token

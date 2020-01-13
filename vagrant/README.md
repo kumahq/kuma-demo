@@ -123,13 +123,13 @@ There are 5 dataplanes which correlates with each component of our application.
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   off
+NAME      mTLS   CA        METRICS
+default   off    builtin   off
 ```
 
 ### 9. View our application:
 
-To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.60:8000/](http://192.168.33.60:8000/). All the traffic between the machines are routed through Kuma's dataplane.
+To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.70:8000](http://192.168.33.70:8000). All the traffic between the machines are routed through Kuma's dataplane.
 
 ### 10. Let's enable mTLS using `kumactl`:
 
@@ -148,11 +148,11 @@ Using `kumactl`, inspect the mesh again to see if mTLS is enabled:
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS
-default   on
+NAME      mTLS   CA        METRICS
+default   on     builtin   off
 ```
 
-If you try to access the marketplace via [http://192.168.33.60:8000](http://192.168.33.60:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
 
 ### 11. Now let's enable traffic-permission for all services so our application will work like it use to:
 ```
@@ -169,7 +169,7 @@ destinations:
 EOF
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work since we allow all services to send traffic to one another.
+And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work since we allow all services to send traffic to one another.
 
 ### 12. Granular control:
 
@@ -219,4 +219,92 @@ default   frontend-to-backend
 default   backend-to-elasticsearch
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.60:8000/), everything will work except the reviews.
+And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews.
+
+### 13. If we wanted to enable the Redis service again in the future, just add an additional traffic-permission back like this:
+```
+$ cat <<EOF | kumactl apply -f - 
+type: TrafficPermission
+name: backend-to-elasticsearch
+mesh: default
+sources:
+  - match:
+      service: 'backend'
+destinations:
+  - match:
+      service: 'redis'
+EOF
+```
+
+### 14. Adding traffic routing to our service mesh. 
+
+Earlier when we ran `vagrant up`, we deployed two versions of the backend application: `backend` and `backend-v1`. The original `backend` service is a normal marketplace, and the `backend-v1` is a marketplace with sales and special offers. You can ch
+
+```           
+                               ----> backend-v0  :  service=backend, version=v0
+                             /
+(browser) -> Kong -> frontend  
+                             \
+                               ----> backend-v1  :  service=backend, version=v1
+``` 
+
+### 15. Traffic routing to limit amount of special offers on Kuma marketplace:
+To avoid going broke, let's limit the amount of special offers that appear on our marketplace. To do so, apply this TrafficRoute policy:
+
+```bash
+$ cat <<EOF | kumactl apply -f -
+type: TrafficRoute
+name: frontend-to-backend
+mesh: default
+sources:
+- match:
+    service: frontend
+destinations:
+- match:
+    service: backend
+conf:
+# it is NOT a percentage. just a positive weight
+- weight: 80
+  destination:
+    service: backend
+    version: v0
+# we're NOT checking if total of all weights is 100  
+- weight: 20
+  destination:
+    service: backend
+    version: v1
+EOF
+```
+And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 20% of the requests will land you on the `backend-v1` service and place the first item on sale.
+
+### 16. Let's enable Prometheus using `kumactl`:
+
+```
+$ cat <<EOF | kumactl apply -f -
+type: Mesh
+name: default
+mtls:
+  enabled: true
+  ca:
+    builtin: {}
+metrics:
+  prometheus: {}
+EOF
+```
+You can check that Prometheus is turned on by checking the `default` mesh:
+```
+$ kumactl get meshes
+NAME      mTLS   CA        METRICS
+default   on     builtin   prometheus
+```
+
+### 17. Query metrics on Prometheus dashboard
+
+You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found.
+
+This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
+![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
+
+### 18. Visualize mesh with Kuma GUI
+
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
