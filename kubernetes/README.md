@@ -485,7 +485,7 @@ NUM_REQ    NUM_SPECIAL_OFFERS
 ```
 And clean the traffic route before we try more things:
 ```bash
-$ ubectl delete trafficroute -n kuma-demo --all
+$ kubectl delete trafficroute -n kuma-demo --all
 ```
 
 ### 23. Resolving Collisions - Identical Selectors
