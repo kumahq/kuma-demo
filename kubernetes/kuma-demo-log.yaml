@@ -30,7 +30,7 @@ data:
     }
     output{
       loggly{
-        key => "dbee0a24-abf3-4049-a50a-8c80531a9e11"
+        key => "573944e3-05ff-471a-8d19-8f466594c799"
         tag => "logstash"
       }
     }
@@ -75,29 +75,3 @@ spec:
       - configMap:
           name: logstash-config
         name: logstash-config
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: logstash
-#   namespace: logging
-#   labels:
-#     app: logstash
-# spec:
-#   selector:
-#     matchLabels:
-#       app: logstash
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: logstash
-#     spec:
-#       containers:
-#       - name: logstash
-#         image: kong-docker-kuma-docker.bintray.io/kuma-tcp-echo
-#         args:
-#         - -port
-#         - "5000"
-#         ports:
-#         - containerPort: 5000
