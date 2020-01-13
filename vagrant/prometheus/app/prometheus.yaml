@@ -1,5 +1,5 @@
 scrape_configs:
-- job_name: 'kuma-sd'
+- job_name: 'kuma-dataplanes'
   scrape_interval: "5s"
   file_sd_configs:
   - refresh_interval: 1s
