@@ -1,11 +1,33 @@
 # Kubernetes Deployment Guide
 
+## Introductions
+This Kuma Kubernetes deployment guide will walk you through how to deploy the marketplace application on Kubernetes and configure Kuma to work alongside it.
+
+When running on Kubernetes, Kuma will store all of its state and configuration on the underlying Kubernetes API Server, therefore requiring no dependency to store the data.
+
+## Table of contents
+- [Setup Environment](#setup-environment)
+  - [Setup Minkube](#1-start-a-kubernetes-cluster-with-at-least-4gb-of-memory-weve-tested-kuma-on-kubernetes-v1130---v116x-so-use-anything-older-than-v1130-with-caution-in-this-demo-well-be-using-v1154)
+  - [Deploy Marketplace Application](#2-deploy-kumas-sample-marketplace-application-in-minikube)
+  - [Download Kuma](#4-download-the-latest-version-of-kuma)
+  - [Install control-plane via `kumactl`](#7-install-the-control-plane-using-kumactl)
+- Kuma Policies
+  - [mTLS Policy](#14-lets-enable-mtls)
+  - [Traffic Permission Policy](#15-now-lets-enable-traffic-permission-for-all-services-so-our-application-will-work-like-it-use-to)
+  - [Logging Policy](#17-lets-add-logging-for-traffic-between-all-services-and-send-them-to-logstash)
+  - [Traffic Routing Policy](#22-lets-explore-adding-traffic-routing-to-our-service-mesh-but-before-we-do-we-need-to-scale-up-the-v1-and-v2-deployment-of-our-sample-application)
+  - [Traffic Metrics Policy](#26-enable-prometheus-metrics-on-the-mesh-object)
+- Kuma GUI
+  - [Visualizing Kuma Mesh](#30-visualize-mesh-with-kuma-gui)
+- Kong API Gateway Integration
+  - [Deploying Kong Alongside Kuma](#31-kong-gateway-integration)
+
 ## Setup Environment
 
 ### 1. Start a Kubernetes cluster with at least 4GB of memory. We've tested Kuma on Kubernetes v1.13.0 - v1.16.x, so use anything older than v1.13.0 with caution. In this demo, we'll be using v1.15.4. 
 
 ```bash
-$ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-demo
+$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.15.4 -p kuma-demo
 😄  [kuma-demo] minikube v1.5.2 on Darwin 10.15.1
 ✨  Automatically selected the 'hyperkit' driver (alternates: [virtualbox])
 🔥  Creating hyperkit VM (CPUs=2, Memory=4096MB, Disk=20000MB) ...
@@ -17,7 +39,7 @@ $ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-dem
 ```
 
 ### 2. Deploy Kuma's sample marketplace application in minikube
-You can deploy the sample marketplace application using the `kuma-demo-aio.yaml` file in this directory.
+You can deploy the sample marketplace application using the [`kuma-demo-aio.yaml`](/kubernetes/kuma-demo-aio.yaml) file in this directory.
 ```bash
 $ kubectl apply -f kuma-demo-aio.yaml
 namespace/kuma-demo created
@@ -283,9 +305,9 @@ default   everything
 Now that we have traffic permission that allows any source to talk to any destination, our application should work like it use to. 
 
 ### 16. Deploy the logstash service.
-You can deploy the logtash service via the [bit.ly](http://bit.ly/logkuma) link as shown below or via the `kuma-demo-log.yaml` file in this directory.
+You can deploy the logtash service using the [`kuma-demo-log.yaml`](/kubernetes/kuma-demo-log.yaml) file in this directory.
 ```bash
-$ kubectl apply -f http://bit.ly/logkuma
+$ kubectl apply -f kuma-demo-log.yaml
 namespace/logging created
 service/logstash created
 configmap/logstash-config created
@@ -730,7 +752,7 @@ Kuma ships with an internal GUI that will help you visualize the mesh and its po
 
 ### 31. Kong Gateway Integration 
 
-The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Use the `kuma-demo-kong.yaml` file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
+The `Dataplane` can now operate in Gateway mode. This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Use the [`kuma-demo-kong.yaml`](/kubernetes/kuma-demo-kong.yaml) file to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller):
 
 ```bash
 $ kubectl apply -f kuma-demo-kong.yaml
@@ -760,7 +782,7 @@ spec:
       annotations:
         kuma.io/gateway: enabled
 ```
- Our `kuma-demo-kong.yaml` already includes this annotataion so you don't need to do this manually.
+ Our [`kuma-demo-kong.yaml`](/kubernetes/kuma-demo-kong.yaml) already includes this annotataion so you don't need to do this manually.
 
 After Kong is deployed, export the proxy IP:
 ```bash
@@ -797,7 +819,7 @@ EOF
 
 By default, Kong Ingress Controller distributes traffic amongst all the Pods of a Kubernetes Service by forwarding the requests directly to Pod IP addresses. One can choose the load-balancing strategy to use by specifying a KongIngress resource.
 
-However, in some use-cases, the load-balancing should be left up to kube-proxy, or a sidecar component in the case of Service Mesh deployments. We want the load-balancing to be left to Kuma so the following annotation has been included in our `kuma-demo-aio.yaml` frontend service resource:
+However, in some use-cases, the load-balancing should be left up to kube-proxy, or a sidecar component in the case of Service Mesh deployments. We want the load-balancing to be left to Kuma so the following annotation has been included in our [`kuma-demo-aio.yaml`](/kubernetes/kuma-demo-aio.yaml) frontend service resource:
 
 ```yaml
 apiVersion: v1
