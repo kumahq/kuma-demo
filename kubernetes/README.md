@@ -27,7 +27,7 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
 ### 1. Start a Kubernetes cluster with at least 4GB of memory. We've tested Kuma on Kubernetes v1.13.0 - v1.16.x, so use anything older than v1.13.0 with caution. In this demo, we'll be using v1.15.4. 
 
 ```bash
-$ minikube start --cpus 2 --memory 4096 --kubernetes-version v1.15.4 -p kuma-demo
+$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.15.4 -p kuma-demo
 😄  [kuma-demo] minikube v1.5.2 on Darwin 10.15.1
 ✨  Automatically selected the 'hyperkit' driver (alternates: [virtualbox])
 🔥  Creating hyperkit VM (CPUs=2, Memory=4096MB, Disk=20000MB) ...
