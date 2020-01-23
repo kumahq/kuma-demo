@@ -41,6 +41,7 @@ For the purposes of this demo we will use in-memory.
     - [Traffic Metrics](#traffic-metrics)
       - [Adding Traffic Metric Policy](#adding-traffic-metric-policy)
       - [Query Metrics](#query-metrics)
+      - [Visualize Metrics](#visualize-metrics)
 
 
 ## Setup Environment
@@ -504,3 +505,9 @@ You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query th
 
 This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 ![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
+
+#### Visualize Metrics
+
+Visit the [Grafana dashboard](http://192.168.33.80:3000) to see the L4 metrics with the default dashboard. To login to Grafana use `admin` login and `admin` password.
+
+![Grafana dashboard](https://i.imgur.com/nAVPQmn.png "Grafana Dashboard for L4 traffic")

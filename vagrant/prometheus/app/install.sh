@@ -36,6 +36,9 @@ cp /vagrant/prometheus/app/prometheus.yaml /etc/prometheus/prometheus.yaml
 chown -R prometheus:prometheus /etc/prometheus
 chown prometheus:prometheus /var/lib/prometheus
 
+# Set permission for Prometheus integration with Kuma
+chown prometheus:prometheus /var/run/kuma.io/kuma-prometheus-sd/
+
 # Add Prometheus service
 cp /vagrant/prometheus/app/prometheus.service /etc/systemd/system/prometheus.service
 
@@ -49,3 +52,22 @@ systemctl enable prometheus
 
 # Start `prometheus` service right away
 systemctl start prometheus
+
+# Add Grafana repo
+echo "deb https://packages.grafana.com/oss/deb stable main" > /etc/apt/sources.list.d/grafana.list
+curl https://packages.grafana.com/gpg.key | apt-key add -
+
+# Install Grafana
+apt-get update
+apt-get install grafana -y
+
+# Copy provisioning including default Kuma dashboard
+rm -rf /etc/grafana/provisioning
+cp -R /vagrant/prometheus/app/provisioning /etc/grafana/provisioning
+chown -R grafana:grafana /etc/grafana/provisioning
+
+# Ensure the `grafana-server` service starts whenever the system boots
+systemctl enable grafana-server.service
+
+# Start `grafana-server` service
+systemctl start grafana-server

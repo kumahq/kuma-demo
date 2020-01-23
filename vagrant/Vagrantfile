@@ -58,9 +58,9 @@ Vagrant.configure("2") do |config|
     node.vm.hostname = "prometheus"
     node.vm.network :private_network, ip: PROMETHEUS_IP
     node.vm.provision "update_etc_hosts", type: "shell", path: "common/update_etc_hosts.sh", env: { "KUMA_CONTROL_PLANE_IP" => KUMA_CONTROL_PLANE_IP }
-    node.vm.provision "install_prometheus", type: "shell", path: "prometheus/app/install.sh", privileged: true, env: {"PROMETHEUS_VERSION": "2.15.2"}
     node.vm.provision "download_kuma", type: "shell", path: "common/download_kuma.sh", env: {"KUMA_VERSION" => KUMA_VERSION, "KUMA_HOME" => KUMA_HOME }
     node.vm.provision "install_kuma-prometheus-sd", type: "shell", path: "prometheus/kuma/install-kuma-prometheus-sd.sh"
+    node.vm.provision "install_prometheus", type: "shell", path: "prometheus/app/install.sh", privileged: true, env: {"PROMETHEUS_VERSION": "2.15.2"}
   end
 
   config.vm.define "backend" do |node|
