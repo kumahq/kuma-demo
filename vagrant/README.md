@@ -293,11 +293,7 @@ And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 2
 
 ### 16. Health Checks
 
-```bash
-$ vagrant halt backend
-==> backend: Attempting graceful shutdown of VM...
-```
-
+Apply health check policy to backend service:
 ```bash
 $ cat <<EOF | kumactl apply -f -
 type: HealthCheck
@@ -321,7 +317,39 @@ conf:
 EOF
 ```
 
-### 16. Let's enable Prometheus using `kumactl`:
+Stop backend service
+```bash
+$ vagrant halt backend
+==> backend: Attempting graceful shutdown of VM...
+```
+
+Machine will be in `poweroff` state
+```bash
+$ vagrant status
+Current machine states:
+
+kuma-control-plane        running (virtualbox)
+redis                     running (virtualbox)
+elastic                   running (virtualbox)
+prometheus                running (virtualbox)
+backend                   poweroff (virtualbox)
+backend-v1                running (virtualbox)
+frontend                  running (virtualbox)
+kong                      running (virtualbox)
+```
+
+```bash
+$ kumactl inspect dataplanes
+MESH      NAME         TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
+default   redis        service=redis                Online   59m38s               23m42s             6               0
+default   elastic      service=elastic              Online   56m2s                26m21s             6               0
+default   backend      service=backend version=v0   Online   11m8s                9m6s               11              0
+default   backend-v1   service=backend version=v1   Online   48m18s               26m48s             8               0
+default   frontend     service=frontend             Online   42m33s               21m1s              16              0
+default   kong         service=kong                 Online   38m57s               27m15s             6s               0
+```
+
+### 17. Let's enable Prometheus using `kumactl`:
 
 ```bash
 $ cat <<EOF | kumactl apply -f -
@@ -342,13 +370,13 @@ NAME      mTLS   CA        METRICS
 default   on     builtin   prometheus
 ```
 
-### 17. Query metrics on Prometheus dashboard
+### 18. Query metrics on Prometheus dashboard
 
 You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found.
 
 This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 ![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
 
-### 18. Visualize mesh with Kuma GUI
+### 19. Visualize mesh with Kuma GUI
 
 Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
