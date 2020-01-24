@@ -239,7 +239,7 @@ And now if we go back to our [marketplace](http://192.168.33.70:8000), everythin
 ```
 $ cat <<EOF | kumactl apply -f - 
 type: TrafficPermission
-name: backend-to-elasticsearch
+name: backend-to-redis
 mesh: default
 sources:
   - match:
@@ -291,9 +291,39 @@ EOF
 ```
 And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 20% of the requests will land you on the `backend-v1` service and place the first item on sale.
 
+### 16. Health Checks
+
+```bash
+$ vagrant halt backend
+==> backend: Attempting graceful shutdown of VM...
+```
+
+```bash
+$ cat <<EOF | kumactl apply -f -
+type: HealthCheck
+name: frontend-to-backend
+mesh: default
+sources:
+- match:
+    service: frontend
+destinations:
+- match:
+    service: backend
+conf:
+  activeChecks:
+    interval: 10s
+    timeout: 2s
+    unhealthyThreshold: 3
+    healthyThreshold: 1
+  passiveChecks:
+    unhealthyThreshold: 3
+    penaltyInterval: 5s
+EOF
+```
+
 ### 16. Let's enable Prometheus using `kumactl`:
 
-```
+```bash
 $ cat <<EOF | kumactl apply -f -
 type: Mesh
 name: default
