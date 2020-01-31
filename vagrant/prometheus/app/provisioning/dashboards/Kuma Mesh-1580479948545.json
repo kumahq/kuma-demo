@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1579799956115,
+  "id": 2,
+  "iteration": 1580479860977,
   "links": [],
   "panels": [
     {
@@ -28,182 +28,32 @@
         "x": 0,
         "y": 0
       },
-      "id": 22,
+      "id": 12,
       "panels": [],
-      "title": "Dataplane",
+      "title": "Dataplanes",
       "type": "row"
-    },
-    {
-      "datasource": "Prometheus",
-      "gridPos": {
-        "h": 7,
-        "w": 5,
-        "x": 0,
-        "y": 1
-      },
-      "id": 16,
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "LIVE",
-                "to": "",
-                "type": 1,
-                "value": "1"
-              },
-              {
-                "from": "",
-                "id": 2,
-                "operator": "",
-                "text": "OFF",
-                "to": "",
-                "type": 1,
-                "value": "0"
-              }
-            ],
-            "max": 1,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ],
-            "title": ""
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
-      },
-      "pluginVersion": "6.5.3",
-      "targets": [
-        {
-          "expr": "envoy_server_live{dataplane=\"$dataplane\",mesh=\"$mesh\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Status",
-      "type": "gauge"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "Prometheus",
-      "format": "bytes",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 5,
-        "y": 1
-      },
-      "id": 18,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "envoy_server_memory_allocated{dataplane=\"$dataplane\",mesh=\"$mesh\"}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Memory allocated",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 15,
-        "x": 9,
+        "w": 12,
+        "x": 0,
         "y": 1
       },
       "hiddenSeries": false,
-      "id": 20,
+      "id": 2,
       "legend": {
         "avg": false,
         "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": false,
         "min": false,
         "show": true,
@@ -220,14 +70,28 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "Off",
+          "color": "#F2495C"
+        },
+        {
+          "alias": "Live",
+          "color": "#73BF69"
+        }
+      ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "envoy_cluster_upstream_cx_total{envoy_cluster_name=\"ads_cluster\",dataplane=\"$dataplane\",mesh=\"$mesh\"}",
-          "legendFormat": "{{envoy_cluster_name}}",
+          "expr": "count(envoy_server_live{mesh=\"$mesh\"}) - sum(envoy_server_live{mesh=\"$mesh\"})",
+          "legendFormat": "Off",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(envoy_server_live{mesh=\"$mesh\"})",
+          "legendFormat": "Live",
           "refId": "A"
         }
       ],
@@ -235,7 +99,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active connections to the Control Plane",
+      "title": "Dataplanes",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -255,7 +119,111 @@
           "label": null,
           "logBase": 1,
           "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
           "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Note that if Control Plane does not sent FIN segment, Dataplanes can still think that connection is up waiting for new update even that Control Plane is down.",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Disconnected",
+          "color": "#F2495C"
+        },
+        {
+          "alias": "Connected",
+          "color": "#73BF69"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "count(envoy_server_live{mesh=\"$mesh\"}) - sum(envoy_cluster_upstream_cx_active{envoy_cluster_name=\"ads_cluster\",mesh=\"$mesh\"})",
+          "legendFormat": "Disconnected",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(envoy_cluster_upstream_cx_active{envoy_cluster_name=\"ads_cluster\",mesh=\"$mesh\"})",
+          "legendFormat": "Connected",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Dataplanes connected to the Control Plane",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
           "show": true
         },
         {
@@ -281,9 +249,9 @@
         "x": 0,
         "y": 8
       },
-      "id": 10,
+      "id": 14,
       "panels": [],
-      "title": "Incoming traffic",
+      "title": "Traffic",
       "type": "row"
     },
     {
@@ -291,17 +259,17 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 9,
+        "w": 12,
         "x": 0,
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 5,
       "legend": {
         "avg": false,
         "current": false,
@@ -327,16 +295,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(envoy_cluster_upstream_cx_total{dataplane=\"$dataplane\",mesh=\"$mesh\",envoy_cluster_name=~\"localhost.*\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
+          "expr": "sum(irate(envoy_cluster_upstream_cx_tx_bytes_total{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Sent",
           "refId": "A"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_cx_rx_bytes_total{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Received",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active Connections to this Dataplane",
+      "title": "Bytes flowing through Envoy",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -352,7 +325,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "decbytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -383,17 +356,21 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 8,
-        "x": 9,
+        "w": 12,
+        "x": 12,
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 4,
+      "id": 7,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
         "max": false,
         "min": false,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -414,16 +391,53 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(envoy_cluster_upstream_cx_tx_bytes_total{dataplane=\"$dataplane\",envoy_cluster_name=~\"localhost.*\",mesh=\"$mesh\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
+          "expr": "sum(irate(envoy_cluster_upstream_cx_destroy_remote_with_active_rq{mesh=\"$mesh\"}[1m]))",
+          "hide": true,
+          "legendFormat": "Connection destroyed by the client",
           "refId": "A"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_cx_connect_timeout{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Connection timeout",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_cx_destroy_local_with_active_rq{mesh=\"$mesh\"}[1m]))",
+          "hide": true,
+          "legendFormat": "Connection destroyed by local Envoy",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_rq_pending_failure_eject{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Pending failure ejection",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_rq_pending_overflow{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Pending overflow",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_rq_timeout{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Request timeout",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_rq_rx_reset{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Response reset",
+          "refId": "G"
+        },
+        {
+          "expr": "sum(irate(envoy_cluster_upstream_rq_tx_reset{mesh=\"$mesh\"}[1m]))",
+          "legendFormat": "Request reset",
+          "refId": "H"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bytes received from requests",
+      "title": "Connection/Requests errors",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -439,8 +453,8 @@
       },
       "yaxes": [
         {
-          "format": "decbytes",
-          "label": "",
+          "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -461,94 +475,6 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 17,
-        "y": 9
-      },
-      "hiddenSeries": false,
-      "id": 13,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(envoy_cluster_upstream_cx_rx_bytes_total{dataplane=\"$dataplane\",envoy_cluster_name=~\"localhost.*\",mesh=\"$mesh\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Bytes sent in responses",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "decbytes",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -556,9 +482,8 @@
         "x": 0,
         "y": 17
       },
-      "id": 12,
-      "panels": [],
-      "title": "Outgoing traffic",
+      "id": 16,
+      "title": "Health Checks",
       "type": "row"
     },
     {
@@ -566,17 +491,18 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
+      "description": "Data is only available if HealthCheck policy is applied.",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 9,
+        "w": 12,
         "x": 0,
         "y": 18
       },
       "hiddenSeries": false,
-      "id": 8,
+      "id": 9,
       "legend": {
         "avg": false,
         "current": false,
@@ -602,8 +528,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(envoy_cluster_upstream_cx_total{dataplane=\"$dataplane\",mesh=\"$mesh\",envoy_cluster_name!~\"(localhost.*)|ads_cluster|kuma_envoy_admin|access_log_sink\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
+          "expr": "((sum(rate(envoy_cluster_health_check_success{mesh=\"$mesh\"}[1m])) / sum(rate(envoy_cluster_health_check_attempt{mesh=\"$mesh\"}[1m]))))",
+          "legendFormat": "Success rate",
           "refId": "A"
         }
       ],
@@ -611,7 +537,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active Connections to other Dataplanes",
+      "title": "Active Health Checks",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -627,11 +553,11 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "percentunit",
           "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "1",
+          "min": "0",
           "show": true
         },
         {
@@ -653,17 +579,18 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": null,
+      "description": "Data is only available if HealthCheck policy is applied. Note that passive health checks are executed on healthy instances marked by active health checks.",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 8,
-        "x": 9,
+        "w": 12,
+        "x": 12,
         "y": 18
       },
       "hiddenSeries": false,
-      "id": 14,
+      "id": 17,
       "legend": {
         "avg": false,
         "current": false,
@@ -689,8 +616,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(envoy_cluster_upstream_cx_rx_bytes_total{dataplane=\"$dataplane\",envoy_cluster_name!~\"(localhost.*)|ads_cluster|kuma_envoy_admin|access_log_sink\",mesh=\"$mesh\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
+          "expr": "1 - sum(envoy_cluster_outlier_detection_ejections_active{mesh=\"$mesh\"}) / sum(envoy_cluster_membership_total{mesh=\"$mesh\"})",
+          "legendFormat": "Success rate",
           "refId": "A"
         }
       ],
@@ -698,7 +625,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bytes received from other dataplanes",
+      "title": "Passive Health Checks",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -714,98 +641,11 @@
       },
       "yaxes": [
         {
-          "format": "bytes",
+          "format": "percentunit",
           "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 17,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 3,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "irate(envoy_cluster_upstream_cx_tx_bytes_total{dataplane=\"$dataplane\",envoy_cluster_name!~\"(localhost.*)|ads_cluster|kuma_envoy_admin|access_log_sink\",mesh=\"$mesh\"}[5m])",
-          "legendFormat": "{{envoy_cluster_name}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Bytes sent to other dataplanes",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "1",
+          "min": "0",
           "show": true
         },
         {
@@ -823,36 +663,11 @@
       }
     }
   ],
-  "schemaVersion": 21,
+  "schemaVersion": 22,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
-      {
-        "allValue": null,
-        "current": {
-          "text": "backend",
-          "value": "backend"
-        },
-        "datasource": "Prometheus",
-        "definition": "label_values(envoy_server_live, dataplane)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "dataplane",
-        "multi": false,
-        "name": "dataplane",
-        "options": [],
-        "query": "label_values(envoy_server_live, dataplane)",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
       {
         "allValue": null,
         "current": {
@@ -863,7 +678,7 @@
         "definition": "label_values(envoy_server_live, mesh)",
         "hide": 0,
         "includeAll": false,
-        "label": null,
+        "label": "Mesh",
         "multi": false,
         "name": "mesh",
         "options": [],
@@ -881,7 +696,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -899,7 +714,7 @@
     ]
   },
   "timezone": "",
-  "title": "Kuma L4",
-  "uid": "-SZYLFyWz",
+  "title": "Kuma Mesh",
+  "uid": "GW0DqjsWz",
   "version": 1
 }
