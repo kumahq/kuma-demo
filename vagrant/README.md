@@ -63,7 +63,7 @@ This will start our demo marketplace application and Kuma split across multiple 
 1. The first machine hosts the Kuma control plane.
 2. The second machine will host Redis service that stores reviews for each item
 3. The third machine will host the Elasticsearch service that stores all the items in our marketplace
-4. The fourth machine will host the Prometheus dashboard and the [kuma-prometheus-sd](https://kuma.io/docs/0.3.2/policies/#traffic-metrics)
+4. The fourth machine will host the Prometheus dashboard and the [kuma-prometheus-sd](https://kuma.io/docs/latest/policies/#traffic-metrics)
 5. The fifth machine will host our v0 backend application that handles the logic of our application
 6. The sixth machine will host our v1 backend application that handles the logic of our application with sales
 7. The seventh machine will host our frontend application that allows you to visually interact with the marketplace
