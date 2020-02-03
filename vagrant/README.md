@@ -182,19 +182,19 @@ Kuma ships with an internal GUI that will help you visualize the mesh and its po
 
 ### Kong Gateway
 
-In this Vagrant demo, Kong is already configured and deployed when you ran `vagrant up` in the [vagrant setup step](#vagrant). But to give you an in depth dive on how it works, lets dig into the files in the [`/vagrant/kong/`](/vagrant/kong/) directory.
+In this Vagrant demo, Kong is already configured and deployed when you ran `vagrant up` in the [vagrant setup step](#vagrant). But to give you an in depth dive on how it works, lets dig into the files in the [`kong/`](./kong/) directory.
 
 #### Installation
 
-First step is installing Kong on the machine. We do that by running the [`install.sh`](/vagrant/kong/app/install.sh) script found in [`/vagrant/kong/app/`](/vagrant/kong/app/install.sh). 
+First step is installing Kong on the machine. We do that by running the [`install.sh`](/vagrant/kong/app/install.sh) script found in [`kong/app/`](/vagrant/kong/app/install.sh). 
 
 This script downloads the latest version of Kong from bintray. To learn more about Kong and the installation methods, please visit the official documentation [here](https://konghq.com/install/). 
 
 #### Configure and Start Kong
 
-After installing Kong, we configure and launch it by running the [`start.sh`](/vagrant/kong/app/start.sh) script found in [`/vagrant/kong/app/`](/vagrant/kong/app/start.sh).
+After installing Kong, we configure and launch it by running the [`start.sh`](/vagrant/kong/app/start.sh) script found in [`kong/app/`](/vagrant/kong/app/start.sh).
 
-This script uses the `kong start` cli command to start up Kong with a [configuration file](/vagrant/kong/app/config/kong.conf) found in [`/vagrant/kong/app/config`](/vagrant/kong/app/config/kong.conf).
+This script uses the [`kong start`](https://docs.konghq.com/latest/cli/#kong-start) cli command to start up Kong with a [configuration file](/vagrant/kong/app/config/kong.conf) found in [`kong/app/config`](/vagrant/kong/app/config/kong.conf).
 
 ```conf
 # /vagrant/kong/app/config/kong.conf
@@ -219,9 +219,9 @@ We start with a Service; that is the name Kong uses to refer to the upstream API
 
 #### Configure Dataplane with Gateway mode
 
-When you use a dataplane with a service, both inbound traffic to a service and outbound traffic from the service flows through the dataplane. But with Kong deployed, we want inbound traffic to go directly to API Gateway, otherwise clients would have to be provided with certificates that are generated dynamically for communication between services within the mesh. So we have to operate the dataplane in [Gateway mode](https://kuma.io/docs/0.3.2/documentation/#gateway).
+When you use a dataplane with a service, both inbound traffic to a service and outbound traffic from the service flows through the dataplane. But with Kong deployed, we want inbound traffic to go directly to API Gateway, otherwise clients would have to be provided with certificates that are generated dynamically for communication between services within the mesh. So we have to operate the dataplane in [Gateway mode](https://kuma.io/docs/latest/documentation/#gateway).
 
-Gateway mode lets you skip exposing inbound listeners so it won't be intercepting ingress traffic. We define the dataplane configuration with Gateway mode for Kong in the [`dataplane.yaml`](/vagrant/kong/kuma/dataplane.yaml) found in the [`/vagrant/kong/kuma/`](/vagrant/kong/kuma/dataplane.yaml) directory. 
+Gateway mode lets you skip exposing inbound listeners so it won't be intercepting ingress traffic. We define the dataplane configuration with Gateway mode for Kong in the [`dataplane.yaml`](/vagrant/kong/kuma/dataplane.yaml) found in the [`kong/kuma/`](/vagrant/kong/kuma/dataplane.yaml) directory. 
 
 ```yaml
 type: Dataplane
@@ -245,7 +245,7 @@ Out-of-the-box, Kuma provides full integration with Prometheus:
 * if enabled, every dataplane will expose its metrics in Prometheus format
 * furthemore, Kuma will make sure that Prometheus can automatically find every dataplane in the mesh
 
-In this demo guide, Prometheus is already deployed and configured. All the files that are used to configure and deploy Prometheus can be found in the [`/vagrant/prometheus/`](/vagrant/prometheus/app/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/0.3.2/policies/#traffic-metrics). **To enable Prometheus metrics on every dataplane in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
+In this demo guide, Prometheus is already deployed and configured. All the files that are used to configure and deploy Prometheus can be found in the [`prometheus/`](/vagrant/prometheus/app/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/latest/policies/#traffic-metrics). **To enable Prometheus metrics on every dataplane in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
 
 Once [Traffic Metric policies](#traffic-metrics) are added, you can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh.
 
@@ -273,7 +273,7 @@ Use `kumactl apply [..]` to enable mTLS on our mesh.
 
 ```bash
 $ cat <<EOF | kumactl apply -f -
-type: mesh
+type: Mesh
 name: default
 mtls:
   enabled: true
@@ -296,7 +296,7 @@ To enable traffic once mTLS has been enabled, please add [traffic permission pol
 
 ### Traffic Permissions
 
-Traffic Permissions allow you to determine security rules for services that consume other services via their Tags. It is a very useful policy to increase security in the mesh and compliance in the organization. You can determine what source services are allowed to consume specific destination services. The service field is mandatory in both sources and destinations. 
+Traffic Permissions allow you to determine how services communicate. It is a very useful policy to increase security in the mesh and compliance in the organization. You can determine what source services are allowed to consume specific destination services. The service field is mandatory in both sources and destinations. 
 
 #### Adding Traffic Permission Policy
 
@@ -480,7 +480,7 @@ Let's enable traffic metrics by editing our mesh resource like so:
 
 ```bash
 $ cat <<EOF | kumactl apply -f -
-type: mesh
+type: Mesh
 name: default
 mtls:
   enabled: true
@@ -500,7 +500,7 @@ default   on     builtin   prometheus
 
 #### Query Metrics
 
-You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found. To learn more about the Prometheus integration, please read the [Prometheus section](#prometheus) up above or the official documentation found [here](https://kuma.io/docs/0.3.2/policies/#traffic-metrics).
+You can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found. To learn more about the Prometheus integration, please read the [Prometheus section](#prometheus) up above or the official documentation found [here](https://kuma.io/docs/latest/policies/#traffic-metrics).
 
 This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 ![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
