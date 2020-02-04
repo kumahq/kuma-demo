@@ -2,10 +2,11 @@
 
 set -e
 
-# Create directory for generated files by kuma-prometheus-sd
+# Create directory and set proper permissions for generated files by kuma-prometheus-sd
 mkdir -p /var/run/kuma.io/kuma-prometheus-sd/
+chown prometheus:prometheus /var/run/kuma.io/kuma-prometheus-sd/
 
-cp /vagrant/prometheus/kuma/kuma-prometheus-sd.service /etc/systemd/system/kuma-prometheus-sd.service
+cp /vagrant/metrics/kuma/kuma-prometheus-sd.service /etc/systemd/system/kuma-prometheus-sd.service
 
 # Always run the `systemctl daemon-reload` command after creating new unit files or modifying existing unit files.
 # Otherwise, the `systemctl start` or `systemctl enable` commands could fail due to a mismatch between states of systemd
