@@ -510,4 +510,6 @@ This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
 
 Visit the [Grafana dashboard](http://192.168.33.80:3000) to see the L4 metrics with the default dashboard. To login to Grafana use `admin` login and `admin` password.
 
-![Grafana dashboard](https://i.imgur.com/nAVPQmn.png "Grafana Dashboard for L4 traffic")
+![Kuma Mesh](images/kuma-mesh.png "Kuma Mesh Dashboard")
+![Kuma Dataplane](images/kuma-dataplane.png "Kuma Dataplane Dashboard")
+![Kuma Service to Service](images/kuma-service-to-service.png "Kuma Service to Service Dashboard")

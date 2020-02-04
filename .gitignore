@@ -32,6 +32,7 @@ yarn-error.log*
 !/vagrant/redis/
 !/vagrant/metrics/
 !/vagrant/kong/
+!/vagrant/images/
 !/vagrant/README.md
 !Vagrantfile
 
