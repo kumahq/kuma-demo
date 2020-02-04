@@ -30,8 +30,9 @@ yarn-error.log*
 !/vagrant/elastic/
 !/vagrant/control-plane/
 !/vagrant/redis/
-!/vagrant/prometheus
+!/vagrant/metrics/
 !/vagrant/kong/
+!/vagrant/images/
 !/vagrant/README.md
 !Vagrantfile
 

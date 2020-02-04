@@ -11,9 +11,6 @@ cat << "EOF"
 PROMETHEUS
 EOF
 
-# Add user
-useradd -M -r -s /bin/false prometheus
-
 # Create directory in which Prometheus will be installed
 mkdir /etc/prometheus /var/lib/prometheus
 
@@ -30,14 +27,14 @@ chown prometheus:prometheus /usr/local/bin/prometheus
 chown prometheus:prometheus /usr/local/bin/promtool
 
 # Copy config
-cp /vagrant/prometheus/app/prometheus.yaml /etc/prometheus/prometheus.yaml
+cp /vagrant/metrics/app/prometheus/prometheus.yaml /etc/prometheus/prometheus.yaml
 
 # Set permissions for Prometheus data directories
 chown -R prometheus:prometheus /etc/prometheus
 chown prometheus:prometheus /var/lib/prometheus
 
 # Add Prometheus service
-cp /vagrant/prometheus/app/prometheus.service /etc/systemd/system/prometheus.service
+cp /vagrant/metrics/app/prometheus/prometheus.service /etc/systemd/system/prometheus.service
 
 # Always run the `systemctl daemon-reload` command after creating new unit files or modifying existing unit files.
 # Otherwise, the `systemctl start` or `systemctl enable` commands could fail due to a mismatch between states of systemd
