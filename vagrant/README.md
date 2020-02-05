@@ -246,7 +246,7 @@ Out-of-the-box, Kuma provides full integration with Prometheus:
 * if enabled, every dataplane will expose its metrics in Prometheus format
 * furthemore, Kuma will make sure that Prometheus can automatically find every dataplane in the mesh
 
-In this demo guide, Prometheus is already deployed and configured. All the files that are used to configure and deploy Prometheus can be found in the [`prometheus/`](/vagrant/prometheus/app/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/latest/policies/#traffic-metrics). **To enable Prometheus metrics on every dataplane in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
+In this demo guide, Prometheus is already deployed and configured. All the files that are used to configure and deploy Prometheus can be found in the [`metrics/`](/vagrant/metrics/app/prometheus/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/latest/policies/#traffic-metrics). **To enable Prometheus metrics on every dataplane in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
 
 Once [Traffic Metric policies](#traffic-metrics) are added, you can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh.
 
