@@ -104,4 +104,4 @@ To see examples of how to deploy Kuma alongside this marketplace application, pl
 
 [kuma-url]: https://kuma.io/
 [kuma-logo]: https://kuma-public-assets.s3.amazonaws.com/kuma-logo.png
-[diagram]: https://i.imgur.com/77enHZ3.jpg
+[diagram]: https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true
