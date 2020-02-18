@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/', (req, res) => {
-  res.send('(v1) Hello World! Marketplace with sales and reviews made with <3 by the OCTO team at Kong Inc.')
+  res.send('Hello World! Marketplace with sales and reviews made with <3 by the OCTO team at Kong Inc.')
 })
 
 app.post('/upload', async (req, res) => {
@@ -26,22 +26,21 @@ app.post('/upload', async (req, res) => {
   res.end('Mock data updated in Redis and ES!')
 })
 
-app.get('/items', (req, res) => {
-  elastic.search(req.query.q)
-    .then(async results => {
-      if (specialOffers == true) {
-        res.send(addOffer(results.hits.hits))
-      } else {
-        res.send(results.hits.hits)
-      }
-    })
-    .catch(err => {
-      res.send(err)
-    })
+app.get('/items', async (req, res) => {
+  let data = await elastic.search(req.query.q)
+  
+  if (specialOffers == true) {
+    res.send(await addOffer(data.hits.hits))
+  } else {
+    res.send(data.hits.hits)
+  }
 })
 
 let addOffer = (arr) => {
   let items = arr
+  if (items.length == 0) {
+    return items
+  }
   for (i = 0; i < totalOffers; i++) {
     items[i]._source.specialOffer = true
   }

@@ -1,17 +1,14 @@
 const items = require('../db/items.json')
 const elasticsearch = require('elasticsearch')
 
-const createClient = async () => {
-    return elasticsearch.Client({
-        hosts: [(process.env.ES_HOST || `http://localhost:9200`)],
-        maxRetries: 30,
-        requestTimeout: 30000
-    })
-}
+const client = elasticsearch.Client({
+    hosts: [(process.env.ES_HOST || `http://localhost:9200`)],
+    maxRetries: 5,
+    requestTimeout: 60000
+})
+
 
 const search = async (itemName) => {
-    let client = await createClient()
-
     let body = {
         size: 200,
         from: 0,
@@ -21,7 +18,7 @@ const search = async (itemName) => {
                 query: `*${itemName}*`
             }
         }
-    }
+    } 
 
     return client.search({
         index: 'market-items',
@@ -37,7 +34,6 @@ const search = async (itemName) => {
 }
 
 const searchId = async (itemId) => {
-    let client = await createClient()
     let body = {
         query: {
             match: {
@@ -60,7 +56,6 @@ const searchId = async (itemId) => {
 }
 
 const createBulk = async () => {
-    let client = await createClient()
     let bulk = []
 
     client.indices.create({
@@ -87,7 +82,6 @@ const createBulk = async () => {
 }
 
 const importData = async () => {
-    let client = await createClient()
     const bulk = await createBulk()
     
     client.bulk({
