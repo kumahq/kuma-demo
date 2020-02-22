@@ -76,7 +76,7 @@ spec:
         - name: HTTP_ENABLE
           value: "true"
         - name: NETWORK_HOST
-          value: "0.0.0.0"          
+          value: "0.0.0.0"
         ports:
         - containerPort: 9200
           name: http
@@ -285,9 +285,11 @@ data:
             server_name  localhost;
             location /items {
                 proxy_pass http://backend;
+                proxy_http_version 1.1;
             }
             location / {
                 proxy_pass http://frontend;
+                proxy_http_version 1.1;
             }
         }
     }
