@@ -78,9 +78,9 @@ In the following steps, we will be using the pod name of the `kuma-demo-app-****
 
 ### 3. Port-forward the sample application to access the front-end UI at http://localhost:8080
 
-<pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080:80
-Forwarding from 127.0.0.1:8080 -> 80
-Forwarding from [::1]:8080 -> 80
+<pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
 </code></pre>
 
 Now you can access the marketplace application through your web browser at http://localhost:8080.
@@ -206,9 +206,9 @@ redis-master-5b5978b77f-hwjvd           2/2     Running   0          37s
 
 ### 9. Port-forward the sample application again to access the front-end UI at http://localhost:8080
 
-<pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080:80
-Forwarding from 127.0.0.1:8080 -> 80
-Forwarding from [::1]:8080 -> 80
+<pre><code>$ kubectl port-forward <b>${KUMA_DEMO_APP_POD_NAME}</b> -n kuma-demo 8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
 </code></pre>
 
 Now you can access the marketplace application through your web browser at http://localhost:8080 with Envoy handling all the traffic between the services. Happy shopping!
