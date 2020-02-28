@@ -8,7 +8,6 @@ const createClient = async () => {
     requestTimeout: 30000
   });
 };
-<<<<<<< HEAD
 
 const search = async (itemName, header) => {
   let client = await createClient();
@@ -40,38 +39,6 @@ const search = async (itemName, header) => {
   );
 };
 
-=======
-
-const search = async (itemName, header) => {
-  let client = await createClient();
-
-  let body = {
-    size: 200,
-    from: 0,
-    query: {
-      query_string: {
-        default_field: "name",
-        query: `*${itemName}*`
-      }
-    }
-  };
-
-  return client.search(
-    {
-      index: "market-items",
-      body: body
-    },
-    {
-      ignore: [404],
-      maxRetries: 1
-    },
-    (err, { body }) => {
-      if (err) console.log(err);
-    }
-  );
-};
-
->>>>>>> add header to req and res
 const searchId = async (itemId, header) => {
   let client = await createClient();
   let body = {
@@ -85,12 +52,8 @@ const searchId = async (itemId, header) => {
   return client.search(
     {
       index: "market-items",
-<<<<<<< HEAD
       body: body,
       headers: headersToPass(header)
-=======
-      body: body
->>>>>>> add header to req and res
     },
     {
       ignore: [404],
@@ -108,12 +71,8 @@ const createBulk = async header => {
 
   client.indices.create(
     {
-<<<<<<< HEAD
       index: "market-items",
       headers: headersToPass(header)
-=======
-      index: "market-items"
->>>>>>> add header to req and res
     },
     (err, response, status) => {
       if (err) {
@@ -121,7 +80,6 @@ const createBulk = async header => {
       }
     }
   );
-<<<<<<< HEAD
 
   await items.forEach(item => {
     item.reviews = undefined;
@@ -164,40 +122,6 @@ function headersToPass(headers) {
           .map(headerName => [headerName, headers[headerName]])
   );
 }
-=======
-
-  await items.forEach(item => {
-    item.reviews = undefined;
-
-    bulk.push({
-      index: {
-        _index: "market-items",
-        _type: "clothing_list"
-      }
-    });
-    bulk.push(item);
-  });
-
-  return bulk;
-};
-
-const importData = async header => {
-  let client = await createClient();
-  const bulk = await createBulk();
-
-  client.bulk(
-    {
-      body: bulk
-    },
-    (err, response) => {
-      if (err) {
-        return new Error("Failed Bulk operation");
-      }
-    }
-  );
-  return bulk;
-};
->>>>>>> add header to req and res
 
 module.exports = Object.assign({
   search,
