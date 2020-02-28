@@ -20,13 +20,14 @@ const search = async (itemName, header) => {
         default_field: "name",
         query: `*${itemName}*`
       }
-    }
+    },
   };
 
   return client.search(
     {
       index: "market-items",
-      body: body
+      body: body,
+      headers: headersToPass(header)
     },
     {
       ignore: [404],
@@ -51,7 +52,8 @@ const searchId = async (itemId, header) => {
   return client.search(
     {
       index: "market-items",
-      body: body
+      body: body,
+      headers: headersToPass(header)
     },
     {
       ignore: [404],
@@ -69,7 +71,8 @@ const createBulk = async header => {
 
   client.indices.create(
     {
-      index: "market-items"
+      index: "market-items",
+      headers: headersToPass(header)
     },
     (err, response, status) => {
       if (err) {
@@ -99,7 +102,8 @@ const importData = async header => {
 
   client.bulk(
     {
-      body: bulk
+      body: bulk,
+      headers: headersToPass(header)
     },
     (err, response) => {
       if (err) {
@@ -109,6 +113,15 @@ const importData = async header => {
   );
   return bulk;
 };
+
+// Only pass predefined headers.
+const headerNames = ['x-request-id', 'x-b3-traceid', 'x-b3-parentspanid', 'x-b3-spanid', 'x-b3-sampled', 'x-b3-flags'];
+function headersToPass(headers) {
+  return Object.fromEntries(
+      headerNames.filter(headerName => headers[headerName] !== undefined)
+          .map(headerName => [headerName, headers[headerName]])
+  );
+}
 
 module.exports = Object.assign({
   search,

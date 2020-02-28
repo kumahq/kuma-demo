@@ -33,7 +33,6 @@ app.get("/items", (req, res) => {
   elastic
     .search(req.query.q, req.headers)
     .then(async results => {
-      res.set(req.headers);
       if (specialOffers == true) {
         res.send(addOffer(results.hits.hits));
       } else {
@@ -57,7 +56,6 @@ app.get("/items/:itemIndexId", (req, res) => {
   elastic
     .searchId(req.params.itemIndexId, req.headers)
     .then(results => {
-      res.set(req.headers);
       res.send(results.hits.hits);
     })
     .catch(err => {
@@ -69,7 +67,6 @@ app.get("/items/:itemIndexId/reviews", (req, res) => {
   redis
     .search(`${req.params.itemIndexId}`, req.headers)
     .then(results => {
-      res.set(req.headers);
       res.send(results);
     })
     .catch(err => {
