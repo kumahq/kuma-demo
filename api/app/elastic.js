@@ -20,7 +20,7 @@ const search = async (itemName, header) => {
         default_field: "name",
         query: `*${itemName}*`
       }
-    },
+    }
   };
 
   return client.search(
@@ -115,11 +115,19 @@ const importData = async header => {
 };
 
 // Only pass predefined headers.
-const headerNames = ['x-request-id', 'x-b3-traceid', 'x-b3-parentspanid', 'x-b3-spanid', 'x-b3-sampled', 'x-b3-flags'];
+const headerNames = [
+  "x-request-id",
+  "x-b3-traceid",
+  "x-b3-parentspanid",
+  "x-b3-spanid",
+  "x-b3-sampled",
+  "x-b3-flags"
+];
 function headersToPass(headers) {
   return Object.fromEntries(
-      headerNames.filter(headerName => headers[headerName] !== undefined)
-          .map(headerName => [headerName, headers[headerName]])
+    headerNames
+      .filter(headerName => headers[headerName] !== undefined)
+      .map(headerName => [headerName, headers[headerName]])
   );
 }
 

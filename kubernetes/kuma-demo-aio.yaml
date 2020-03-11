@@ -17,6 +17,8 @@ kind: Service
 metadata:
   namespace: kuma-demo
   name: elasticsearch
+  annotations:
+    80.service.kuma.io/protocol: "http"
   labels:
     component: elasticsearch
 spec:
@@ -148,6 +150,8 @@ kind: Service
 metadata:
   name: backend
   namespace: kuma-demo
+  annotations:
+    3001.service.kuma.io/protocol: "http"
 spec:
   selector:
     app: kuma-demo-backend
@@ -258,6 +262,7 @@ metadata:
   name: frontend
   namespace: kuma-demo
   annotations:
+    80.service.kuma.io/protocol: "http"
     ingress.kubernetes.io/service-upstream: "true"
 spec:
   selector:
