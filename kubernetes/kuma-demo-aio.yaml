@@ -175,7 +175,7 @@ spec:
         env: prod
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v1
+      - image: kvn0218/kuma-demo-be:v2
         name: kuma-be
         env:
         - name: ES_HOST
@@ -208,7 +208,7 @@ spec:
         env: intg
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v1
+      - image: kvn0218/kuma-demo-be:v2
         name: kuma-be
         env:
         - name: ES_HOST
@@ -239,7 +239,7 @@ spec:
         env: dev
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v1
+      - image: kvn0218/kuma-demo-be:v2
         name: kuma-be
         env:
         - name: ES_HOST
