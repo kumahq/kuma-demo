@@ -18,4 +18,4 @@ RUN npm run build
 RUN apk add curl jq
 
 EXPOSE 8080
-CMD [ "http-server", "dist" ]
+ENTRYPOINT [ "http-server", "dist"]

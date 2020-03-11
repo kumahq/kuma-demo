@@ -253,48 +253,6 @@ spec:
         - containerPort: 3001
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: demo-app-config
-  namespace: kuma-demo
-data:
-  nginx.conf: |
-    user  nginx;
-    worker_processes  1;
-    error_log  /var/log/nginx/error.log warn;
-    pid        /var/run/nginx.pid;
-    events {
-        worker_connections  1024;
-    }
-    http {
-        default_type  application/octet-stream;
-        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                          '$status $body_bytes_sent "$http_referer" '
-                          '"$http_user_agent" "$http_x_forwarded_for"';
-        access_log  /var/log/nginx/access.log  main;
-        keepalive_timeout  65;
-        upstream frontend {
-            server localhost:8080;
-        }
-        upstream backend {
-            server backend:3001;
-            keepalive_timeout 0s;
-        }
-        server {
-            listen       80;
-            server_name  localhost;
-            location /items {
-                proxy_pass http://backend;
-                proxy_http_version 1.1;
-            }
-            location / {
-                proxy_pass http://frontend;
-                proxy_http_version 1.1;
-            }
-        }
-    }
----
-apiVersion: v1
 kind: Service
 metadata:
   name: frontend
@@ -307,6 +265,7 @@ spec:
   ports:
   - name: http
     port: 80
+    targetPort: 8080
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -328,18 +287,7 @@ spec:
         env: prod
     spec:
       containers:
-      - image: nginx
-        name: nginx
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: demo-app-config
-          mountPath: /etc/nginx/
       - name: kuma-fe
-        image: kvn0218/kuma-demo-fe:kubecon
+        image: kvn0218/kuma-demo-fe:http-server
+        args: ["-P", "http://backend:3001"]
         imagePullPolicy: IfNotPresent
-      volumes:
-      - name: demo-app-config
-        configMap:
-          name: demo-app-config
