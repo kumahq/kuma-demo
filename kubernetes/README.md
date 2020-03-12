@@ -92,28 +92,28 @@ The items on the front page are pulled from the Elasticsearch service. While the
 The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
 
 ```bash
-$ wget https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
---2020-01-13 11:56:39--  https://kong.bintray.com/kuma/kuma-0.3.2-darwin-amd64.tar.gz
+$ wget https://kong.bintray.com/kuma/kuma-0.4.0-darwin-amd64.tar.gz
+--2020-01-13 11:56:39--  https://kong.bintray.com/kuma/kuma-0.4.0-darwin-amd64.tar.gz
 Resolving kong.bintray.com (kong.bintray.com)... 52.41.227.164, 34.214.70.158
 Connecting to kong.bintray.com (kong.bintray.com)|52.41.227.164|:443... connected.
 HTTP request sent, awaiting response... 302
-Location: https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f [following]
---2020-01-13 11:56:40--  https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.3.2-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f
+Location: https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.4.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f [following]
+--2020-01-13 11:56:40--  https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1578888519~hmac=dafbee4fdd1670010d54e0e1d4e234a62b1ff0c74d503196bd82fde5ffbce7d8&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.4.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1_nPLxaZ2QotUT46adiCblIFpbPK7YYm7ib-GJ62wBQA77ydUDRL8FW8kMtC860-claI5VX3M_6Ms8YUPbPWYwpciVi2cBFLFc96wd9RAVomgiq_IDfvwxT&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f
 Resolving akamai.bintray.com (akamai.bintray.com)... 173.222.181.233
 Connecting to akamai.bintray.com (akamai.bintray.com)|173.222.181.233|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 48354601 (46M) [application/gzip]
-Saving to: ‘kuma-0.3.2-darwin-amd64.tar.gz’
+Saving to: ‘kuma-0.4.0-darwin-amd64.tar.gz’
 
-kuma-0.3.2-darwin-amd64.tar.gz      100%[===================================================================>]  46.11M  5.36MB/s    in 9.3s
+kuma-0.4.0-darwin-amd64.tar.gz      100%[===================================================================>]  46.11M  5.36MB/s    in 9.3s
 
-2020-01-13 11:56:50 (4.96 MB/s) - ‘kuma-0.3.2-darwin-amd64.tar.gz’ saved [48354601/48354601]
+2020-01-13 11:56:50 (4.96 MB/s) - ‘kuma-0.4.0-darwin-amd64.tar.gz’ saved [48354601/48354601]
 ```
 
 ### 5. Unbundle the files to get the following components:
 
 ```bash
-$ tar xvzf kuma-0.3.2-darwin-amd64.tar.gz
+$ tar xvzf kuma-0.4.0-darwin-amd64.tar.gz
 x ./
 x ./README
 x ./bin/
