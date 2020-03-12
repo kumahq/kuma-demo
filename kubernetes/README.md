@@ -69,7 +69,7 @@ Check the pods are up and running by checking the `kuma-demo` namespace
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-v6g88                                1/1     Running   0          32s
-kuma-demo-app-7bb5d85c8c-8kl2z          2/2     Running   0          30s
+kuma-demo-app-7bb5d85c8c-8kl2z          1/1     Running   0          30s
 kuma-demo-backend-v0-7dcb8dc8fd-rq798   1/1     Running   0          31s
 redis-master-5b5978b77f-pmhnz           1/1     Running   0          32s
 ```
@@ -199,7 +199,7 @@ And check the pods are up and running again with an additional container. The ad
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-5snv2                                2/2     Running   0          37s
-kuma-demo-app-7bb5d85c8c-5sqxl          3/3     Running   0          37s
+kuma-demo-app-7bb5d85c8c-5sqxl          2/2     Running   0          37s
 kuma-demo-backend-v0-7dcb8dc8fd-7ttjm   2/2     Running   0          37s
 redis-master-5b5978b77f-hwjvd           2/2     Running   0          37s
 ```
@@ -433,7 +433,7 @@ and check all the pods are running like this:
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
 es-v6t5t                                2/2     Running   0          5h56m
-kuma-demo-app-85bb496b68-ccv2f          3/3     Running   0          5h56m
+kuma-demo-app-85bb496b68-ccv2f          2/2     Running   0          5h56m
 kuma-demo-backend-v0-bd9984f8f-d9tl7    2/2     Running   0          5h56m
 kuma-demo-backend-v1-554c4d85c4-trt67   2/2     Running   0          16m
 kuma-demo-backend-v2-6b6bc8f585-4qtjw   2/2     Running   0          16m
@@ -630,76 +630,64 @@ NUM_REQ    NUM_SPECIAL_OFFERS
 ```
 Once again, our `route-2` traffic routing policy triumphs. In the scenario where one route has more tags, Kuma will prioritize that route.
 
-### 25. Deploying Prometheus on Kubernetes
+### 25. Deploying Prometheus and Grafana on Kubernetes
 
-You can utilize Prometheus to scrape metrics from Kuma mesh. But before we can do so, first we need to deploy Prometheus in our Kubernetes environment. This demo will be using [Helm](https://helm.sh/) to do so. First, you need to add a chart repository. One popular starting location is the official Helm stable charts:
+Kuma supports Prometheus to scrape metrics and official [Grafana dashboards](https://grafana.com/orgs/konghq) to visualize the data. It is easily achievable by us installing all necessary components with `kumactl`:
 
 ```bash
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-"stable" has been added to your repositories
+$ ./kumactl install metrics | kubectl apply -f -
+namespace/kuma-metrics created
+podsecuritypolicy.policy/grafana created
+configmap/grafana created
+configmap/prometheus-alertmanager created
+configmap/provisioning-datasource created
+configmap/provisioning-dashboards created
+configmap/prometheus-server created
+persistentvolumeclaim/prometheus-alertmanager created
+persistentvolumeclaim/prometheus-server created
+serviceaccount/prometheus-alertmanager created
+serviceaccount/prometheus-kube-state-metrics created
+serviceaccount/prometheus-node-exporter created
+serviceaccount/prometheus-pushgateway created
+serviceaccount/prometheus-server created
+serviceaccount/grafana created
+clusterrole.rbac.authorization.k8s.io/prometheus-alertmanager created
+clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrole.rbac.authorization.k8s.io/prometheus-pushgateway created
+clusterrole.rbac.authorization.k8s.io/prometheus-server created
+clusterrole.rbac.authorization.k8s.io/grafana-clusterrole created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-alertmanager created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-pushgateway created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-server created
+clusterrolebinding.rbac.authorization.k8s.io/grafana-clusterrolebinding created
+role.rbac.authorization.k8s.io/grafana created
+rolebinding.rbac.authorization.k8s.io/grafana created
+service/prometheus-alertmanager created
+service/prometheus-kube-state-metrics created
+service/prometheus-node-exporter created
+service/prometheus-pushgateway created
+service/prometheus-server created
+service/grafana created
+daemonset.apps/prometheus-node-exporter created
+deployment.apps/grafana created
+deployment.apps/prometheus-alertmanager created
+deployment.apps/prometheus-kube-state-metrics created
+deployment.apps/prometheus-pushgateway created
+deployment.apps/prometheus-server created
 ```
 
-To install the Prometheus chart, you can run the helm install command. First, update the chart repositories and then install the Prometheus chart.
+To check everything is up and running correctly, you can check the pods in the new `kuma-metrics` namespace:
+
 ```bash
-$ helm repo update
-Hang tight while we grab the latest from your chart repositories...
-...Successfully got an update from the "stable" chart repository
-Update Complete. ⎈ Happy Helming!⎈
-```
-And
-```bash
-$ helm install kuma-prometheus stable/prometheus
-NAME: kuma-prometheus
-LAST DEPLOYED: Wed Jan  8 21:40:22 2020
-NAMESPACE: default
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
-kuma-prometheus-server.default.svc.cluster.local
-
-
-Get the Prometheus server URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9090
-
-
-The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
-kuma-prometheus-alertmanager.default.svc.cluster.local
-
-
-Get the Alertmanager URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9093
-#################################################################################
-######   WARNING: Pod Security Policy has been moved to a global property.  #####
-######            use .Values.podSecurityPolicy.enabled with pod-based      #####
-######            annotations                                               #####
-######            (e.g. .Values.nodeExporter.podSecurityPolicy.annotations) #####
-#################################################################################
-
-
-The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
-kuma-prometheus-pushgateway.default.svc.cluster.local
-
-
-Get the PushGateway URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9091
-
-For more information on running Prometheus, visit:
-https://prometheus.io/
-```
-Lastly, get pods in your `default` namespace ot check that Prometheus has been deployed successfully.
-```bash
-$ kubectl get pods -n default
-NAME                                                  READY   STATUS    RESTARTS   AGE
-kuma-prometheus-alertmanager-567646f954-xc8lq         2/2     Running   0          2m9s
-kuma-prometheus-kube-state-metrics-5b487fb4c7-j4xl2   1/1     Running   0          2m9s
-kuma-prometheus-node-exporter-kkrss                   1/1     Running   0          2m9s
-kuma-prometheus-pushgateway-fc4d9657f-6qx6n           1/1     Running   0          2m9s
-kuma-prometheus-server-66fdb4cc9d-qt44v               2/2     Running   0          2m9s
+$ kubectl get pods -n kuma-metrics
+NAME                                            READY   STATUS    RESTARTS   AGE
+grafana-6c44dc568-frkj6                         1/1     Running   0          82s
+prometheus-alertmanager-79d5747fd4-svgrp        2/2     Running   0          82s
+prometheus-kube-state-metrics-85444db4f-zxqqk   1/1     Running   0          82s
+prometheus-node-exporter-56wd6                  1/1     Running   0          82s
+prometheus-pushgateway-6f5d78bc7f-fswxh         1/1     Running   0          82s
+prometheus-server-77c8754d9c-q954g              3/3     Running   0          82s
 ```
 
 ### 26. Enable Prometheus metrics on the `mesh` object
@@ -720,7 +708,7 @@ spec:
 EOF
 ```
 
-### 27. Delete all existing pods in `kuma-demo` so it restarts
+### 27. Delete all existing pods in `kuma-demo` so pods restarts with necessary labels
 
 ```bash
 $ kubectl delete pods --all -n kuma-demo
@@ -732,23 +720,24 @@ pod "kuma-demo-backend-v2-dffb4bffd-cxshc" deleted
 pod "redis-master-6d4cf995c5-ss2j8" deleted
 ```
 
-### 28. Port-forward the Prometheus server pod to access the GUI
+### 28. Port-forward the Grafana server pod to access the GUI
 
-<pre><code>$ kubectl port-forward <b>${PROMETHEUS_SERVER_POD_NAME}</b> -n default 9090
-Forwarding from 127.0.0.1:9090 -> 9090
-Forwarding from [::1]:9090 -> 9090
+<pre><code>$ kubectl port-forward <b>${GRAFANA_SERVER_POD_NAME}</b> -n kuma-metrics 3000
+Forwarding from 127.0.0.1:3000 -> 3000
+Forwarding from [::1]:3000 -> 3000
 </code></pre>
 
-### 29. Access Prometheus dashboard to query metrics
+### 29. Access Grafana dashboard to visualize metrics
 
-You can visit the [Prometheus dashboard](http://localhost:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh. In the expression search bar, type in `envoy_http_downstream_cx_tx_bytes_total` to see one of many type of metrics that can be found.
+You can visit the [Grafana dashboard](http://localhost:3000/) to query the metrics that Prometheus is scraping from our Kuma mesh. If you are prompted to login, just use `admin:admin` as the username and password.
 
-This is what the query on `envoy_http_downstream_cx_tx_bytes_total` will return:
-![Prometheus Kuma](https://i.imgur.com/XaUBTlk.png "Prometheus Dashboard on Kuma")
+![grafana-dashboard](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
 
-### 30. Visualize mesh with Kuma GUI
+### 30. More visualizations with Kuma GUI
 
 Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane pod. We port-forwarded this port [earlier](#10-now-we-will-port-forward-the-kuma-control-plane-so-we-can-access-it-with-kumactl) so now we can access the GUI at [http://localhost:5683/](http://localhost:5683/).
+
+![kuma-gui](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/docs/0.3.2/gui-mesh-overview.png?raw=true)
 
 ### 31. Kong Gateway Integration 
 
