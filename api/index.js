@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.set(req.headers);
   res.send(
-    "(v1) Hello World! Marketplace with sales and reviews made with <3 by the OCTO team at Kong Inc."
+    "Hello World! Marketplace with sales and reviews made with <3 by the OCTO team at Kong Inc."
   );
 });
 
@@ -44,8 +44,13 @@ app.get("/items", (req, res) => {
     });
 });
 
-let addOffer = arr => {
+const addOffer = arr => {
   let items = arr;
+
+  if (items.length == 0) {
+    return items;
+  }
+
   for (i = 0; i < totalOffers; i++) {
     items[i]._source.specialOffer = true;
   }

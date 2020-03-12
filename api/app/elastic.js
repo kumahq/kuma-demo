@@ -1,17 +1,13 @@
 const items = require("../db/items.json");
 const elasticsearch = require("elasticsearch");
 
-const createClient = async () => {
-  return elasticsearch.Client({
-    hosts: [process.env.ES_HOST || `http://localhost:9200`],
-    maxRetries: 30,
-    requestTimeout: 30000
-  });
-};
+const client = elasticsearch.Client({
+  hosts: [process.env.ES_HOST || `http://localhost:9200`],
+  maxRetries: 5,
+  requestTimeout: 60000
+});
 
 const search = async (itemName, header) => {
-  let client = await createClient();
-
   let body = {
     size: 200,
     from: 0,
@@ -31,7 +27,7 @@ const search = async (itemName, header) => {
     },
     {
       ignore: [404],
-      maxRetries: 1
+      maxRetries: 3
     },
     (err, { body }) => {
       if (err) console.log(err);
@@ -40,7 +36,6 @@ const search = async (itemName, header) => {
 };
 
 const searchId = async (itemId, header) => {
-  let client = await createClient();
   let body = {
     query: {
       match: {
@@ -66,7 +61,6 @@ const searchId = async (itemId, header) => {
 };
 
 const createBulk = async header => {
-  let client = await createClient();
   let bulk = [];
 
   client.indices.create(
@@ -97,7 +91,6 @@ const createBulk = async header => {
 };
 
 const importData = async header => {
-  let client = await createClient();
   const bulk = await createBulk();
 
   client.bulk(
@@ -123,13 +116,19 @@ const headerNames = [
   "x-b3-sampled",
   "x-b3-flags"
 ];
-function headersToPass(headers) {
-  return Object.fromEntries(
-    headerNames
-      .filter(headerName => headers[headerName] !== undefined)
-      .map(headerName => [headerName, headers[headerName]])
-  );
-}
+
+const headersToPass = async headers => {
+  let headerArr = headerNames
+    .filter(headerName => headers[headerName] !== undefined)
+    .map(headerName => [headerName, headers[headerName]]);
+
+  return headerArr.length == 0 ? {} : headerArr.reduce(withObjectAssign, {});
+};
+
+// Alternative to Object.fromEntries
+const withObjectAssign = (object, [key, value]) => {
+  return Object.assign(object, { [key]: value });
+};
 
 module.exports = Object.assign({
   search,
