@@ -12,86 +12,162 @@ metadata:
   name: elasticsearch
   namespace: kuma-demo
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
+  name: elasticsearch-master
   namespace: kuma-demo
-  name: elasticsearch
-  annotations:
-    80.service.kuma.io/protocol: "http"
   labels:
-    component: elasticsearch
+    app: "elasticsearch-master"
+  annotations:
+    {}
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
-    component: elasticsearch
+    app: "elasticsearch-master"
   ports:
   - name: http
+    protocol: TCP
     port: 80
     targetPort: 9200
-  type: ClusterIP
+  - name: transport
+    protocol: TCP
+    port: 9300
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
-  name: es
+  name: elasticsearch-master
   namespace: kuma-demo
   labels:
-    component: elasticsearch
+    app: "elasticsearch-master"
+  annotations:
+    esMajorVersion: "7"
 spec:
+  serviceName: elasticsearch-master
+  selector:
+    matchLabels:
+      app: "elasticsearch-master"
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-master
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100M
   template:
     metadata:
+      name: "elasticsearch-master"
       labels:
-        component: elasticsearch
+        app: "elasticsearch-master"
+      annotations:
     spec:
-      serviceAccount: elasticsearch
+      terminationGracePeriodSeconds: 120
+      volumes:
       initContainers:
-      - name: init-sysctl
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+      - name: configure-sysctl
         securityContext:
+          runAsUser: 0
           privileged: true
+        image: "kvn0218/new-elastic"
+        imagePullPolicy: "Always"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        resources:
+          {}
       containers:
-      - name: es
+      - name: "elasticsearch"
         securityContext:
           capabilities:
             add:
               - IPC_LOCK
-        image: kvn0218/kuma-elastic-kubernetes:latest
-        env:
-        - name: KUBERNETES_CA_CERTIFICATE_FILE
-          value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: "CLUSTER_NAME"
-          value: "myesdb"
-        - name: "DISCOVERY_SERVICE"
-          value: "elasticsearch"
-        - name: NODE_MASTER
-          value: "true"
-        - name: NODE_DATA
-          value: "true"
-        - name: HTTP_ENABLE
-          value: "true"
-        - name: NETWORK_HOST
-          value: "0.0.0.0"
+        image: "kvn0218/new-elastic"
+        imagePullPolicy: "Always"
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                #!/usr/bin/env bash -e
+                # If the node is starting up wait for the cluster to be ready (request params: 'wait_for_status=yellow&timeout=1s' )
+                # Once it has started only check that the node itself is responding
+                START_FILE=/tmp/.es_start_file
+
+                http () {
+                    local path="${1}"
+                    if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
+                      BASIC_AUTH="-u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
+                    else
+                      BASIC_AUTH=''
+                    fi
+                    curl -XGET -s -k --fail ${BASIC_AUTH} http://127.0.0.1:9200${path}
+                }
+
+                if [ -f "${START_FILE}" ]; then
+                    echo 'Elasticsearch is already running, lets check the node is healthy and there are master nodes available'
+                    http "/_cluster/health?timeout=0s"
+                else
+                    echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=yellow&timeout=1s" )'
+                    if http "/_cluster/health?wait_for_status=yellow&timeout=1s" ; then
+                        touch ${START_FILE}
+                        exit 0
+                    else
+                        echo 'Cluster is not yet ready (request params: "wait_for_status=yellow&timeout=1s" )'
+                        exit 1
+                    fi
+                fi
         ports:
-        - containerPort: 9200
-          name: http
-          protocol: TCP
-        - containerPort: 9300
-          name: transport
-          protocol: TCP
+        - name: http
+          containerPort: 9200
+        - name: transport
+          containerPort: 9300
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512M
+          requests:
+            cpu: 100m
+            memory: 512M
+        env:
+          - name: KUBERNETES_CA_CERTIFICATE_FILE
+            value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: cluster.initial_master_nodes
+            value: "elasticsearch-master-0,"
+          - name: discovery.seed_hosts
+            value: "elasticsearch-master"
+          - name: cluster.name
+            value: "elasticsearch"
+          - name: network.host
+            value: "0.0.0.0"
+          - name: ES_JAVA_OPTS
+            value: "-Xmx128m -Xms128m"
+          - name: node.data
+            value: "true"
+          - name: node.ingest
+            value: "true"
+          - name: node.master
+            value: "true"
         volumeMounts:
-        - mountPath: /data
-          name: storage
-      volumes:
-      - name: storage
-        emptyDir: {}
+          - name: "elasticsearch-master"
+            mountPath: /data
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -183,7 +259,7 @@ spec:
         name: kuma-be
         env:
         - name: ES_HOST
-          value: http://elasticsearch:80
+          value: http://elasticsearch-master:80
         - name: ES_SPECIAL_OFFER
           value: "false"
         - name: REDIS_HOST
@@ -216,7 +292,7 @@ spec:
         name: kuma-be
         env:
         - name: ES_HOST
-          value: http://elasticsearch:80
+          value: http://elasticsearch-master:80
         - name: REDIS_HOST
           value: redis
         imagePullPolicy: IfNotPresent
@@ -247,7 +323,7 @@ spec:
         name: kuma-be
         env:
         - name: ES_HOST
-          value: http://elasticsearch:80
+          value: http://elasticsearch-master:80
         - name: ES_TOTAL_OFFER
           value: "2"
         - name: REDIS_HOST
