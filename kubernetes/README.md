@@ -45,6 +45,10 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
     - [Traffic Log](#traffic-log)
       - [Setup](#setup-1)
       - [Adding Logging Policy](#adding-logging-policy)
+    - [Traffic Trace](#traffic-trace)
+      - [Jaeger Installation](#jaeger-installation)
+      - [Adding Traffic Tracing Policy](#adding-traffic-tracing-policy)
+      - [Visualizing Traces](#visualizing-traces)
 
 ## Setup Environment
 
@@ -488,7 +492,7 @@ prometheus-pushgateway-6c894bb86f-2gflz          1/1     Running   0          2m
 prometheus-server-65895587f-kqzrf                3/3     Running   0          2m18s
 ```
 
-Once the pods are all up and running, we need to do two more steps to get metrics to work. First, we need to edit the Kuma Mesh object to include the `metrics: prometheus` section you see below. It is not included by default so you can edit the Mesh object using kubectl like so:
+Once the pods are all up and running, we need to edit the Kuma Mesh object to include the `metrics: prometheus` section you see below. It is not included by default so you can edit the Mesh object using kubectl like so:
 
 ```bash
 $ cat <<EOF | kubectl apply -f - 
@@ -507,18 +511,7 @@ EOF
 mesh.kuma.io/default configured
 ```
 
-After configuring the mesh object, delete the existing pods (or perform a rolling update) in `kuma-demo` namesapce so they restarts with necessary metric labels that the control-plane will add: 
-
-```bash
-$ kubectl delete pods --all -n kuma-demo
-pod "es-s86kd" deleted
-pod "ingress-kong-7f4f5845b6-tpn8p" deleted
-pod "kuma-demo-app-656c95dcb5-twdl2" deleted
-pod "kuma-demo-backend-v0-99c9878b6-vfsdc" deleted
-pod "redis-master-657c58c859-prldh" deleted
-```
-
-Once those pods are back up, you can port-forward the Grafana server pod on the `kuma-metrics` namespace to acess the GUI:
+Afterwards, port-forward the Grafana server pod on the `kuma-metrics` namespace to acess the GUI:
 
 ```bash
 $ kubectl port-forward grafana-c987548d6-5l7h7 -n kuma-metrics 3000
@@ -526,7 +519,7 @@ Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 ```
 
-You can visit the [Grafana dashboard](http://localhost:3000/) to query the metrics that Prometheus is scraping from our Kuma mesh. If you are prompted to login, just use `admin:admin` as the username and password.
+Visit the [Grafana dashboard](http://localhost:3000/) to query the metrics that Prometheus is scraping from Kuma mesh. If you are prompted to login, just use `admin:admin` as the username and password.
 
 ![grafana-dashboard](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
 
@@ -919,7 +912,7 @@ configmap/logstash-config created
 deployment.apps/logstash created
 ```
 
-This logstash service is configured to send logs to our Loggly instance at https://kumademo.loggly.com/. To use it yourself, you will need to create a Loggly account and update the API key listed in the [kuma-demo-log YAML file](/kubernetes/kuma-demo-log.yaml#33).
+This logstash service is configured to send logs to our [Loggly](https://www.loggly.com/) instance at https://kumademo.loggly.com/. To use it yourself, you will need to create a free Loggly account and update the API key listed in the [kuma-demo-log YAML file](/kubernetes/kuma-demo-log.yaml#33).
 
 #### Adding Logging Policy
 
@@ -968,3 +961,110 @@ spec:
     backend: logstash
 EOF
 ```
+
+If you visit your personal Loggly instance, you will see the logs appear there.
+
+<!-- Back to top for web browser usability  -->
+<br/>
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+<br/>
+
+### Traffic Trace
+
+With the TrafficTrace policy you can configure tracing on every Kuma DP that belongs to the Mesh. Note that tracing operates on L7 HTTP traffic, so make sure that selected dataplanes are configured with HTTP Protocol.
+
+#### Jaeger Installation
+
+We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-source tracing tool. You can use popular alternatives like Zipkin alongside Kuma.
+
+This Jaeger template uses an in-memory storage with a limited functionality for local testing and development. The image used defaults to the latest version released. Do not use this template in production environments. Note that functionality may differ from the pinned docker versions for production. Install everything in the current namespace:
+
+```bash
+$ kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
+
+deployment.extensions/jaeger created
+service/jaeger-query created
+service/jaeger-collector created
+service/jaeger-agent created
+service/zipkin created
+```
+
+#### Adding Traffic Tracing Policy
+
+Let's enable traffic metrics by editing our mesh resource like so:
+
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: Mesh
+metadata:
+  name: default
+spec:
+  mtls:
+    ca:
+      builtin: {}
+    enabled: true
+  metrics:
+    prometheus: {}
+  tracing:
+    defaultBackend: jaeger
+    backends:
+    - name: jaeger
+      sampling: 100.0 
+      zipkin:
+        url: http://jaeger-collector.default:9411/api/v1/spans
+EOF
+
+mesh.kuma.io/default configured
+```
+
+Once you have tracing enabled on the mesh, add a tracing policy on the services you want to trace. We will be tracing all services with the policy below:
+
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: TrafficTrace
+mesh: default
+metadata:
+  namespace: kuma-demo
+  name: trace-all-traffic
+spec:
+  selectors:
+  - match:
+      service: '*'
+  conf:
+    backend: jaeger
+EOF
+
+traffictrace.kuma.io/trace-all-traffic created
+```
+
+You need to restart Kuma DP for tracing configuration to be applied. This limitation will be solved in the next versions of Kuma. 
+
+```bash
+$ kubectl delete pods -n kuma-demo --all
+pod "es-d65zg" deleted
+pod "ingress-kong-65bb78647-k88n2" deleted
+pod "kuma-demo-app-869cd7cfbf-d6rm7" deleted
+pod "kuma-demo-backend-v0-bbdfdd5f9-57pkx" deleted
+pod "redis-master-6d4cf995c5-wrbl2" deleted
+```
+
+#### Visualizing Traces
+
+After generating some traffic in the mesh, you can access the Jaeger dashboard using the following command to visualize the traces:
+
+```bash
+$ minikube service jaeger-query --url -p kuma-demo
+http://192.168.64.62:30911
+```
+
+
+<!-- Back to top for web browser usability  -->
+<br/>
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+<br/>
