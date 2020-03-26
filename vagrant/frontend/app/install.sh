@@ -16,14 +16,5 @@ EOF
 curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 apt-get install -y nodejs
 
-# Navigate to the frontend directory
-cd /home/vagrant/kuma-demo/frontend
-
 # Install dependencies to run the Vue app in background
-npm install forever http-server @vue/cli -g
-
-# Install dependencies for the Vue frontend applicaiton
-npm install
-
-# Build frontend application application
-npm run build
+npm install -g forever http-server
