@@ -1,7 +1,7 @@
 {
   "name": "kuma-marketplace-app",
   "version": "0.1.0",
-  "private": true,
+  "description": "A demo app to illustrate the capabilities and advantages of Kuma.",
   "scripts": {
     "setup": "(cd app && npm install); (cd api && npm install)",
     "api:elasticsearch": "docker run --name elasticsearch --rm -p 9200:9200 -p 9300:9300 --privileged kvn0218/kuma-elastic",
@@ -9,5 +9,19 @@
     "api:start": "cd api && npm run start",
     "app:start": "cd app && npm run serve",
     "app:build": "cd app && npm run build"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kong/kuma-demo.git"
+  },
+  "keywords": [
+    "service-mesh",
+    "kuma",
+    "kong"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Kong/kuma-demo/issues"
+  },
+  "homepage": "https://github.com/Kong/kuma-demo#readme"
 }
