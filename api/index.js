@@ -9,6 +9,11 @@ let totalOffers = process.env.ES_TOTAL_OFFER || 1;
 
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3001);
+app.set("etag", false);
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  next();
+});
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");

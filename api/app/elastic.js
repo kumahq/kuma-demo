@@ -1,13 +1,17 @@
 const items = require("../db/items.json");
 const elasticsearch = require("elasticsearch");
 
-const client = elasticsearch.Client({
-  hosts: [process.env.ES_HOST || `http://localhost:9200`],
-  maxRetries: 5,
-  requestTimeout: 60000
-});
+const createClient = async () => {
+  return elasticsearch.Client({
+    hosts: [process.env.ES_HOST || `http://localhost:9200`],
+    maxRetries: 30,
+    requestTimeout: 30000
+  });
+};
 
 const search = async (itemName, header) => {
+  let client = await createClient();
+
   let body = {
     size: 200,
     from: 0,
@@ -27,7 +31,7 @@ const search = async (itemName, header) => {
     },
     {
       ignore: [404],
-      maxRetries: 3
+      maxRetries: 1
     },
     (err, { body }) => {
       if (err) console.log(err);
@@ -36,6 +40,7 @@ const search = async (itemName, header) => {
 };
 
 const searchId = async (itemId, header) => {
+  let client = await createClient();
   let body = {
     query: {
       match: {
@@ -61,6 +66,7 @@ const searchId = async (itemId, header) => {
 };
 
 const createBulk = async header => {
+  let client = await createClient();
   let bulk = [];
 
   client.indices.create(
@@ -91,6 +97,7 @@ const createBulk = async header => {
 };
 
 const importData = async header => {
+  let client = await createClient();
   const bulk = await createBulk();
 
   client.bulk(
