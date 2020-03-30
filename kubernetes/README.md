@@ -77,8 +77,8 @@ Run the following command to deploy the marketplace application via [`bit.ly/dem
 ```bash
 $ kubectl apply -f https://bit.ly/demokuma
 namespace/kuma-demo created
-serviceaccount/elasticsearch created
-service/elasticsearch created
+serviceaccount/postgres created
+service/postgres created
 replicationcontroller/es created
 deployment.apps/redis-master created
 service/redis created
@@ -102,7 +102,7 @@ redis-master-657c58c859-9w98d          1/1     Running   0          63s
 ```
 
 The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) deploys our application across four pods:
-1. The first pod is an Elasticsearch service that stores all the items in our marketplace.
+1. The first pod is an Postgresql service that stores all the items in our marketplace.
 2. The second pod is the frontend application that will give you a GUI to query the items/reviews.
    * Throughout this guide, we will be port-forwarding this `kuma-demo-app-656c95dcb5-6pshm` pod to access the marketplace's frontend GUI. Please replace any reference of this pod with your pod's name.
 3. The third pod is a Node application that represents a backend.
@@ -312,10 +312,10 @@ Once kumactl is pointing to the correct control-plane, you can use it to inspect
 ```
 $ ./kumactl inspect dataplanes
 MESH      NAME                                             TAGS                                                                                                                      STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
-default   es-s86kd.kuma-demo                               component=elasticsearch protocol=http service=elasticsearch.kuma-demo.svc:80                                              Online   2h2m44s              2h2m43s            4               0
+default   es-s86kd.kuma-demo                               component=postgres protocol=http service=postgres.kuma-demo.svc:5432                                              Online   2h2m44s              2h2m43s            4               0
 default   kuma-demo-backend-v0-99c9878b6-vfsdc.kuma-demo   app=kuma-demo-backend env=prod pod-template-hash=99c9878b6 protocol=http service=backend.kuma-demo.svc:3001 version=v0    Online   2h2m48s              2h2m46s            4               0
 default   redis-master-657c58c859-prldh.kuma-demo          app=redis pod-template-hash=657c58c859 protocol=tcp role=master service=redis.kuma-demo.svc:6379 tier=backend             Online   2h2m47s              2h2m46s            4               0
-default   kuma-demo-app-656c95dcb5-twdl2.kuma-demo         app=kuma-demo-frontend env=prod pod-template-hash=656c95dcb5 protocol=http service=frontend.kuma-demo.svc:80 version=v8   Online   2h2m46s              2h2m45s            4               0
+default   kuma-demo-app-656c95dcb5-twdl2.kuma-demo         app=kuma-demo-frontend env=prod pod-template-hash=656c95dcb5 protocol=http service=frontend.kuma-demo.svc:8080 version=v8   Online   2h2m46s              2h2m45s            4               0
 
 ```
 
@@ -402,7 +402,7 @@ spec:
       - path: /
         backend:
           serviceName: frontend
-          servicePort: 80
+          servicePort: 8080
 EOF
 
 ingress.extensions/marketplace created
@@ -623,7 +623,7 @@ $ kubectl delete trafficpermission -n kuma-demo --all
 trafficpermission.kuma.io "everything" deleted
 ```
 
-Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Elasticsearch. By not providing any permissions to Redis, traffic won't be allowed to that service.
+Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Postgresql. By not providing any permissions to Redis, traffic won't be allowed to that service.
 
 ```bash
 $ cat <<EOF | kubectl apply -f -
@@ -639,7 +639,7 @@ spec:
       service: kong-proxy.kuma-demo.svc:80
   destinations:
   - match:
-      service: frontend.kuma-demo.svc:80
+      service: frontend.kuma-demo.svc:8080
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -650,7 +650,7 @@ metadata:
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:80
+      service: frontend.kuma-demo.svc:8080
   destinations:
   - match:
       service: backend.kuma-demo.svc:3001
@@ -660,19 +660,19 @@ kind: TrafficPermission
 mesh: default
 metadata:
   namespace: kuma-demo
-  name: backend-to-elasticsearch
+  name: backend-to-postgres
 spec:
   sources:
   - match:
       service: backend.kuma-demo.svc:3001
   destinations:
   - match:
-      service: elasticsearch.kuma-demo.svc:80
+      service: postgres.kuma-demo.svc:5432
 EOF
 
 trafficpermission.kuma.io/kong-to-frontend created
 trafficpermission.kuma.io/frontend-to-backend created
-trafficpermission.kuma.io/backend-to-elasticsearch created
+trafficpermission.kuma.io/backend-to-postgres created
 ```
 
 After we apply those three policies, use `kumactl` to check that the policies are in place:
@@ -680,7 +680,7 @@ After we apply those three policies, use `kumactl` to check that the policies ar
 $ kumactl get traffic-permissions
 MESH      NAME
 default   frontend-to-backend
-default   backend-to-elasticsearch
+default   backend-to-postgres
 default   kong-to-frontend
 ```
 
@@ -750,7 +750,7 @@ Check all the pods are running like this:
 ```bash
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
-elasticsearch-master-0                  2/2     Running   0          35m
+postgres-master-0                  2/2     Running   0          35m
 ingress-kong-7f4f5845b6-68c5s           3/3     Running   0          35m
 kuma-demo-app-c7b9f596c-9b8sz           2/2     Running   0          35m
 kuma-demo-backend-v0-7cdccd5b7c-nvcws   2/2     Running   0          35m
@@ -774,7 +774,7 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:80
+      service: frontend.kuma-demo.svc:8080
   destinations:
   - match:
       service: backend.kuma-demo.svc:3001
@@ -826,7 +826,7 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:80
+      service: frontend.kuma-demo.svc:8080
   destinations:
   - match:
       service: backend.kuma-demo.svc:3001

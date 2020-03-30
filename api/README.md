@@ -9,9 +9,9 @@ The backend API is built using [Node.js](https://nodejs.org/en/). It contains en
    npm install
    ```
 
-2. Run ElasticSearch on Docker:
+2. Run Postgresql on Docker:
    ```sh
-   docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+   docker run --rm -p 5432:5432 --name kuma-postgres -e POSTGRES_USER=kumademo -e POSTGRES_PASSWORD=kumademo -e POSTGRES_DB=kumademo kvn0218/postgres:latest
    ```
    
 3. Run Redis on Docker:

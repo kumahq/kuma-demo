@@ -1,11 +1,11 @@
 const redis = require("./app/redis");
-const elastic = require("./app/elastic");
+const postgresql = require("./app/postgresql");
 
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-let specialOffers = process.env.ES_SPECIAL_OFFER || true;
-let totalOffers = process.env.ES_TOTAL_OFFER || 1;
+let specialOffers = process.env.SPECIAL_OFFER || true;
+let totalOffers = process.env.TOTAL_OFFER || 1;
 
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3001);
@@ -30,26 +30,27 @@ app.get("/", (req, res) => {
 
 app.post("/upload", async (req, res) => {
   await redis.importData();
-  await elastic.importData();
-  res.end("Mock data updated in Redis and ES!");
+  await postgresql.importData();
+  res.end("Mock data updated in Redis and Postgresql!");
 });
 
-app.get("/items", (req, res) => {
-  elastic
-    .search(req.query.q, req.headers)
-    .then(async results => {
+app.get("/items", async (req, res) => {
+  postgresql
+    .search(req.query.q)
+    .then(async (results) => {
       if (specialOffers == true) {
-        res.send(addOffer(results.hits.hits));
+        res.send(addOffer(results.rows));
       } else {
-        res.send(results.hits.hits);
+        res.send(results.rows);
       }
     })
-    .catch(err => {
+    .catch((err) => {
+      console.log('catch err: ' + err);
       res.send(err);
     });
 });
 
-const addOffer = arr => {
+const addOffer = (arr) => {
   let items = arr;
 
   if (items.length == 0) {
@@ -57,29 +58,19 @@ const addOffer = arr => {
   }
 
   for (i = 0; i < totalOffers; i++) {
-    items[i]._source.specialOffer = true;
+    items[i].data.specialOffer = true;
   }
+
   return items;
 };
-
-app.get("/items/:itemIndexId", (req, res) => {
-  elastic
-    .searchId(req.params.itemIndexId, req.headers)
-    .then(results => {
-      res.send(results.hits.hits);
-    })
-    .catch(err => {
-      res.send(err);
-    });
-});
 
 app.get("/items/:itemIndexId/reviews", (req, res) => {
   redis
     .search(`${req.params.itemIndexId}`, req.headers)
-    .then(results => {
+    .then((results) => {
       res.send(results);
     })
-    .catch(err => {
+    .catch((err) => {
       res.send(err);
     });
 });

@@ -6,168 +6,57 @@ metadata:
   labels:
     kuma.io/sidecar-injection: enabled
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: elasticsearch
-  namespace: kuma-demo
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: elasticsearch-master
-  namespace: kuma-demo
-  labels:
-    app: "elasticsearch-master"
-  annotations:
-    {}
-spec:
-  type: ClusterIP
-  selector:
-    app: "elasticsearch-master"
-  ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: 9200
-  - name: transport
-    protocol: TCP
-    port: 9300
----
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: elasticsearch-master
+  name: postgres-master
   namespace: kuma-demo
   labels:
-    app: "elasticsearch-master"
-  annotations:
-    esMajorVersion: "7"
+    app: postgres
 spec:
-  serviceName: elasticsearch-master
   selector:
     matchLabels:
-      app: "elasticsearch-master"
+      app: postgres
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
-  volumeClaimTemplates:
-  - metadata:
-      name: elasticsearch-master
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100M
   template:
     metadata:
-      name: "elasticsearch-master"
       labels:
-        app: "elasticsearch-master"
-      annotations:
+        app: postgres
     spec:
-      terminationGracePeriodSeconds: 120
-      volumes:
-      initContainers:
-      - name: configure-sysctl
-        securityContext:
-          runAsUser: 0
-          privileged: true
-        image: "kvn0218/new-elastic"
-        imagePullPolicy: "Always"
-        command: ["sysctl", "-w", "vm.max_map_count=262144"]
-        resources:
-          {}
       containers:
-      - name: "elasticsearch"
-        securityContext:
-          capabilities:
-            add:
-              - IPC_LOCK
-        image: "kvn0218/new-elastic"
-        imagePullPolicy: "Always"
-        readinessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 3
-          timeoutSeconds: 5
-          exec:
-            command:
-              - sh
-              - -c
-              - |
-                #!/usr/bin/env bash -e
-                # If the node is starting up wait for the cluster to be ready (request params: 'wait_for_status=yellow&timeout=1s' )
-                # Once it has started only check that the node itself is responding
-                START_FILE=/tmp/.es_start_file
-
-                http () {
-                    local path="${1}"
-                    if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
-                      BASIC_AUTH="-u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
-                    else
-                      BASIC_AUTH=''
-                    fi
-                    curl -XGET -s -k --fail ${BASIC_AUTH} http://127.0.0.1:9200${path}
-                }
-
-                if [ -f "${START_FILE}" ]; then
-                    echo 'Elasticsearch is already running, lets check the node is healthy and there are master nodes available'
-                    http "/_cluster/health?timeout=0s"
-                else
-                    echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=yellow&timeout=1s" )'
-                    if http "/_cluster/health?wait_for_status=yellow&timeout=1s" ; then
-                        touch ${START_FILE}
-                        exit 0
-                    else
-                        echo 'Cluster is not yet ready (request params: "wait_for_status=yellow&timeout=1s" )'
-                        exit 1
-                    fi
-                fi
-        ports:
-        - name: http
-          containerPort: 9200
-        - name: transport
-          containerPort: 9300
+      - name: master
+        image: kvn0218/postgres:latest
+        env:
+        - name: POSTGRES_USER
+          value: kumademo
+        - name: POSTGRES_PASSWORD
+          value: kumademo
+        - name: POSTGRES_DB
+          value: kumademo
         resources:
-          limits:
-            cpu: 1000m
-            memory: 512M
           requests:
             cpu: 100m
-            memory: 512M
-        env:
-          - name: KUBERNETES_CA_CERTIFICATE_FILE
-            value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-          - name: NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: node.name
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: cluster.initial_master_nodes
-            value: "elasticsearch-master-0,"
-          - name: discovery.seed_hosts
-            value: "elasticsearch-master"
-          - name: cluster.name
-            value: "elasticsearch"
-          - name: network.host
-            value: "0.0.0.0"
-          - name: ES_JAVA_OPTS
-            value: "-Xmx128m -Xms128m"
-          - name: node.data
-            value: "true"
-          - name: node.ingest
-            value: "true"
-          - name: node.master
-            value: "true"
-        volumeMounts:
-          - name: "elasticsearch-master"
-            mountPath: /data
+            memory: 128Mi
+          limits:
+            cpu: 150m
+            memory: 256Mi
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: kuma-demo
+  labels:
+    app: postgres
+spec:
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -255,12 +144,12 @@ spec:
         env: prod
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v4
+      - image: kvn0218/kuma-demo-be:latest
         name: kuma-be
         env:
-        - name: ES_HOST
-          value: http://elasticsearch-master:80
-        - name: ES_SPECIAL_OFFER
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: SPECIAL_OFFER
           value: "false"
         - name: REDIS_HOST
           value: redis
@@ -288,11 +177,11 @@ spec:
         env: intg
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v4
+      - image: kvn0218/kuma-demo-be:latest
         name: kuma-be
         env:
-        - name: ES_HOST
-          value: http://elasticsearch-master:80
+        - name: POSTGRES_HOST
+          value: postgres    
         - name: REDIS_HOST
           value: redis
         imagePullPolicy: IfNotPresent
@@ -319,12 +208,12 @@ spec:
         env: dev
     spec:
       containers:
-      - image: kvn0218/kuma-demo-be:v4
+      - image: kvn0218/kuma-demo-be:latest
         name: kuma-be
         env:
-        - name: ES_HOST
-          value: http://elasticsearch-master:80
-        - name: ES_TOTAL_OFFER
+        - name: POSTGRES_HOST
+          value: postgres    
+        - name: TOTAL_OFFER
           value: "2"
         - name: REDIS_HOST
           value: redis
@@ -338,14 +227,14 @@ metadata:
   name: frontend
   namespace: kuma-demo
   annotations:
-    80.service.kuma.io/protocol: "http"
+    8080.service.kuma.io/protocol: "http"
     ingress.kubernetes.io/service-upstream: "true"
 spec:
   selector:
     app: kuma-demo-frontend
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: 8080
 ---
 apiVersion: apps/v1
@@ -369,6 +258,6 @@ spec:
     spec:
       containers:
       - name: kuma-fe
-        image: kvn0218/kuma-demo-fe:http-server
+        image: kvn0218/kuma-demo-fe:latest
         args: ["-P", "http://backend:3001"]
         imagePullPolicy: IfNotPresent
