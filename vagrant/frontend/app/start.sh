@@ -3,7 +3,7 @@
 set -e
 
 # Set environment variables for the Vue frontend application:
-export VUE_APP_ES_ENDPOINT=
+export VUE_APP_POSTGRES_ENDPOINT=
 export VUE_APP_REDIS_ENDPOINT=
 
 cd /home/vagrant/kuma-demo/frontend

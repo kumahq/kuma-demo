@@ -2,6 +2,16 @@
 
 set -e
 
+cat << "EOF"
+
+ ____  ____   ___  __  __ _____ _____ _   _ _____ _   _ ____  
+|  _ \|  _ \ / _ \|  \/  | ____|_   _| | | | ____| | | / ___| 
+| |_) | |_) | | | | |\/| |  _|   | | | |_| |  _| | | | \___ \ 
+|  __/|  _ <| |_| | |  | | |___  | | |  _  | |___| |_| |___) |
+|_|   |_| \_\\___/|_|  |_|_____| |_| |_| |_|_____|\___/|____/ 
+                                                                                                         
+EOF
+
 if [ -z "${PROMETHEUS_VERSION}" ]; then
   echo "Error: environment variable PROMETHEUS_VERSION is not set"
   exit 1
@@ -15,7 +25,7 @@ EOF
 mkdir /etc/prometheus /var/lib/prometheus
 
 # Get Prometheus
-wget https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz
+wget --quiet https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz
 
 # Unpack and copy binaries
 tar xzf prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz

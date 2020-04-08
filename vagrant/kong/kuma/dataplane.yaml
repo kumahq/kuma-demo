@@ -2,6 +2,7 @@ type: Dataplane
 mesh: default
 name: kong
 networking:
+  address: 10.0.0.1
   gateway:
     tags:
       service: kong

@@ -1,6 +1,6 @@
 # API
 
-The backend API is built using [Node.js](https://nodejs.org/en/). It contains endpoints that enables the user to query the Elasticsearch and Redis databases.
+The backend API is built using [Node.js](https://nodejs.org/en/). It contains endpoints that enables the user to query the PostgreSQL and Redis databases.
 
 ## Local Installation
 

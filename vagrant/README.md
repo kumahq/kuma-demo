@@ -63,7 +63,7 @@ This will start our demo marketplace application and Kuma split across multiple 
 
 1. The first machine hosts the Kuma control plane.
 2. The second machine will host Redis service that stores reviews for each item
-3. The third machine will host the Elasticsearch service that stores all the items in our marketplace
+3. The third machine will host the Postgresql service that stores all the items in our marketplace
 4. The fourth machine will host the Prometheus dashboard and the [kuma-prometheus-sd](https://kuma.io/docs/latest/policies/#traffic-metrics)
 5. The fifth machine will host our v0 backend application that handles the logic of our application
 6. The sixth machine will host our v1 backend application that handles the logic of our application with sales
@@ -78,7 +78,7 @@ Current machine states:
 
 kuma-control-plane        running (virtualbox)
 redis                     running (virtualbox)
-elastic                   running (virtualbox)
+postgresql                running (virtualbox)
 prometheus                running (virtualbox)
 backend                   running (virtualbox)
 backend-v1                running (virtualbox)
@@ -167,7 +167,7 @@ Once `kumactl` is pointing to the correct control-plane, you can use it to inspe
 $ ./kumactl inspect dataplanes
 MESH      NAME       TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
 default   redis      service=redis                Online   9m34s                9m33s              2               0
-default   elastic    service=elastic              Online   7m34s                7m33s              2               0
+default   postgresql    service=postgresql              Online   7m34s                7m33s              2               0
 default   backend    service=backend version=v0   Online   6m3s                 6m2s               3               0
 default   frontend   service=frontend             Online   2m46s                2m44s              3               0
 default   kong       service=kong                 Online   53s                  52s                3               0
@@ -329,7 +329,7 @@ $ kumactl delete traffic-permission permission-all
 deleted TrafficPermission "permission-all"
 ```
 
-Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Elasticsearch. By not providing any permissions to Redis, traffic won't be allowed to that service.
+Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Postgresql. By not providing any permissions to Redis, traffic won't be allowed to that service.
 ```bash
 $ cat <<EOF | kumactl apply -f - 
 type: TrafficPermission
@@ -361,14 +361,14 @@ and
 ```bash
 $ cat <<EOF | kumactl apply -f - 
 type: TrafficPermission
-name: backend-to-elasticsearch
+name: backend-to-postgresql
 mesh: default
 sources:
   - match:
       service: 'backend'
 destinations:
   - match:
-      service: 'elastic'
+      service: 'postgresql'
 EOF
 ```
 
@@ -377,7 +377,7 @@ After we apply those three policies, use `kumactl` to check that the policies ar
 $ kumactl get traffic-permissions
 MESH      NAME
 default   frontend-to-backend
-default   backend-to-elasticsearch
+default   backend-to-postgresql
 default   kong-to-frontend
 ```
 

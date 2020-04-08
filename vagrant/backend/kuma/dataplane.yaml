@@ -10,5 +10,5 @@ networking:
   outbound:
   - interface: :26379
     service: redis
-  - interface: :29200
-    service: elastic
+  - interface: :25432
+    service: postgresql
