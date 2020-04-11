@@ -15,14 +15,14 @@ This repository houses the demo application used to illustrate Kuma's extensive 
   - [Introduction](#introduction)
     - [Frontend](#frontend)
     - [Backend](#backend)
-    - [Postgresql](#postgresql)
+    - [PostgreSQL](#postgresql)
     - [Redis](#redis)
   - [Deployment](#deployment)
 
 ## Introduction
 [![][diagram]][diagram]
 
-The Kuma Demo Application is a clothing marketplace where you can browse listed items along with the reviews left by users. It consists of four components: [Vue frontend UI](#frontend), [Node backend API](#backend), [Postgresql](#Postgresql), and [Redis](#Redis).
+The Kuma Demo Application is a clothing marketplace where you can browse listed items along with the reviews left by users. It consists of four components: [Vue frontend UI](#frontend), [Node backend API](#backend), [PostgreSQL](#PostgreSQL), and [Redis](#Redis).
 
 ### Frontend
 
@@ -30,11 +30,11 @@ The frontend UI is built using [VuePress](https://vuepress.vuejs.org/) and the s
 
 ### Backend
 
-The backend API is built using [Node.js](https://nodejs.org/en/) and the source code can be found in the [api directory](api/README.md). It contains endpoints that enables the user to query the Postgresql and Redis databases.
+The backend API is built using [Node.js](https://nodejs.org/en/) and the source code can be found in the [api directory](api/README.md). It contains endpoints that enables the user to query the PostgreSQL and Redis databases.
 
-### Postgresql
+### PostgreSQL
 
-The Postgresql database is used to store all the items. THe list of items can be found in this [JSON file](api/db/items.json). Here is a sample of how each object in our list of items look:
+The PostgreSQL database is used to store all the items. THe list of items can be found in this [JSON file](api/db/items.json). Here is a sample of how each object in our list of items look:
 
 ```json
 ...
@@ -85,7 +85,7 @@ The Postgresql database is used to store all the items. THe list of items can be
 ...
 ```
 
-All this information will be saved in Postgresql **EXCEPT** the reviews. Reviews will be separated out and stored in Redis.
+All this information will be saved in PostgreSQL **EXCEPT** the reviews. Reviews will be separated out and stored in Redis.
 
 ### Redis
 

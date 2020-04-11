@@ -63,7 +63,7 @@ This will start our demo marketplace application and Kuma split across multiple 
 
 1. The first machine hosts the Kuma control plane.
 2. The second machine will host Redis service that stores reviews for each item
-3. The third machine will host the Postgresql service that stores all the items in our marketplace
+3. The third machine will host the PostgreSQL service that stores all the items in our marketplace
 4. The fourth machine will host the Prometheus dashboard and the [kuma-prometheus-sd](https://kuma.io/docs/latest/policies/#traffic-metrics)
 5. The fifth machine will host our v0 backend application that handles the logic of our application
 6. The sixth machine will host our v1 backend application that handles the logic of our application with sales
@@ -343,7 +343,7 @@ $ kumactl delete traffic-permission permission-all
 deleted TrafficPermission "permission-all"
 ```
 
-Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Postgresql. By not providing any permissions to Redis, traffic won't be allowed to that service.
+Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with PostgreSQL. By not providing any permissions to Redis, traffic won't be allowed to that service.
 
 ```bash
 $ cat <<EOF | kumactl apply -f -

@@ -6,7 +6,7 @@ const pool = new Pool({
   host: process.env.POSTGRES_HOST || "localhost",
   database: process.env.POSTGRES_DB || "kumademo",
   password: process.env.POSTGRES_PASSWORD || "kumademo",
-  port: process.env.POSTGRES_PORT_NUM || 5432,
+  port: process.env.POSTGRES_PORT_NUM || 5432, //POSTGRES_PORT environmental variable is taken on K8S
 });
 
 pool.on("error", (err, clients) => {

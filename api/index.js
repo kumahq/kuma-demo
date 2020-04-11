@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 app.post("/upload", async (req, res) => {
   await redis.importData();
   await postgresql.importData();
-  res.end("Mock data updated in Redis and Postgresql!");
+  res.end("Mock data updated in Redis and PostgreSQL!");
 });
 
 app.get("/items", async (req, res) => {

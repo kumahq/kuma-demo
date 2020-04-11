@@ -2,14 +2,15 @@
 
 set -e
 
+# ASCII art generated using http://patorjk.com/software/taag/ with font "Standard" and default width/height
 cat << "EOF"
-                            
- ____  _____ ____ ___ ____  
-|  _ \| ____|  _ \_ _/ ___| 
-| |_) |  _| | | | | |\___ \ 
-|  _ <| |___| |_| | | ___) |
-|_| \_\_____|____/___|____/ 
-                                                 
+
+  ____  _____ ____ ___ ____  
+ |  _ \| ____|  _ \_ _/ ___| 
+ | |_) |  _| | | | | |\___ \ 
+ |  _ <| |___| |_| | | ___) |
+ |_| \_\_____|____/___|____/ 
+                                                                            
 EOF
 
 # Update your system with unsupported packages

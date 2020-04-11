@@ -102,7 +102,7 @@ redis-master-657c58c859-9w98d          1/1     Running   0          63s
 ```
 
 The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) deploys our application across four pods:
-1. The first pod is an Postgresql service that stores all the items in our marketplace.
+1. The first pod is an PostgreSQL service that stores all the items in our marketplace.
 2. The second pod is the frontend application that will give you a GUI to query the items/reviews.
    * Throughout this guide, we will be port-forwarding this `kuma-demo-app-656c95dcb5-6pshm` pod to access the marketplace's frontend GUI. Please replace any reference of this pod with your pod's name.
 3. The third pod is a Node application that represents a backend.
@@ -623,7 +623,7 @@ $ kubectl delete trafficpermission -n kuma-demo --all
 trafficpermission.kuma.io "everything" deleted
 ```
 
-Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with Postgresql. By not providing any permissions to Redis, traffic won't be allowed to that service.
+Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with PostgreSQL. By not providing any permissions to Redis, traffic won't be allowed to that service.
 
 ```bash
 $ cat <<EOF | kubectl apply -f -

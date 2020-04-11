@@ -181,7 +181,7 @@ spec:
         name: kuma-be
         env:
         - name: POSTGRES_HOST
-          value: postgres    
+          value: postgres
         - name: REDIS_HOST
           value: redis
         imagePullPolicy: IfNotPresent
@@ -212,7 +212,7 @@ spec:
         name: kuma-be
         env:
         - name: POSTGRES_HOST
-          value: postgres    
+          value: postgres
         - name: TOTAL_OFFER
           value: "2"
         - name: REDIS_HOST
