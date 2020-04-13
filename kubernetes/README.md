@@ -1077,7 +1077,7 @@ http://192.168.64.62:30911
 
 #### Adding Fault Injection Policy
 
-In the following demo, we will be adding one policy that emcompasses all three types of failures. However, you may break this policy apart as you see fit and only use the ones that are necessary for testing your microservices. Run the following command:
+In the following demo, we will be adding one policy that encompasses all three types of failures. However, you may break this policy apart as you see fit and only use the ones that are necessary for testing your microservices. Run the following command:
 
 ```bash
 $ cat <<EOF | kubectl apply -f - 
@@ -1111,4 +1111,4 @@ EOF
 faultinjection.kuma.io/everything created
 ```
 
-One thing to note about this policy is that thee sourth and desitnation services must have an additional `protocol: http` tag. Now if you return to the application, roughly half the requests will return a HTTP status code 500 thanks to the abort configuration we set above. In addition, there should be a siginifcant delay in the response because we set a 5 second delay on 99% of the requests.
+One thing to note about this policy is that three source and destination services must have an additional `protocol: http` tag. Now if you return to the application, roughly half the requests will return a HTTP status code 500 thanks to the abort configuration we set above. In addition, there should be a significant delay in the response because we set a 5 second delay on 99% of the requests.
