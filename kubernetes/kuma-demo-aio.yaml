@@ -136,12 +136,14 @@ spec:
       app: kuma-demo-backend
       version: v0
       env: prod
+      protocol: http
   template:
     metadata:
       labels:
         app: kuma-demo-backend
         version: v0
         env: prod
+        protocol: http
     spec:
       containers:
       - image: kvn0218/kuma-demo-be:latest
@@ -169,12 +171,14 @@ spec:
       app: kuma-demo-backend
       version: v1
       env: intg
+      protocol: http
   template:
     metadata:
       labels:
         app: kuma-demo-backend
         version: v1
         env: intg
+        protocol: http
     spec:
       containers:
       - image: kvn0218/kuma-demo-be:latest
@@ -200,12 +204,14 @@ spec:
       app: kuma-demo-backend
       version: v2
       env: dev
+      protocol: http
   template:
     metadata:
       labels:
         app: kuma-demo-backend
         version: v2
         env: dev
+        protocol: http
     spec:
       containers:
       - image: kvn0218/kuma-demo-be:latest
@@ -249,12 +255,14 @@ spec:
       app: kuma-demo-frontend
       version: v8
       env: prod
+      protocol: http
   template:
     metadata:
       labels:
         app: kuma-demo-frontend
         version: v8
         env: prod
+        protocol: http
     spec:
       containers:
       - name: kuma-fe
