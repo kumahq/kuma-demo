@@ -2,6 +2,17 @@
 
 set -e
 
+# ASCII art generated using http://patorjk.com/software/taag/ with font "Standard" and default width/height
+cat << "EOF"
+
+  ____    _  _____  _    ____  _        _    _   _ _____ 
+ |  _ \  / \|_   _|/ \  |  _ \| |      / \  | \ | | ____|
+ | | | |/ _ \ | | / _ \ | |_) | |     / _ \ |  \| |  _|  
+ | |_| / ___ \| |/ ___ \|  __/| |___ / ___ \| |\  | |___ 
+ |____/_/   \_\_/_/   \_\_|   |_____/_/   \_\_| \_|_____|
+                                                                                                              
+EOF
+
 if [ -z "${KUMA_DP_UNIT_FILE}" ]; then
   echo "Error: environment variable KUMA_DP_UNIT_FILE is not set"
   exit 1

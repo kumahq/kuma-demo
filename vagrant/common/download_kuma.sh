@@ -21,7 +21,7 @@ export PATH=\$PATH:\$KUMA_HOME/bin
 cd /tmp
 
 # Download latest version of Kuma for Ubuntu, please check out https://kuma.io/install for more options
-wget -nv https://kong.bintray.com/kuma/kuma-${KUMA_VERSION}-ubuntu-amd64.tar.gz
+wget --quiet https://kong.bintray.com/kuma/kuma-${KUMA_VERSION}-ubuntu-amd64.tar.gz
 
 mkdir -p $KUMA_HOME
 

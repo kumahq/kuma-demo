@@ -2,7 +2,7 @@
 
 set -e
 
-# Upload mock data to Elastic and Redis
+# Upload mock data to PostgreSQL and Redis
 for i in `seq 1 60`; do
     echo "try #$i: "
     if curl -X POST --silent --show-error --fail localhost:23001/upload ; then

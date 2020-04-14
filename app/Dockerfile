@@ -1,21 +1,13 @@
+# docker build . -t kvn0218/kuma-demo-fe:latest
+# docker push kvn0218/kuma-demo-fe:latest
+
 FROM node:lts-alpine
 
-RUN npm install -g http-server @vue/cli
+RUN npm install -g http-server 
 
-WORKDIR /app
-
-COPY package*.json ./
-
-# RUN npm install
-RUN npm install
-
-COPY . .
-
-RUN npm rebuild node-sass
-
-RUN npm run build
+COPY ./dist /dist
 
 RUN apk add curl jq
 
 EXPOSE 8080
-ENTRYPOINT [ "http-server", "dist"]
+ENTRYPOINT [ "http-server", "/dist"]

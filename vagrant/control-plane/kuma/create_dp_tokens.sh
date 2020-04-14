@@ -16,9 +16,9 @@ kumactl generate dataplane-token --dataplane=backend > /vagrant/.vagrant.data/ba
 mkdir -p /vagrant/.vagrant.data/backend-v1/var/secrets/kuma.io/kuma-dp/
 kumactl generate dataplane-token --dataplane=backend-v1 > /vagrant/.vagrant.data/backend-v1/var/secrets/kuma.io/kuma-dp/token
 
-# Elasticsearch
-mkdir -p /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/
-kumactl generate dataplane-token --dataplane=elastic > /vagrant/.vagrant.data/elastic/var/secrets/kuma.io/kuma-dp/token
+# PostgreSQL
+mkdir -p /vagrant/.vagrant.data/postgresql/var/secrets/kuma.io/kuma-dp/
+kumactl generate dataplane-token --dataplane=postgresql > /vagrant/.vagrant.data/postgresql/var/secrets/kuma.io/kuma-dp/token
 
 # Redis
 mkdir -p /vagrant/.vagrant.data/redis/var/secrets/kuma.io/kuma-dp/

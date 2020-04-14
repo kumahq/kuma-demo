@@ -3,16 +3,16 @@
     <ul v-if="items && items.length">
       <li v-for="item in items" :key="item._id">
         <product
-          :index="item._source.index"
-          :name="item._source.name"
-          :category="item._source.category"
-          :picture="item._source.picture"
-          :detail="item._source.productDetail"
-          :quantity="item._source.quantity"
-          :size="item._source.size"
-          :price="item._source.price"
-          :company="item._source.company"
-          :specialOffer="item._source.specialOffer"
+          :index="item.data.index"
+          :name="item.data.name"
+          :category="item.data.category"
+          :picture="item.data.picture"
+          :detail="item.data.productDetail"
+          :quantity="item.data.quantity"
+          :size="item.data.size"
+          :price="item.data.price"
+          :company="item.data.company"
+          :specialOffer="item.data.specialOffer"
         />
       </li>
     </ul>

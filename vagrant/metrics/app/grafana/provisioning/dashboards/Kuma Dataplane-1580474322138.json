@@ -2193,8 +2193,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "elastic",
-          "value": "elastic"
+          "text": "postgresql",
+          "value": "postgresql"
         },
         "datasource": "Prometheus",
         "definition": "label_values(envoy_server_live{mesh=\"$mesh\"}, dataplane)",

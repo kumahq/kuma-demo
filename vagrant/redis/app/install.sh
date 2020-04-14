@@ -2,22 +2,23 @@
 
 set -e
 
+# ASCII art generated using http://patorjk.com/software/taag/ with font "Standard" and default width/height
 cat << "EOF"
-ooooooooo.   oooooooooooo oooooooooo.   ooooo  .oooooo..o 
-`888   `Y88. `888'     `8 `888'   `Y8b  `888' d8P'    `Y8 
- 888   .d88'  888          888      888  888  Y88bo.      
- 888ooo88P'   888oooo8     888      888  888   `"Y8888o.  
- 888`88b.     888    "     888      888  888       `"Y88b 
- 888  `88b.   888       o  888     d88'  888  oo     .d8P 
-o888o  o888o o888ooooood8 o888bood8P'   o888o 8""88888P'  
+
+  ____  _____ ____ ___ ____  
+ |  _ \| ____|  _ \_ _/ ___| 
+ | |_) |  _| | | | | |\___ \ 
+ |  _ <| |___| |_| | | ___) |
+ |_| \_\_____|____/___|____/ 
+                                                                            
 EOF
 
 # Update your system with unsupported packages
 add-apt-repository -y ppa:chris-lea/redis-server
-apt-get update
+apt-get update -y -q
 
 # Install the Redis package
-apt-get install -y redis-server
+apt-get install -y -q redis-server
 
 # Create a new version of the redis.conf file
 cp /etc/redis/redis.conf /etc/redis/redis.conf.old

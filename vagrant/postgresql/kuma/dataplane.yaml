@@ -1,0 +1,8 @@
+type: Dataplane
+mesh: default
+name: postgresql
+networking:
+  inbound:
+  - interface: {{ DATAPLANE_IP }}:15432:5432
+    tags:
+      service: postgresql

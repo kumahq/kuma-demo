@@ -109,12 +109,12 @@ import SearchResults from "./components/SearchResults.vue";
 import Error from "./components/Error.vue";
 
 // the API endpoint
-const api = process.env.VUE_APP_ES_ENDPOINT;
+const api = process.env.VUE_APP_POSTGRES_ENDPOINT;
 
 // API search query param
 const apiParam = "?q";
 
-// setup the product API Elasticsearch call
+// setup the product API PostgreSQL call
 const productsApi = axios.create({
   // adapter: cache.adapter
 });
