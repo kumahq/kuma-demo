@@ -34,7 +34,7 @@ The backend API is built using [Node.js](https://nodejs.org/en/) and the source 
 
 ### PostgreSQL
 
-The PostgreSQL database is used to store all the items. THe list of items can be found in this [JSON file](api/db/items.json). Here is a sample of how each object in our list of items look:
+The PostgreSQL database is used to store all the items. The list of items can be found in this [JSON file](api/db/items.json). Here is a sample of how each object in our list of items look:
 
 ```json
 ...
@@ -89,7 +89,7 @@ All this information will be saved in PostgreSQL **EXCEPT** the reviews. Reviews
 
 ### Redis
 
-The Redis database is used to store all the items' reviews. THe list of reviews for each item can be found in this [JSON file](api/db/items.json). 
+The Redis database is used to store all the items' reviews. The list of reviews for each item can be found in this [JSON file](api/db/items.json). 
 
 ## Deployment
 
