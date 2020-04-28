@@ -13,16 +13,34 @@ This repository houses the demo application used to illustrate Kuma's extensive 
 - [Kuma Demo Application](#kuma-demo-application)
   - [Table of contents](#table-of-contents)
   - [Introduction](#introduction)
+  - [Deployment](#deployment)
+  - [Application Components](#application-components)
     - [Frontend](#frontend)
     - [Backend](#backend)
     - [PostgreSQL](#postgresql)
     - [Redis](#redis)
-  - [Deployment](#deployment)
 
 ## Introduction
 [![][diagram]][diagram]
 
 The Kuma Demo Application is a clothing marketplace where you can browse listed items along with the reviews left by users. It consists of four components: [Vue frontend UI](#frontend), [Node backend API](#backend), [PostgreSQL](#PostgreSQL), and [Redis](#Redis).
+
+## Deployment
+
+Kuma is a universal control plane that can run across both modern environments like Kubernetes and more traditional VM-based ones.
+
+The first step is obviously to [download and install Kuma](https://kuma.io/install/) on the platform of your choice. Different distributions will present different installation instructions that follow the best practices for the platform you have selected. Regardless of what platform you decide to use, the fundamental behavior of Kuma at runtime will not change across different distributions.
+
+To see examples of how to deploy Kuma alongside this marketplace application, please check out the following instructions:
+
+- [Kubernetes](kubernetes/README.md)
+- [Universal](vagrant/README.md) 
+
+[kuma-url]: https://kuma.io/
+[kuma-logo]: https://kuma-public-assets.s3.amazonaws.com/kuma-logo.png
+[diagram]: https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true
+
+## Application Components
 
 ### Frontend
 
@@ -90,18 +108,3 @@ All this information will be saved in PostgreSQL **EXCEPT** the reviews. Reviews
 ### Redis
 
 The Redis database is used to store all the items' reviews. The list of reviews for each item can be found in this [JSON file](api/db/items.json). 
-
-## Deployment
-
-Kuma is a universal control plane that can run across both modern environments like Kubernetes and more traditional VM-based ones.
-
-The first step is obviously to [download and install Kuma](https://kuma.io/install/) on the platform of your choice. Different distributions will present different installation instructions that follow the best practices for the platform you have selected. Regardless of what platform you decide to use, the fundamental behavior of Kuma at runtime will not change across different distributions.
-
-To see examples of how to deploy Kuma alongside this marketplace application, please check out the following instructions:
-
-- [Kubernetes](kubernetes/README.md)
-- [Universal](vagrant/README.md) 
-
-[kuma-url]: https://kuma.io/
-[kuma-logo]: https://kuma-public-assets.s3.amazonaws.com/kuma-logo.png
-[diagram]: https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true
