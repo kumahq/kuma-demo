@@ -1,18 +1,23 @@
-#/bin/sh
+#!/bin/sh
 
 KUMACTL_BIN=${HOME}/bin/kumactl
-KUMA_VERSION="0.4.0"
+KUMA_VERSION="0.5.0"
 
 KIND_BIN=${HOME}/bin/kind
-KIND_VERSION="v0.8.0"
+KIND_VERSION="v0.8.1"
 KIND_CONFIG=./cluster.yaml
 KIND_CLUSTER=kuma
 
+KIND_KUBECONFIG_DIR=${HOME}/.kube
+KIND_KUBECONFIG=${KIND_KUBECONFIG_DIR}/kind-kuma-config
+
 KIND_DEMO=../kubernetes/kuma-demo-aio.yaml
+
+KUBECTL=kubectl
 
 ARCH="amd64"
 
-OS="`uname`"
+OS="$(uname)"
 case $OS in
   'Linux')
     OS='linux'
@@ -26,7 +31,7 @@ case $OS in
     ;;
 esac
 
-BITS="`getconf LONG_BIT`"
+BITS="$(getconf LONG_BIT)"
 case $BITS in
   '64')
     echo "64-bit platform found"
@@ -38,15 +43,17 @@ case $BITS in
 esac
 
 # Ensure kind binary in ${HOME}/bin
-if [ ! -x "${KIND_BIN}" ] ;  then
+if [ ! -x "${KIND_BIN}" ] || [ "$(${KIND_BIN} version | awk '{ print $2}')" != "${KIND_VERSION}" ] ;  then
+  echo "Installing Kind ${KIND_VERSION}"
+
   KIND_URL="https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-${OS}-${ARCH}"
 
-  curl --location --create-dirs --output ${KIND_BIN} ${KIND_URL}
-  chmod +x ${KIND_BIN}
+  curl --location --create-dirs --output "${KIND_BIN}" ${KIND_URL}
+  chmod +x "${KIND_BIN}"
 fi
 
 # Ensure kumactl binary in ${HOME}/bin
-if [ ! -x "${KUMACTL_BIN}" ] ;  then
+if [ ! -x "${KUMACTL_BIN}" ] || [ "$(${KUMACTL_BIN} version 2>&1)" != "${KUMA_VERSION}" ];  then
 
   case $OS in
     'linux')
@@ -55,11 +62,11 @@ if [ ! -x "${KUMACTL_BIN}" ] ;  then
   esac
 
   KUMA_URL="https://kong.bintray.com/kuma/kuma-${KUMA_VERSION}-${OS}-${ARCH}.tar.gz"
-  curl --location --output - ${KUMA_URL} | tar -z --extract --file=- -C ${HOME} ./bin/kumactl
+  curl --location --output - ${KUMA_URL} | tar -z --strip 2 --extract --file=- -C "${HOME}" ./kuma-${KUMA_VERSION}/bin/kumactl
 fi
 
 # Cleanup the created cluster
-function cleanup {
+cleanup() {
   echo "Cleaning up"
   ${KIND_BIN} delete cluster --name ${KIND_CLUSTER}
 }
@@ -70,52 +77,60 @@ trap cleanup EXIT
 # $1      - namespace
 # $2      - label
 # $3 ...  - ports
-function portforward() {
+portforward() {
     NAMESPACE=$1
     LABEL=$2
     shift; shift # pop the first two arguments off the args stack
     PORTS=$@
-    DEMO_APP_POD=$(kubectl get pod -n ${NAMESPACE} -l ${LABEL} -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward ${DEMO_APP_POD} -n ${NAMESPACE} ${PORTS} &>/dev/null &
+    DEMO_APP_POD=$(${KUBECTL} get pod -n "${NAMESPACE}" -l "${LABEL}" -o jsonpath="{.items[0].metadata.name}")
+    KUBECONFIG=${KIND_KUBECONFIG} ${KUBECTL} port-forward "${DEMO_APP_POD}" -n "${NAMESPACE}" ${PORTS} >/dev/null 2>&1 &
 }
 
-# Create the kind cluster to host Kuma and the Demo
-${KIND_BIN} create cluster --name="${KIND_CLUSTER}" --config ./cluster.yaml --wait 120s
-until kubectl taint node ${KIND_CLUSTER}-control-plane node-role.kubernetes.io/master:NoSchedule- ;
+# Create the kind cluster to host Kuma and the Demo; Ensure the controller can be used as a worker node too
+${KIND_BIN} create cluster --name="${KIND_CLUSTER}" \
+            --config "${KIND_CONFIG}" \
+            --kubeconfig "${KIND_KUBECONFIG}" \
+            --wait 120s
+
+export KUBECONFIG=${KIND_KUBECONFIG}
+
+until ${KUBECTL} taint node ${KIND_CLUSTER}-control-plane node-role.kubernetes.io/master:NoSchedule- ;
 do
   echo "Waiting for the cluster to come up" && sleep 3;
 done
 
 # Deploy Kuma and wait for the deployment to finish
-${KUMACTL_BIN} install control-plane | kubectl apply --wait -f -
-kubectl wait -n kuma-system --timeout=300s --for condition=Ready --all pods
+${KUMACTL_BIN} install control-plane | ${KUBECTL} apply --wait -f -
+${KUBECTL} wait -n kuma-system --timeout=300s --for condition=Ready --all pods
 
 # Deploy the Demo and wait for the deployment to finish
-kubectl apply --wait -f ${KIND_DEMO}
-kubectl wait -n kuma-demo --timeout=300s --for condition=Ready --all pods
+${KUBECTL} apply --wait -f ${KIND_DEMO}
+${KUBECTL} wait -n kuma-demo --timeout=300s --for condition=Ready --all pods
 
 # Print the Kuma and Demo pods
-kubectl get pods -n kuma-system
-kubectl get pods -n kuma-demo
+${KUBECTL} get pods -n kuma-system
+${KUBECTL} get pods -n kuma-demo
 
 # Portforward to Kuma Control plane and the Demo fronted
 portforward kuma-system app=kuma-control-plane 5681 5683
 portforward kuma-demo app=kuma-demo-frontend 8080
 
-until curl http://localhost:5681 &> /dev/null ;
+until curl http://localhost:5681 >/dev/null 2>&1 ;
 do
   echo "Waiting for the port forwarding to finish" && sleep 3;
 done
 
 # Run a couple of Kumactl commands
-${KUMACTL_BIN} config control-planes add --name=kind --address=http://localhost:5681
+${KUMACTL_BIN} config control-planes add --overwrite --name=kind --address=http://localhost:5681
 ${KUMACTL_BIN} inspect dataplanes
 
 echo "Kuma GUI is available at http://localhost:5683/"
 echo "Kuma DEMO is available at http://localhost:8080/"
+echo "Before using kubectl, please run the following in your shell"
+echo "export KUBECONFIG=${KIND_KUBECONFIG}"
 
 echo "Type 'quit' to exit."
-while read line ;
+while read -r line ;
 do
   if  echo "$line" | grep -qi "quit"; then
     exit 0;
