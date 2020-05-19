@@ -1,14 +1,16 @@
 const redis = require("./app/redis");
 const postgresql = require("./app/postgresql");
+const promBundle = require("express-prom-bundle");
 
-const makeApiMiddleware = require("api-express-exporter");
 const express = require("express");
 const app = express();
+
+const metricsMiddleware = promBundle({includeMethod: true});
 const bodyParser = require("body-parser");
 let specialOffers = process.env.SPECIAL_OFFER || true;
 let totalOffers = process.env.TOTAL_OFFER || 1;
 
-app.use(makeApiMiddleware());
+app.use(metricsMiddleware);
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3001);
 app.set("etag", false);
