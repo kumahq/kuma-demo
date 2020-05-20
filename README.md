@@ -36,10 +36,6 @@ To see examples of how to deploy Kuma alongside this marketplace application, pl
 - [Kubernetes](kubernetes/README.md)
 - [Universal](vagrant/README.md) 
 
-[kuma-url]: https://kuma.io/
-[kuma-logo]: https://kuma-public-assets.s3.amazonaws.com/kuma-logo.png
-[diagram]: https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true
-
 ## Application Components
 
 ### Frontend
@@ -108,3 +104,7 @@ All this information will be saved in PostgreSQL **EXCEPT** the reviews. Reviews
 ### Redis
 
 The Redis database is used to store all the items' reviews. The list of reviews for each item can be found in this [JSON file](api/db/items.json). 
+
+[kuma-url]: https://kuma.io/
+[kuma-logo]: https://kuma-public-assets.s3.amazonaws.com/kuma-logo-v2.png
+[diagram]: https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true
