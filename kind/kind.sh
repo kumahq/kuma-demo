@@ -124,11 +124,18 @@ done
 ${KUMACTL_BIN} config control-planes add --overwrite --name=kind --address=http://localhost:5681
 ${KUMACTL_BIN} inspect dataplanes
 
-echo "Kuma GUI is available at http://localhost:5683/"
-echo "Kuma DEMO is available at http://localhost:8080/"
-echo "Before using kubectl, please run the following in your shell"
+echo
+printf "Kuma GUI is available at \033[0;33mhttp://localhost:5683/\033[0m  ⬅️\n"
+printf "Kuma DEMO is available at \033[0;33mhttp://localhost:8080/\033[0m  ⬅️\n"
+echo
+printf "For more about Integrations and Metrics see \033[0;33mhttps://github.com/Kong/kuma-demo/tree/master/kubernetes#integrations\033[0m\n"
+echo
+printf "To see Kuma in action, follow the Policies guidelines \033[0;33mhttps://github.com/Kong/kuma-demo/tree/master/kubernetes#policies\033[0m\n"
+echo
+echo "🛑 Before using kubectl, please run the following in your shell:"
+echo
 echo "export KUBECONFIG=${KIND_KUBECONFIG}"
-
+echo
 echo "Type 'quit' to exit."
 while read -r line ;
 do

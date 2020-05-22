@@ -12,6 +12,7 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
   - [Table of Contents](#table-of-contents)
   - [Setup Environment](#setup-environment)
     - [Minikube](#minikube)
+    - [Kind](#kind)
     - [Marketplace application](#marketplace-application)
     - [Kuma](#kuma)
       - [Download](#download)
@@ -52,6 +53,12 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
 
 ## Setup Environment
 
+### Kind
+The top-level folder `kind` contains a convenient script [kind.sh](../kind/kind.sh), which will automatically deploy a simple Kubernetes cluster on top of docker using [KIND](https://kind.sigs.k8s.io/docs/user/quick-start/).
+It will also deploy [Kuma](kuma.io) and install the [Kuma Demo](https://github.com/Kong/kuma-demo) application. Refer to the [README.md](../kind/README.md) in that folder
+in order to get more info what are the pre-requisites (just Docker and `kubectl`) to use the script. Choosing this option, you can skip directly to [Integrations](#integrations) and [Policies](#policies),
+to further explore Kuma.
+
 ### Minikube
 
 We'll be using Minikube to deploy our application and Kuma to illustrate the mesh's capabilities in Kubernetes mode. Please follow Minikube's [installation guide](https://kubernetes.io/docs/tasks/tools/install-minikube/) to have it set up correctly before proceeding.
@@ -69,6 +76,7 @@ $ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.18.2 -p kuma-dem
 🌟  Enabling addons: default-storageclass, storage-provisioner
 🏄  Done! kubectl is now configured to use "kuma-demo"
 ```
+
 
 ### Marketplace application
 
