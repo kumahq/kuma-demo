@@ -49,6 +49,8 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
       - [Jaeger Installation](#jaeger-installation)
       - [Adding Traffic Tracing Policy](#adding-traffic-tracing-policy)
       - [Visualizing Traces](#visualizing-traces)
+    - [Fault Injection](#fault-injection)
+      - [Adding Fault Injection Policy](#adding-fault-injection-policy)
 
 ## Setup Environment
 
@@ -1068,6 +1070,51 @@ After generating some traffic in the mesh, you can access the Jaeger dashboard u
 $ minikube service jaeger-query --url -p kuma-demo
 http://192.168.64.62:30911
 ```
+
+
+<!-- Back to top for web browser usability  -->
+<br/>
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+<br/>
+
+### Fault Injection
+
+`FaultInjection` policy helps you to test your microservices against resiliency. Kuma provides 3 different types of failures that could be imitated in your environment: delays, aborts, and response bandwidth limits. 
+
+#### Adding Fault Injection Policy
+
+In the following demo, we will be adding one policy that encompasses all three types of failures. However, you may break this policy apart as you see fit and only use the ones that are necessary for testing your microservices. Run the following command:
+
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: FaultInjection
+mesh: default
+metadata:
+  namespace: default
+  name: everything
+spec:
+    sources:
+        - match:
+            service: frontend.kuma-demo.svc:8080
+            protocol: http
+    destinations:
+        - match:
+            service: backend.kuma-demo.svc:3001
+            protocol: http
+    conf:        
+        abort:
+            httpStatus: 500
+            percentage: 50
+        delay:
+            percentage: 99.99
+            value: 5s
+EOF
+```
+
+One thing to note about this policy is that three source and destination services must have an additional [`protocol: http` tag](https://kuma.io/docs/latest/policies/http-support-in-kuma/). Now if you return to the application, roughly half the requests will return a HTTP status code 500 thanks to the abort configuration we set above. In addition, there should be a significant delay in the response because we set a 5 second delay on 99% of the requests.
 
 
 <!-- Back to top for web browser usability  -->
