@@ -12,18 +12,16 @@ if [ -z "${KUMA_HOME}" ]; then
   exit 1
 fi
 
-# Configure Kuma in all interactive bash shells
+# Configure Kuma in all interactive bash shells if user SSH into machine
 echo "
 export KUMA_HOME=${KUMA_HOME}
+export KUMA_VERSION=kuma-${KUMA_VERSION}
 export PATH=\$PATH:\$KUMA_HOME/bin
 " > /etc/profile.d/kuma.sh
 
-cd /tmp
+# Download latest version of Kuma for the detected OS, please check out https://kuma.io/install for more options
+curl --silent https://kuma.io/installer.sh | sh >/dev/null 2>&1
 
-# Download latest version of Kuma for Ubuntu, please check out https://kuma.io/install for more options
-wget --quiet https://kong.bintray.com/kuma/kuma-${KUMA_VERSION}-ubuntu-amd64.tar.gz
-
-mkdir -p $KUMA_HOME
-
-# Extract the Kuma archive
-tar xvzf kuma-${KUMA_VERSION}-ubuntu-amd64.tar.gz -C $KUMA_HOME
+# Move to KUMA_HOME directory 
+mv kuma-${KUMA_VERSION} ${KUMA_HOME}
+export PATH=$PATH:$KUMA_HOME/bin

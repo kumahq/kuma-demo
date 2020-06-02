@@ -96,52 +96,85 @@ To shop at Kuma's marketplace, access the Kong gateway that is the ingress to yo
 
 ### Kuma
 
-The following command will download the Mac compatible version of Kuma. To find the correct version for your operating system, please check out [Kuma's official installation page](https://kuma.io/install).
+If you want to learn more about the installation process, please check out [Kuma's official installation page](https://kuma.io/install) to see all the installation methods. For simplicity, run the following script to automatically detect the operating system and download Kuma:
 
 ```bash
-$ wget https://kong.bintray.com/kuma/kuma-0.4.0-darwin-amd64.tar.gz
---2020-01-29 08:18:59--  https://kong.bintray.com/kuma/kuma-0.4.0-darwin-amd64.tar.gz
-Resolving kong.bintray.com (kong.bintray.com)... 52.35.230.20, 54.213.118.161
-Connecting to kong.bintray.com (kong.bintray.com)|52.35.230.20|:443... connected.
-HTTP request sent, awaiting response... 302
-Location: https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1580315460~hmac=164178d823d0ee7b1a86c430c08cfa4f17645d9eb0358548d08c4e550b7b7b41&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.4.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-pgkR3rI6Ar_IDSk0j0ScH5vSQrRPVgMN_T2NrKdQIB5U1gBQTas-EdhdbFUu87diE2ZudHfJjbvgt-8B7mzQTssMNeF-h-tbfSHLzflNh9Fq4tYNmv4u2&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f [following]
---2020-01-29 08:19:00--  https://akamai.bintray.com/8a/8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f?__gda__=exp=1580315460~hmac=164178d823d0ee7b1a86c430c08cfa4f17645d9eb0358548d08c4e550b7b7b41&response-content-disposition=attachment%3Bfilename%3D%22kuma-0.4.0-darwin-amd64.tar.gz%22&response-content-type=application%2Fgzip&requestInfo=U2FsdGVkX1-pgkR3rI6Ar_IDSk0j0ScH5vSQrRPVgMN_T2NrKdQIB5U1gBQTas-EdhdbFUu87diE2ZudHfJjbvgt-8B7mzQTssMNeF-h-tbfSHLzflNh9Fq4tYNmv4u2&response-X-Checksum-Sha1=fc31e8100d35b9232376a90c00142c59fd284742&response-X-Checksum-Sha2=8a1f56b7d7f62dfb737cf2138e82412176677745683a06a67fc83d1c4388911f
-Resolving akamai.bintray.com (akamai.bintray.com)... 96.16.173.225
-Connecting to akamai.bintray.com (akamai.bintray.com)|96.16.173.225|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 48354601 (46M) [application/gzip]
-Saving to: ‘kuma-0.4.0-darwin-amd64.tar.gz’
+$ curl -L https://kuma.io/installer.sh | sh -
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2902  100  2902    0     0   3422      0 --:--:-- --:--:-- --:--:--  3418
 
-kuma-0.4.0-darwin-amd64.tar.gz                                         100%[===========================================================================================================================================================================>]  46.11M  4.77MB/s    in 11s
+INFO	Welcome to the Kuma automated download!
+INFO	Fetching latest Kuma version..
+INFO	Kuma version: 0.5.0
+INFO	Kuma architecture: amd64
+INFO	Operating system: darwin
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.5.0-darwin-amd64.tar.gz
 
-2020-01-29 08:19:11 (4.21 MB/s) - ‘kuma-0.4.0-darwin-amd64.tar.gz’ saved [48354601/48354601]
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 49.8M  100 49.8M    0     0  11.1M      0  0:00:04  0:00:04 --:--:-- 14.7M
+
+INFO	Kuma 0.5.0 has been downloaded!
+
+Welcome to Kuma!
+
+===============================================================================
+
+This folder contains your download of Kuma:
+
+├── NOTICE
+├── README
+├── bin
+│   ├── envoy
+│   ├── kuma-cp
+│   ├── kuma-dp
+│   ├── kuma-prometheus-sd
+│   └── kumactl
+└── conf
+    └── kuma-cp.conf.yml
+
+===============================================================================
+
+To get started with Kuma you can take a look at the official documentation:
+
+* Documentation: https://kuma.io/docs
+* Slack Chat: https://kuma.io/community
+
+KUBERNETES:
+
+If you are installing Kuma on Kubernetes, run the following command:
+
+$ kumactl install control-plane | kubectl apply -f -
+
+UNIVERSAL:
+
+If you are installing Kuma on other platforms, just run:
+
+$ kuma-cp run
+
+In Universal Kuma runs with the in-memory backend by default. To use Postgres
+instead please read the docs:
+
+* https://kuma.io/docs/latest/documentation/backends/
+
+NEXT STEPS:
+
+You can now explore the Kuma GUI on port 5683!
+
+Finally, you can start using Kuma by apply traffic policies to any service
+running in your system:
+
+* https://kuma.io/policies/
 ```
 
-Next, unbundle the files to get the following components:
+Next, navigate into the `kuma-0.5.0/bin` directory where the kuma components will be:
 
 ```bash
-$ tar xvzf kuma-0.4.0-darwin-amd64.tar.gz
-x ./
-x ./bin/
-x ./bin/kumactl
-x ./bin/kuma-cp
-x ./bin/envoy
-x ./bin/kuma-prometheus-sd
-x ./bin/kuma-tcp-echo
-x ./bin/kuma-dp
-x ./NOTICE
-x ./NOTICE-kuma-init
-x ./LICENSE
-x ./conf/
-x ./conf/kuma-cp.conf
-x ./README
-```
-
-Lastly, navigate into the ./bin directory where the kuma components will be:
-
-```bash
-$ cd bin && ls
-envoy		kuma-cp		kuma-dp		kuma-prometheus-sd		kuma-tcp-echo		kumactl
+$ cd kuma-0.5.0/bin && ls
+envoy              kuma-dp            kumactl
+kuma-cp            kuma-prometheus-sd
 ```
 
 ## Tools
@@ -150,7 +183,7 @@ envoy		kuma-cp		kuma-dp		kuma-prometheus-sd		kuma-tcp-echo		kumactl
 
 The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. In universal mode you will be able to also make changes via the HTTP API, while in Kubernetes mode the HTTP API is read-only.
 
-**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly.**
+**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly. If you need to download it, checkou the [Kuma](#kuma) step above.**
 
 #### Setup
 
@@ -168,13 +201,13 @@ Once `kumactl` is pointing to the correct control-plane, you can use it to inspe
 
 ```bash
 $ ./kumactl inspect dataplanes
-MESH      NAME         TAGS                         STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS
-default   redis        service=redis                Online   20m15s               20m14s             2               0
-default   postgresql   service=postgresql           Online   18m48s               18m47s             2               0
-default   backend      service=backend version=v0   Online   15m47s               15m46s             3               0
-default   backend-v1   service=backend version=v1   Online   14m18s               14m16s             3               0
-default   frontend     service=frontend             Online   12m52s               12m51s             3               0
-default   kong         service=kong                 Online   11m12s               11m11s             3               0
+MESH      NAME         TAGS                                       STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
+default   redis        service=redis                              Online   9m                   9m                 2               0              never                  -                 0
+default   postgresql   service=postgresql                         Online   8m                   8m                 2               0              never                  -                 0
+default   backend      protocol=http service=backend version=v0   Online   5m                   5m                 3               0              never                  -                 0
+default   backend-v1   protocol=http service=backend version=v1   Online   3m                   3m                 3               0              never                  -                 0
+default   frontend     protocol=http service=frontend             Online   2m                   2m                 4               0              never                  -                 0
+default   kong         service=kong                               Online   15s                  14s                4               0              never                  -                 0
 ```
 
 There are 6 dataplanes.
@@ -279,8 +312,8 @@ Using [`kumactl`](#kumactl) that you configured earlier, you can check the mesh 
 
 ```bash
 $ ./kumactl get meshes
-NAME      mTLS   CA        METRICS
-default   off    builtin   off
+NAME      mTLS   METRICS   LOGGING   TRACING   AGE
+default   off    off       off       off       11m
 ```
 
 #### Adding mTLS Policy
@@ -292,9 +325,10 @@ $ cat <<EOF | kumactl apply -f -
 type: Mesh
 name: default
 mtls:
-  enabled: true
-  ca:
-    builtin: {}
+  enabledBackend: ca-1
+  backends:
+  - name: ca-1
+    type: builtin
 EOF
 ```
 
@@ -302,8 +336,8 @@ Once you have updated the mesh resource with mTLS enabled, check it was configur
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS   CA        METRICS
-default   on     builtin   off
+NAME      mTLS           METRICS   LOGGING   TRACING   AGE
+default   builtin/ca-1   off       off       off       3s
 ```
 
 If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
@@ -397,10 +431,10 @@ After we apply those three policies, use `kumactl` to check that the policies ar
 
 ```bash
 $ kumactl get traffic-permissions
-MESH      NAME
-default   kong-to-frontend
-default   frontend-to-backend
-default   backend-to-postgresql
+MESH      NAME                    AGE
+default   kong-to-frontend        13s
+default   frontend-to-backend     9s
+default   backend-to-postgresql   5s
 ```
 
 And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews. If we wanted to enable the Redis service again in the future, just add an additional traffic-permission back like this:
@@ -510,20 +544,24 @@ $ cat <<EOF | kumactl apply -f -
 type: Mesh
 name: default
 mtls:
-  enabled: true
-  ca:
-    builtin: {}
+  enabledBackend: ca-1
+  backends:
+  - name: ca-1
+    type: builtin
 metrics:
-  prometheus: {}
+  enabledBackend: prometheus-1
+  backends:
+  - name: prometheus-1
+    type: prometheus
 EOF
 ```
 
 You can check that Prometheus metrics is enabled by checking the mesh with `kumactl get [..]`:
 
 ```bash
-$ kumactl get meshes
-NAME      mTLS   CA        METRICS
-default   on     builtin   prometheus
+$ ./kumactl get meshes
+NAME      mTLS           METRICS                   LOGGING   TRACING   AGE
+default   builtin/ca-1   prometheus/prometheus-1   off       off       5s
 ```
 
 #### Query Metrics
@@ -567,7 +605,7 @@ conf:
         httpStatus: 500
         percentage: 50
     delay:
-        percentage: 99.99s
+        percentage: 99.99
         value: 5s
 EOF
 ```
