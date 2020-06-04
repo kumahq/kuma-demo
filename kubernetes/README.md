@@ -11,8 +11,8 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
   - [Introductions](#introductions)
   - [Table of Contents](#table-of-contents)
   - [Setup Environment](#setup-environment)
-    - [Minikube](#minikube)
     - [Kind](#kind)
+    - [Minikube](#minikube)
     - [Marketplace application](#marketplace-application)
     - [Kuma](#kuma)
       - [Download](#download)
@@ -1000,10 +1000,10 @@ With the TrafficTrace policy you can configure tracing on every Kuma DP that bel
 
 We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-source tracing tool. You can use popular alternatives like Zipkin alongside Kuma.
 
-This Jaeger template uses an in-memory storage with a limited functionality for local testing and development. The image used defaults to the latest version released. Do not use this template in production environments. Note that functionality may differ from the pinned docker versions for production. Install everything in the current namespace:
+In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
 
 ```bash
-$ kubectl apply -f https://bit.ly/demokumatrace
+$ kumactl install tracing | kubectl apply -f -
 ```
 
 #### Adding Traffic Tracing Policy
@@ -1034,7 +1034,7 @@ spec:
       sampling: 100.0
       type: zipkin
       conf:
-        url: http://jaeger-collector.default:9411/api/v1/spans
+        url: http://jaeger-collector.default:9411/api/v2/spans
 EOF
 ```
 
@@ -1075,7 +1075,7 @@ pod "redis-master-78ff699f7-hxhbc" deleted
 After generating some traffic in the mesh, you can access the Jaeger dashboard using the following command to visualize the traces:
 
 ```bash
-$ minikube service jaeger-query --url -p kuma-demo
+$ minikube service jaeger-query --url -p kuma-demo -n kuma-tracing
 http://192.168.64.62:30911
 ```
 
