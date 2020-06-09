@@ -1034,7 +1034,7 @@ spec:
       sampling: 100.0
       type: zipkin
       conf:
-        url: http://jaeger-collector.default:9411/api/v2/spans
+        url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
 EOF
 ```
 
