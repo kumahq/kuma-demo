@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backend
+  namespace: kuma-demo
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: backend
+              servicePort: 5678
