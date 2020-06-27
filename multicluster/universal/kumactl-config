@@ -1,0 +1,33 @@
+contexts:
+- controlPlane: local
+  name: local
+- controlPlane: cluster-1
+  credentials:
+    adminApi: {}
+  name: cluster-1
+- controlPlane: cluster-2
+  credentials:
+    adminApi: {}
+  name: cluster-2
+- controlPlane: global
+  credentials:
+    adminApi: {}
+  name: global
+controlPlanes:
+- coordinates:
+    apiServer:
+      url: http://localhost:5681
+  name: local
+- coordinates:
+    apiServer:
+      url: http://127.0.0.1:15681
+  name: cluster-1
+- coordinates:
+    apiServer:
+      url: http://127.0.0.1:25681
+  name: cluster-2
+- coordinates:
+    apiServer:
+      url: http://127.0.0.1:35681
+  name: global
+currentContext: global

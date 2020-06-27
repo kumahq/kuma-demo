@@ -1,0 +1,16 @@
+type: HealthCheck
+name: gateway-to-backend
+mesh: default
+sources:
+- match:
+    service: 'gateway'
+destinations:
+- match:
+    service: 'backend'
+conf:
+  activeChecks:
+    interval: 1s
+    timeout: 1s
+    unhealthyThreshold: 3
+    healthyThreshold: 1
+

@@ -1,0 +1,11 @@
+type: Dataplane
+mesh: default
+name: backend-03 
+networking:
+  address: 127.0.0.1
+  inbound:
+  - port: 20010
+    servicePort: 20011
+    tags:
+      service: backend
+      version: "1"

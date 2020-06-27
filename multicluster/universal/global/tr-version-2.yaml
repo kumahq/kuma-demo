@@ -1,0 +1,14 @@
+type: TrafficRoute
+mesh: default
+name: tr-version-2
+sources:
+  - match:
+      service: gateway
+destinations:
+  - match:
+      service: backend
+conf:
+  - weight: 100
+    destination:
+      service: backend
+      version: "2"

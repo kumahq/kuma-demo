@@ -1,0 +1,10 @@
+type: Dataplane
+mesh: default
+name: ingress-02
+networking:
+  address: 127.0.0.1
+  ingress: {}
+  inbound:
+  - port: 20000
+    tags:
+      service: ingress

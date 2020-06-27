@@ -1,0 +1,13 @@
+type: Dataplane
+mesh: default
+name: gateway-01 
+networking:
+  address: 127.0.0.1
+  gateway:
+    tags:
+      service: gateway
+  outbound:
+  - port: 10005
+    tags:
+      service: backend
+#      version: "1"
