@@ -263,15 +263,15 @@ dnsServer:
 kumaClusters:
   clusters:
   - remote:
-      address: http://127.0.0.1:15685
+      address: https://127.0.0.1:15685
     ingress:
       address: http://127.0.0.1:10000
   - remote:
-      address: http://127.0.0.1:25685
+      address: https://127.0.0.1:25685
     ingress:
       address: http://127.0.0.1:20000
   lbconfig:
-    address: http://127.0.0.1:35685
+    address: https://127.0.0.1:35685
 
 # Kuma Discovery Service configuration
 kdsServer:
