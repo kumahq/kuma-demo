@@ -109,4 +109,3 @@ in global
 * Check what was changed in the CP config by executing `diff reference-config.yaml cluster1/kuma-cp.yaml`
 
 ## TODO
-* Syncing secrests is in progress. For now TLS pair is embedded in Mesh
