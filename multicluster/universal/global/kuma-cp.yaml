@@ -239,7 +239,7 @@ general:
   # Control Plane will use this value in configuration generated for dataplanes, in responses to `kumactl`, etc.
   advertisedHostname: localhost # ENV: KUMA_GENERAL_ADVERTISED_HOSTNAME
   # Kuma Cluster name used to mark the remote dataplane resources
-  clusterName: 
+  clusterName:
 
 # Web GUI Server configuration
 guiServer:
@@ -248,8 +248,6 @@ guiServer:
   # URL of the Api Server that requests with /api prefix will be redirected to. By default autoconfigured to http://locahost:port_of_api_server
   apiServerUrl: # ENV: KUMA_GUI_SERVER_API_SERVER_URL
 
-# ControlPlane mode
-mode: global # Configured from args. By default autoconfigured to standalone
 # DNS Server configuration
 dnsServer:
   # The domain that the server will resolve the services for
@@ -260,22 +258,24 @@ dnsServer:
   CIDR: "240.0.0.0/4" # ENV: KUMA_DNS_SERVER_CIDR
 
 # Clusters configuration
-kumaClusters:
-  clusters:
-  - remote:
-      address: https://127.0.0.1:15685
-    ingress:
-      address: http://127.0.0.1:10000
-  - remote:
-      address: https://127.0.0.1:25685
-    ingress:
-      address: http://127.0.0.1:20000
-  lbconfig:
-    address: https://127.0.0.1:35685
+mode:
+  mode: global
+  global:
+    lbaddress: grpcs://127.0.0.1:35685
+    zones:
+    - remote:
+        address: grpcs://127.0.0.1:15685
+      ingress:
+        address: 127.0.0.1:10000
+    - remote:
+        address: grpcs://127.0.0.1:25685
+      ingress:
+        address: 127.0.0.1:20000
 
 # Kuma Discovery Service configuration
-kdsServer:
-  # Port of GRPC server that Local Kuma CP connects to
-  grpcPort: 35685
-  # Interval for regenerating Snapshot
-  refreshInterval: 1s
+kds:
+  server:
+    # Port of GRPC server that Local Kuma CP connects to
+    grpcPort: 35685
+    # Interval for regenerating Snapshot
+    refreshInterval: 1s
