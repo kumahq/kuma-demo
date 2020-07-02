@@ -850,7 +850,7 @@ spec:
     passiveChecks:
       unhealthyThreshold: 3
       penaltyInterval: 5s
-
+EOF
 ```
 
 <!-- Back to top for web browser usability  -->
