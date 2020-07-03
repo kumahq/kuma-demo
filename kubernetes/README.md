@@ -661,10 +661,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: kong-proxy.kuma-demo.svc:80
+      service: kong-proxy_kuma-demo_svc_80
   destinations:
   - match:
-      service: frontend.kuma-demo.svc:8080
+      service: frontend_kuma-demo_svc_8080
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -675,10 +675,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:8080
+      service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -689,10 +689,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
   destinations:
   - match:
-      service: postgres.kuma-demo.svc:5432
+      service: postgres_kuma-demo_svc_5432
 EOF
 ```
 
