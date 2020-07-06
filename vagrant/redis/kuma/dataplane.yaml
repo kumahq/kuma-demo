@@ -2,7 +2,9 @@ type: Dataplane
 mesh: default
 name: redis
 networking:
+  address: {{ DATAPLANE_IP }}
   inbound:
-  - interface: {{ DATAPLANE_IP }}:16379:6379
+  - port: 16379
+    servicePort: 6379
     tags:
       service: redis

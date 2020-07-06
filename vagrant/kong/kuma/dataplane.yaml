@@ -7,5 +7,5 @@ networking:
     tags:
       service: kong
   outbound:
-  - interface: :28080
+  - port: 28080
     service: frontend 
