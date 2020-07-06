@@ -4,8 +4,7 @@ name: backend-v1
 networking:
   address: {{ DATAPLANE_IP }} 
   inbound:
-  - interface: 13001
-    port: 13001
+  - port: 13001
     servicePort: 3001
     tags:
       service: backend
