@@ -2,7 +2,9 @@ type: Dataplane
 mesh: default
 name: postgresql
 networking:
+  address: {{ DATAPLANE_IP }}
   inbound:
-  - interface: {{ DATAPLANE_IP }}:15432:5432
+  - port: 15432
+    servicePort: 5432
     tags:
       service: postgresql
