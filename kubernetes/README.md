@@ -829,7 +829,7 @@ To apply a health check policy to backend service, run the following:
 ```bash
 $ cat <<EOF | kubectl apply -f -
 apiVersion: kuma.io/v1alpha1
-kind: TraffiHealthCheckcRoute
+kind: HealthCheck
 metadata:
   name: frontend-to-backend
   namespace: kuma-demo
@@ -842,14 +842,10 @@ spec:
   - match:
       service: backend.kuma-demo.svc:3001
   conf:
-    activeChecks:
-      interval: 10s
-      timeout: 2s
-      unhealthyThreshold: 3
-      healthyThreshold: 1
-    passiveChecks:
-      unhealthyThreshold: 3
-      penaltyInterval: 5s
+    interval: 10s
+    timeout: 2s
+    unhealthyThreshold: 3
+    healthyThreshold: 1
 EOF
 ```
 
