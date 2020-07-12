@@ -57,7 +57,7 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
 
 ### Kind
 The top-level folder `kind` contains a convenient script [kind.sh](../kind/kind.sh), which will automatically deploy a simple Kubernetes cluster on top of docker using [KIND](https://kind.sigs.k8s.io/docs/user/quick-start/).
-It will also deploy [Kuma](kuma.io) and install the [Kuma Demo](https://github.com/Kong/kuma-demo) application. Refer to the [README.md](../kind/README.md) in that folder
+It will also deploy [Kuma](kuma.io) and install the [Kuma Demo](https://github.com/kumahq/kuma-demo) application. Refer to the [README.md](../kind/README.md) in that folder
 in order to get more info what are the pre-requisites (just Docker and `kubectl`) to use the script. Choosing this option, you can skip directly to [Integrations](#integrations) and [Policies](#policies),
 to further explore Kuma.
 
@@ -117,7 +117,7 @@ The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) deploys our applicati
 3. The third pod is an PostgreSQL service that stores all the items in our marketplace.
 4. The fourth pod is a Redis service that stores reviews for each item.
 
-![app-diagram](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true)
+![app-diagram](https://github.com/kumahq/kuma-website/blob/master/docs/.vuepress/public/images/diagrams/diagram-kuma-demo-basic.jpg?raw=true)
 
 To access the front-end UI on [http://localhost:8080](http://localhost:8080), port-forward your `frontend` service like so:
 ```bash
@@ -126,7 +126,7 @@ Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 ```
 
-![frontend-gui](https://raw.githubusercontent.com/Kong/kuma-website/master/docs/.vuepress/public/images/demo/kuma-demo-app-gui.png)
+![frontend-gui](https://raw.githubusercontent.com/kumahq/kuma-website/master/docs/.vuepress/public/images/demo/kuma-demo-app-gui.png)
 
 This marketplace application is currently running **WITHOUT** Kuma. So all traffic is going directly between the services, and not routed through any dataplanes. In the next step, we will download Kuma and quickly deploy the mesh alongside an existing application. 
 
@@ -345,9 +345,9 @@ There are 4 dataplanes which correlates with each component of our application
 
 ### GUI
 
-Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. The GUI is also open-source so you can find the source code in the [kuma-gui repository](https://github.com/Kong/kuma-gui). It can be found on port :5683 on the control-plane machine, which we just port-forwarded above. Navigate to [http://localhost:5683/](http://localhost:5683/) to use Kuma's GUI.
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. The GUI is also open-source so you can find the source code in the [kuma-gui repository](https://github.com/kumahq/kuma-gui). It can be found on port :5683 on the control-plane machine, which we just port-forwarded above. Navigate to [http://localhost:5683/](http://localhost:5683/) to use Kuma's GUI.
 
-![kuma-gui](https://raw.githubusercontent.com/Kong/kuma-website/master/docs/.vuepress/public/images/demo/kuma-gui-welcome-0.4.0.png)
+![kuma-gui](https://raw.githubusercontent.com/kumahq/kuma-website/master/docs/.vuepress/public/images/demo/kuma-gui-welcome-0.4.0.png)
 
 <!-- Back to top for web browser usability  -->
 <br/>
@@ -541,7 +541,7 @@ Forwarding from [::1]:3000 -> 3000
 
 Visit the [Grafana dashboard](http://localhost:3000/) to query the metrics that Prometheus is scraping from Kuma mesh. If you are prompted to login, just use `admin:admin` as the username and password.
 
-![grafana-dashboard](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
+![grafana-dashboard](https://github.com/kumahq/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
 
 <!-- Back to top for web browser usability  -->
 <br/>

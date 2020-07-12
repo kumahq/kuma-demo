@@ -87,9 +87,9 @@ default   redis-master-78ff699f7-4v579.kuma-demo           app=redis pod-templat
 Kuma GUI is available at printf http://localhost:5683/  ⬅️
 Kuma DEMO is available at http://localhost:8080/  ⬅️
 
-For more about Integrations and Metrics see https://github.com/Kong/kuma-demo/tree/master/kubernetes#integrations
+For more about Integrations and Metrics see https://github.com/kumahq/kuma-demo/tree/master/kubernetes#integrations
 
-To see Kuma in action, follow the Policies guidelines https://github.com/Kong/kuma-demo/tree/master/kubernetes#policies
+To see Kuma in action, follow the Policies guidelines https://github.com/kumahq/kuma-demo/tree/master/kubernetes#policies
 
 🛑 Before using kubectl, please run the following in your shell:
 
@@ -98,7 +98,7 @@ export KUBECONFIG=/Users/nickolaev/.kube/kind-kuma-config
 Type 'quit' to exit.
 ```
 
-As the message states, the Demo site can be found at [http://localhost:8080](http://locahost:8080) and the Kuma GUI at [http://localhost:5683](http://locahost:5683). You can also use `kubectl` and `${HOME}/bin/kumactl` to explore the deployment and configuration following the [integration](https://github.com/Kong/kuma-demo/tree/master/kubernetes#integrations) and [policies](https://github.com/Kong/kuma-demo/tree/master/kubernetes#policies) guides.
+As the message states, the Demo site can be found at [http://localhost:8080](http://locahost:8080) and the Kuma GUI at [http://localhost:5683](http://locahost:5683). You can also use `kubectl` and `${HOME}/bin/kumactl` to explore the deployment and configuration following the [integration](https://github.com/kumahq/kuma-demo/tree/master/kubernetes#integrations) and [policies](https://github.com/kumahq/kuma-demo/tree/master/kubernetes#policies) guides.
 
 After you're done poking around you should type `quit` to exit the demo and cleanup the created cluster:
 
@@ -106,9 +106,9 @@ After you're done poking around you should type `quit` to exit the demo and clea
 Kuma GUI is available at printf http://localhost:5683/  ⬅️
 Kuma DEMO is available at http://localhost:8080/  ⬅️
 
-For more about Integrations and Metrics see https://github.com/Kong/kuma-demo/tree/master/kubernetes#integrations
+For more about Integrations and Metrics see https://github.com/kumahq/kuma-demo/tree/master/kubernetes#integrations
 
-To see Kuma in action, follow the Policies guidelines https://github.com/Kong/kuma-demo/tree/master/kubernetes#policies
+To see Kuma in action, follow the Policies guidelines https://github.com/kumahq/kuma-demo/tree/master/kubernetes#policies
 
 🛑 Before using kubectl, please run the following in your shell:
 

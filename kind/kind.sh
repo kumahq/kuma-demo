@@ -128,9 +128,9 @@ echo
 printf "Kuma GUI is available at \033[0;33mhttp://localhost:5683/\033[0m  ⬅️\n"
 printf "Kuma DEMO is available at \033[0;33mhttp://localhost:8080/\033[0m  ⬅️\n"
 echo
-printf "For more about Integrations and Metrics see \033[0;33mhttps://github.com/Kong/kuma-demo/tree/master/kubernetes#integrations\033[0m\n"
+printf "For more about Integrations and Metrics see \033[0;33mhttps://github.com/kumahq/kuma-demo/tree/master/kubernetes#integrations\033[0m\n"
 echo
-printf "To see Kuma in action, follow the Policies guidelines \033[0;33mhttps://github.com/Kong/kuma-demo/tree/master/kubernetes#policies\033[0m\n"
+printf "To see Kuma in action, follow the Policies guidelines \033[0;33mhttps://github.com/kumahq/kuma-demo/tree/master/kubernetes#policies\033[0m\n"
 echo
 echo "🛑 Before using kubectl, please run the following in your shell:"
 echo

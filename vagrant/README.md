@@ -296,7 +296,7 @@ Once [Traffic Metric policies](#traffic-metrics) are added, you can visit the [P
 
 Alongside Prometheus, we also have Grafana set up out-of-the-box. Visit the [Grafana dashboard](http://192.168.33.80:3000/) to query the metrics that Prometheus is scraping from Kuma mesh. If you are prompted to login, just use `admin:admin` as the username and password. For metrics to show up, you must add [Traffic Metric Policies](#traffic-metrics).
 
-![grafana-dashboard](https://github.com/Kong/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
+![grafana-dashboard](https://github.com/kumahq/kuma-website/blob/master/docs/.vuepress/public/images/demo/mesh-grafana-dashboard.png?raw=true)
 
 ## Policies
 
