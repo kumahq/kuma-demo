@@ -717,10 +717,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
   destinations:
   - match:
-      service: redis.kuma-demo.svc:6379
+      service: redis_kuma-demo_svc_6379
 EOF
 ```
 
@@ -787,25 +787,25 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:8080
+      service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
   conf:
   # it is NOT a percentage. just a positive weight
   - weight: 80
     destination:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
       version: v0
   # we're NOT checking if total of all weights is 100  
   - weight: 20
     destination:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
       version: v1
   # 0 means no traffic will be sent there
   - weight: 0
     destination:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
       version: v2
 EOF
 ```
@@ -837,10 +837,10 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend.kuma-demo.svc:8080
+      service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend.kuma-demo.svc:3001
+      service: backend_kuma-demo_svc_3001
   conf:
     interval: 10s
     timeout: 2s
@@ -1102,11 +1102,11 @@ metadata:
 spec:
     sources:
         - match:
-            service: frontend.kuma-demo.svc:8080
+            service: frontend_kuma-demo_svc_8080
             protocol: http
     destinations:
         - match:
-            service: backend.kuma-demo.svc:3001
+            service: backend_kuma-demo_svc_3001
             protocol: http
     conf:        
         abort:
