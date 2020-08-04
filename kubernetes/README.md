@@ -69,13 +69,14 @@ Once you have Minikube installed, we will need to start a Kubernetes cluster on 
 
 Run the following command to start up a cluster:
 ```bash
-$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.18.2 -p kuma-demo
-😄  [kuma-demo] minikube v1.9.2 on Darwin 10.15.3
+$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.18.6 -p kuma-demo
+😄  [kuma-demo] minikube v1.11.0 on Darwin 10.15.3
 ✨  Automatically selected the hyperkit driver. Other choices: docker, virtualbox
-👍  Starting control plane node m01 in cluster kuma-demo
+👍  Starting control plane node kuma-demo in cluster kuma-demo
 🔥  Creating hyperkit VM (CPUs=2, Memory=6144MB, Disk=20000MB) ...
-🐳  Preparing Kubernetes v1.18.2 on Docker 19.03.8 ...
-🌟  Enabling addons: default-storageclass, storage-provisioner
+🐳  Preparing Kubernetes v1.18.6 on Docker 19.03.8 ...
+🔎  Verifying Kubernetes components...
+🌟  Enabled addons: default-storageclass, storage-provisioner
 🏄  Done! kubectl is now configured to use "kuma-demo"
 ```
 
@@ -146,17 +147,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 0.5.0
+INFO	Kuma version: 0.7.0
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.5.0-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.7.0-darwin-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 49.8M  100 49.8M    0     0  11.1M      0  0:00:04  0:00:04 --:--:-- 14.7M
 
-INFO	Kuma 0.5.0 has been downloaded!
+INFO	Kuma 0.7.0 has been downloaded!
 
 Welcome to Kuma!
 
@@ -201,7 +202,7 @@ instead please read the docs:
 
 NEXT STEPS:
 
-You can now explore the Kuma GUI on port 5683!
+You can now explore the Kuma GUI on port 5681!
 
 Finally, you can start using Kuma by apply traffic policies to any service
 running in your system:
@@ -209,10 +210,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-0.5.0/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-0.7.0/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-0.5.0/bin && ls
+$ cd kuma-0.7.0/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -226,10 +227,15 @@ Using `kumactl install [..]`, install the control-plane onto the Kubernetes clus
 $ ./kumactl install control-plane | kubectl apply -f -
 namespace/kuma-system created
 secret/kuma-sds-tls-cert created
+secret/kuma-kds-tls-cert created
 secret/kuma-admission-server-tls-cert created
 configmap/kuma-control-plane-config created
 serviceaccount/kuma-control-plane created
+customresourcedefinition.apiextensions.k8s.io/circuitbreakers.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/traffictraces.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/zones.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/zoneinsights.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/dataplanes.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/faultinjections.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/healthchecks.kuma.io created
@@ -238,7 +244,6 @@ customresourcedefinition.apiextensions.k8s.io/proxytemplates.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/trafficlogs.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/traffictraces.kuma.io created
 clusterrole.rbac.authorization.k8s.io/kuma:control-plane created
 clusterrolebinding.rbac.authorization.k8s.io/kuma:control-plane created
 role.rbac.authorization.k8s.io/kuma:control-plane created
@@ -310,16 +315,13 @@ You can configure kumactl to point to any remote Kuma control-plane instance. Be
 First, port-forward the `kuma-control-plane` service in the `kuma-system` namespace:
 
 ```bash
-$ kubectl port-forward service/kuma-control-plane -n kuma-system 5681 5683
+$ kubectl port-forward service/kuma-control-plane -n kuma-system 5681
 Forwarding from 127.0.0.1:5681 -> 5681
 Forwarding from [::1]:5681 -> 5681
-Forwarding from 127.0.0.1:5683 -> 5683
-Forwarding from [::1]:5683 -> 5683
 ```
 
-The two ports we port-forwarded are for:
+The port we forwarded is:
 - 5681: the HTTP API server that is being used by kumactl to retrieve the state of your configuration and policies on every environment
-- 5683: the HTTP server that exposes [Kuma UI](#gui)
 
 Next, configure kumactl to point to the address where the HTTP API server sits:
 ```bash
@@ -345,7 +347,7 @@ There are 4 dataplanes which correlates with each component of our application
 
 ### GUI
 
-Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. The GUI is also open-source so you can find the source code in the [kuma-gui repository](https://github.com/kumahq/kuma-gui). It can be found on port :5683 on the control-plane machine, which we just port-forwarded above. Navigate to [http://localhost:5683/](http://localhost:5683/) to use Kuma's GUI.
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. The GUI is also open-source so you can find the source code in the [kuma-gui repository](https://github.com/kumahq/kuma-gui). It can be found on port :5681 on the control-plane machine, which we just port-forwarded above. Navigate to [http://localhost:5681/gui](http://localhost:5681/gui) to use Kuma's GUI.
 
 ![kuma-gui](https://raw.githubusercontent.com/kumahq/kuma-website/master/docs/.vuepress/public/images/demo/kuma-gui-welcome-0.4.0.png)
 
