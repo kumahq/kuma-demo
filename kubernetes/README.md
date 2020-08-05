@@ -632,10 +632,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: '*'
+      kuma.io/service: '*'
   destinations:
   - match:
-      service: '*'
+      kuma.io/service: '*'
 EOF
 ```
 
@@ -663,10 +663,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: kong-proxy_kuma-demo_svc_80
+      kuma.io/service: kong-proxy_kuma-demo_svc_80
   destinations:
   - match:
-      service: frontend_kuma-demo_svc_8080
+      kuma.io/service: frontend_kuma-demo_svc_8080
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -677,10 +677,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: frontend_kuma-demo_svc_8080
+      kuma.io/service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -691,10 +691,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
   destinations:
   - match:
-      service: postgres_kuma-demo_svc_5432
+      kuma.io/service: postgres_kuma-demo_svc_5432
 EOF
 ```
 
@@ -719,10 +719,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
   destinations:
   - match:
-      service: redis_kuma-demo_svc_6379
+      kuma.io/service: redis_kuma-demo_svc_6379
 EOF
 ```
 
@@ -789,25 +789,25 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend_kuma-demo_svc_8080
+      kuma.io/service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
   conf:
   # it is NOT a percentage. just a positive weight
   - weight: 80
     destination:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
       version: v0
   # we're NOT checking if total of all weights is 100  
   - weight: 20
     destination:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
       version: v1
   # 0 means no traffic will be sent there
   - weight: 0
     destination:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
       version: v2
 EOF
 ```
@@ -839,10 +839,10 @@ mesh: default
 spec:
   sources:
   - match:
-      service: frontend_kuma-demo_svc_8080
+      kuma.io/service: frontend_kuma-demo_svc_8080
   destinations:
   - match:
-      service: backend_kuma-demo_svc_3001
+      kuma.io/service: backend_kuma-demo_svc_3001
   conf:
     interval: 10s
     timeout: 2s
@@ -972,10 +972,10 @@ metadata:
 spec:
   sources:
   - match:
-      service: '*'
+      kuma.io/service: '*'
   destinations:
   - match:
-      service: '*'
+      kuma.io/service: '*'
   conf:
     backend: logstash
 EOF
@@ -1049,7 +1049,7 @@ metadata:
 spec:
   selectors:
   - match:
-      service: '*'
+      kuma.io/service: '*'
   conf:
     backend: jaeger
 EOF
@@ -1104,11 +1104,11 @@ metadata:
 spec:
     sources:
         - match:
-            service: frontend_kuma-demo_svc_8080
+            kuma.io/service: frontend_kuma-demo_svc_8080
             protocol: http
     destinations:
         - match:
-            service: backend_kuma-demo_svc_3001
+            kuma.io/service: backend_kuma-demo_svc_3001
             protocol: http
     conf:        
         abort:
