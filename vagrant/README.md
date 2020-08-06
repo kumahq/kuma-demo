@@ -271,10 +271,11 @@ networking:
   address: 10.0.0.1
   gateway:
     tags:
-      service: kong
+      kuma.io/service: kong
   outbound:
     - interface: :28080
-      service: frontend
+      tags:
+        kuma.io/service: frontend
 ```
 
 The inbound networking configuration is replaced with gateway to enable Gateway mode. And the outbound points to our [frontend service](/README.md#frontend), similar to how we configured Kong in the [previous section](#configure-and-start-kong).
@@ -359,10 +360,10 @@ name: permission-all
 mesh: default
 sources:
   - match:
-      service: '*'
+      kuma.io/service: '*'
 destinations:
   - match:
-      service: '*'
+      kuma.io/service: '*'
 EOF
 ```
 
@@ -388,10 +389,10 @@ name: kong-to-frontend
 mesh: default
 sources:
   - match:
-      service: 'kong'
+      kuma.io/service: 'kong'
 destinations:
   - match:
-      service: 'frontend'
+      kuma.io/service: 'frontend'
 EOF
 ```
 
@@ -404,10 +405,10 @@ name: frontend-to-backend
 mesh: default
 sources:
   - match:
-      service: 'frontend'
+      kuma.io/service: 'frontend'
 destinations:
   - match:
-      service: 'backend'
+      kuma.io/service: 'backend'
 EOF
 ```
 
@@ -420,10 +421,10 @@ name: backend-to-postgresql
 mesh: default
 sources:
   - match:
-      service: 'backend'
+      kuma.io/service: 'backend'
 destinations:
   - match:
-      service: 'postgresql'
+      kuma.io/service: 'postgresql'
 EOF
 ```
 
@@ -446,10 +447,10 @@ name: backend-to-redis
 mesh: default
 sources:
   - match:
-      service: 'backend'
+      kuma.io/service: 'backend'
 destinations:
   - match:
-      service: 'redis'
+      kuma.io/service: 'redis'
 EOF
 ```
 
@@ -478,20 +479,20 @@ name: frontend-to-backend
 mesh: default
 sources:
 - match:
-    service: frontend
+    kuma.io/service: frontend
 destinations:
 - match:
-    service: backend
+    kuma.io/service: backend
 conf:
 # it is NOT a percentage. just a positive weight
 - weight: 80
   destination:
-    service: backend
+    kuma.io/service: backend
     version: v0
 # we're NOT checking if total of all weights is 100
 - weight: 20
   destination:
-    service: backend
+    kuma.io/service: backend
     version: v1
 EOF
 ```
@@ -513,10 +514,10 @@ name: frontend-to-backend
 mesh: default
 sources:
 - match:
-    service: frontend
+    kuma.io/service: frontend
 destinations:
 - match:
-    service: backend
+    kuma.io/service: backend
 conf:
   activeChecks:
     interval: 10s
@@ -553,6 +554,8 @@ metrics:
   backends:
   - name: prometheus-1
     type: prometheus
+    conf:
+      skipMTLS: true
 EOF
 ```
 
@@ -594,12 +597,12 @@ mesh: default
 name: everything
 sources:
     - match:
-        service: frontend
-        protocol: http
+        kuma.io/service: frontend
+        kuma.io/protocol: http
 destinations:
     - match:
-        service: backend
-        protocol: http
+        kuma.io/service: backend
+        kuma.io/protocol: http
 conf:        
     abort:
         httpStatus: 500
@@ -610,4 +613,4 @@ conf:
 EOF
 ```
 
-One thing to note about this policy is that three source and destination services must have an additional [`protocol: http` tag](https://kuma.io/docs/latest/policies/http-support-in-kuma/). Now if you return to the application, roughly half the requests will return a HTTP status code 500 thanks to the abort configuration we set above. In addition, there should be a significant delay in the response because we set a 5 second delay on 99% of the requests.
+One thing to note about this policy is that three source and destination services must have an additional [`kuma.io/protocol: http` tag](https://kuma.io/docs/latest/policies/http-support-in-kuma/). Now if you return to the application, roughly half the requests will return a HTTP status code 500 thanks to the abort configuration we set above. In addition, there should be a significant delay in the response because we set a 5 second delay on 99% of the requests.

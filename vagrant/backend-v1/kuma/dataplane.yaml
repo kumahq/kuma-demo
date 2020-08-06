@@ -2,16 +2,18 @@ type: Dataplane
 mesh: default
 name: backend-v1
 networking:
-  address: {{ DATAPLANE_IP }} 
+  address: {{ DATAPLANE_IP }}
   inbound:
   - port: 13001
     servicePort: 3001
     tags:
-      service: backend
+      kuma.io/service: backend
       version: v1
-      protocol: http
+      kuma.io/protocol: http
   outbound:
   - port: 26379
-    service: redis
+    tags:
+      kuma.io/service: redis
   - port: 25432
-    service: postgresql
+    tags:
+      kuma.io/service: postgresql

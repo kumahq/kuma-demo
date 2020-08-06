@@ -5,7 +5,8 @@ networking:
   address: 10.0.0.1
   gateway:
     tags:
-      service: kong
+      kuma.io/service: kong
   outbound:
   - port: 28080
-    service: frontend 
+    tags:
+      kuma.io/service: frontend

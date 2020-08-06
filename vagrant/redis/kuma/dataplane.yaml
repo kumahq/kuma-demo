@@ -7,4 +7,4 @@ networking:
   - port: 16379
     servicePort: 6379
     tags:
-      service: redis
+      kuma.io/service: redis
