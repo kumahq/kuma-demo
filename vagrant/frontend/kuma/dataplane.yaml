@@ -7,8 +7,9 @@ networking:
   - port: 18080
     servicePort: 8080
     tags:
-      service: frontend
-      protocol: http
+      kuma.io/service: frontend
+      kuma.io/protocol: http
   outbound:
   - port: 23001
-    service: backend
+    tags:
+      kuma.io/service: backend
