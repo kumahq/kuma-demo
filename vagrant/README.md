@@ -161,7 +161,7 @@ instead please read the docs:
 
 NEXT STEPS:
 
-You can now explore the Kuma GUI on port 5683!
+You can now explore the Kuma GUI on port 5681/gui!
 
 Finally, you can start using Kuma by apply traffic policies to any service
 running in your system:
@@ -214,7 +214,7 @@ There are 6 dataplanes.
 
 ### GUI
 
-Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5683` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5683/](http://192.168.33.10:5683/) to use Kuma's GUI.
+Kuma ships with an internal GUI that will help you visualize the mesh and its policies in an intuitive format. It can be found on port `:5681` on the control-plane machine. Since our Kuma control-plane machine's IP is `192.168.33.10`, navigate to [http://192.168.33.10:5681/gui](http://192.168.33.10:5681/gui) to use Kuma's GUI.
 
 ## Integrations
 

@@ -7,4 +7,4 @@ networking:
   - port: 15432
     servicePort: 5432
     tags:
-      service: postgresql
+      kuma.io/service: postgresql
