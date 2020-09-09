@@ -3,10 +3,10 @@ mesh: default
 name: tr-version-2
 sources:
   - match:
-      service: gateway
+      kuma.io/service: gateway
 destinations:
   - match:
-      service: backend
+      kuma.io/service: backend
 conf:
   - weight: 100
     destination:

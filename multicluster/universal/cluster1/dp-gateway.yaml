@@ -1,13 +1,13 @@
 type: Dataplane
 mesh: default
-name: gateway-01 
+name: gateway-01
 networking:
   address: 127.0.0.1
   gateway:
     tags:
-      service: gateway
+      kuma.io/service: gateway
   outbound:
   - port: 10005
     tags:
-      service: backend
+      kuma.io/service: backend
 #      version: "1"

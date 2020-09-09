@@ -41,6 +41,11 @@ I recommend running every cluster in tab and components in panes (cmd+D, cmd+shi
 
 ![](setup.png)
 
+in `global` directory
+1. Run Global `./run-cp.sh`
+2. Switch Kumactl `./switch-kumactl.sh`
+3. `kumactl apply -f zone-cluster-1.yaml && kumactl apply -f zone-cluster-2.yaml`
+
 in `cluster1` directory
 1. Run CP in cluster 1 `./run-cp.sh`
 2. Run Ingress in cluster 1 `./run-ingress.sh`
@@ -59,9 +64,7 @@ in `cluster2` directory
 6. Run Service for Backend DP in cluster 1 `./run-service-backend-03.sh`
 
 in `global` directory
-1. Run Global `./run-cp.sh`
-2. Switch Kumactl `./switch-kumactl.sh`
-3. Inspect dataplanes
+1. Inspect dataplanes
 ```
 ❯❯❯ kumactl inspect dataplanes
 MESH      NAME                   TAGS                                          STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
@@ -73,7 +76,7 @@ default   cluster-1.gateway-01   cluster=cluster-1 service=gateway             O
 default   cluster-1.backend-01   cluster=cluster-1 service=backend version=1   Online   2m                   2m                 2               0              never                  -                 0
 ```
 (you can do the same on other clusters to see that ingresses are synced)
-4. Deploy mTLS + TrafficPermission: `./switch-kumactl.sh && kumactl apply -f mesh.yaml && kumactl apply -f tp.yaml` 
+2. Deploy mTLS + TrafficPermission: `./switch-kumactl.sh && kumactl apply -f mesh.yaml && kumactl apply -f tp.yaml` 
    (you can go to other clusters and do `./switch-kumactl.sh && kumactl get meshes -oyaml` etc. to see that resources are synced)
    Ingresses require mTLS to work.
 

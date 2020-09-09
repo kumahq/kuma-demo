@@ -3,14 +3,13 @@ name: gateway-to-backend
 mesh: default
 sources:
 - match:
-    service: 'gateway'
+    kuma.io/service: 'gateway'
 destinations:
 - match:
-    service: 'backend'
+    kuma.io/service: 'backend'
 conf:
-  activeChecks:
-    interval: 1s
-    timeout: 1s
-    unhealthyThreshold: 3
-    healthyThreshold: 1
+  interval: 1s
+  timeout: 1s
+  unhealthyThreshold: 3
+  healthyThreshold: 1
 

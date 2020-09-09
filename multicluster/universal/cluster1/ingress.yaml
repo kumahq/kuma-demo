@@ -7,4 +7,4 @@ networking:
   inbound:
   - port: 10000
     tags:
-      service: ingress
+      kuma.io/service: ingress
