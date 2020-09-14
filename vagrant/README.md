@@ -438,7 +438,7 @@ default   frontend-to-backend     9s
 default   backend-to-postgresql   5s
 ```
 
-And now if we go back to our [marketplace](http://192.168.33.70:  8000), everything will work except the reviews. If we wanted to enable the Redis service again in the future, just add an additional traffic-permission back like this:
+And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work except the reviews. If we wanted to enable the Redis service again in the future, just add an additional traffic-permission back like this:
 
 ```bash
 $ cat <<EOF | kumactl apply -f -
