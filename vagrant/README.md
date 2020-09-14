@@ -183,7 +183,7 @@ kuma-cp            kuma-prometheus-sd
 
 The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. In universal mode you will be able to also make changes via the HTTP API, while in Kubernetes mode the HTTP API is read-only.
 
-**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly. If you need to download it, checkou the [Kuma](#kuma) step above.**
+**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly. If you need to download it, checkout the [Kuma](#kuma) step above.**
 
 #### Setup
 
@@ -519,6 +519,10 @@ destinations:
 - match:
     kuma.io/service: backend
 conf:
+  interval: 10s
+  timeout: 2s
+  unhealthyThreshold: 3
+  healthyThreshold: 1
   activeChecks:
     interval: 10s
     timeout: 2s
