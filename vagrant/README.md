@@ -106,17 +106,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 0.5.0
+INFO	Kuma version: 0.7.1
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.5.0-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.7.1-darwin-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 49.8M  100 49.8M    0     0  11.1M      0  0:00:04  0:00:04 --:--:-- 14.7M
 
-INFO	Kuma 0.5.0 has been downloaded!
+INFO	Kuma 0.7.1 has been downloaded!
 
 Welcome to Kuma!
 
@@ -169,10 +169,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-0.5.0/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-0.7.1/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-0.5.0/bin && ls
+$ cd kuma-0.7.1/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -183,7 +183,7 @@ kuma-cp            kuma-prometheus-sd
 
 The `kumactl` application is a CLI client for the underlying HTTP API of Kuma. Therefore, you can access the state of Kuma by leveraging with the API directly. In universal mode you will be able to also make changes via the HTTP API, while in Kubernetes mode the HTTP API is read-only.
 
-**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly. If you need to download it, checkou the [Kuma](#kuma) step above.**
+**Throughout this guide, you will be using `kumactl apply [..]` frequently so make sure you have this configured properly. If you need to download it, checkout the [Kuma](#kuma) step above.**
 
 #### Setup
 
@@ -519,6 +519,10 @@ destinations:
 - match:
     kuma.io/service: backend
 conf:
+  interval: 10s
+  timeout: 2s
+  unhealthyThreshold: 3
+  healthyThreshold: 1
   activeChecks:
     interval: 10s
     timeout: 2s
