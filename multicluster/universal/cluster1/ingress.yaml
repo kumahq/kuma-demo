@@ -3,7 +3,9 @@ mesh: default
 name: ingress-01
 networking:
   address: 127.0.0.1
-  ingress: {}
+  ingress:
+    publicAddress: 127.0.0.1
+    publicPort: 10000
   inbound:
   - port: 10000
     tags:

@@ -5,3 +5,10 @@ mtls:
   backends:
   - name: ca-1
     type: builtin
+logging:
+  defaultBackend: file
+  backends:
+  - name: file
+    type: file
+    conf:
+      path: /tmp/accesslogs

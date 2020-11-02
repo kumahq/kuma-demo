@@ -43,8 +43,6 @@ I recommend running every cluster in tab and components in panes (cmd+D, cmd+shi
 
 in `global` directory
 1. Run Global `./run-cp.sh`
-2. Switch Kumactl `./switch-kumactl.sh`
-3. `kumactl apply -f zone-cluster-1.yaml && kumactl apply -f zone-cluster-2.yaml`
 
 in `cluster1` directory
 1. Run CP in cluster 1 `./run-cp.sh`
