@@ -1059,7 +1059,7 @@ In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-c
 
 ```bash
 $ kumactl install tracing | kubectl apply -f -
-```
+``` 
 
 #### Adding Traffic Tracing Policy
 
@@ -1083,11 +1083,11 @@ spec:
     - name: prometheus-1
       type: prometheus
   tracing:
-    defaultBackend: jaeger
+    defaultBackend: jaeger-collector
     backends:
-    - name: jaeger
-      sampling: 100.0
+    - name: jaeger-collector
       type: zipkin
+      sampling: 100.0
       conf:
         url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
 EOF
@@ -1108,7 +1108,7 @@ spec:
   - match:
       kuma.io/service: '*'
   conf:
-    backend: jaeger
+    backend: jaeger-collector
 EOF
 ```
 
