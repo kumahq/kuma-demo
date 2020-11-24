@@ -19,8 +19,8 @@ export KUMA_VERSION=kuma-${KUMA_VERSION}
 export PATH=\$PATH:\$KUMA_HOME/bin
 " > /etc/profile.d/kuma.sh
 
-# Download latest version of Kuma for the detected OS, please check out https://kuma.io/install for more options
-curl --silent https://kuma.io/installer.sh | sh >/dev/null 2>&1
+# Download specified version of Kuma for the detected OS, please check out https://kuma.io/install for more options
+curl --silent https://kuma.io/installer.sh | VERSION=$KUMA_VERSION sh >/dev/null 2>&1
 
 # Move to KUMA_HOME directory 
 mv kuma-${KUMA_VERSION} ${KUMA_HOME}
