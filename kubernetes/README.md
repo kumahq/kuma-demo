@@ -33,7 +33,6 @@ When running on Kubernetes, Kuma will store all of its state and configuration o
       - [Check for mTLS](#check-for-mtls)
       - [Adding mTLS Policy](#adding-mtls-policy)
     - [Traffic Permissions](#traffic-permissions)
-      - [Adding Traffic Permission Policy](#adding-traffic-permission-policy)
       - [Adding Granular Traffic Permissions](#adding-granular-traffic-permissions)
     - [Traffic Routing](#traffic-routing)
       - [Scale Replicas](#scale-replicas)
@@ -69,15 +68,15 @@ Once you have Minikube installed, we will need to start a Kubernetes cluster on 
 
 Run the following command to start up a cluster:
 ```bash
-$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.18.6 -p kuma-demo
-😄  [kuma-demo] minikube v1.11.0 on Darwin 10.15.3
-✨  Automatically selected the hyperkit driver. Other choices: docker, virtualbox
+$ minikube start --cpus 2 --memory 6144 --kubernetes-version v1.18.12 -p kuma-demo
+😄  [kuma-demo] minikube v1.15.1 on Darwin 10.15.3
+✨  Automatically selected the docker driver. Other choices: hyperkit, virtualbox
 👍  Starting control plane node kuma-demo in cluster kuma-demo
-🔥  Creating hyperkit VM (CPUs=2, Memory=6144MB, Disk=20000MB) ...
-🐳  Preparing Kubernetes v1.18.6 on Docker 19.03.8 ...
+🔥  Creating docker container (CPUs=2, Memory=6144MB) ...
+🐳  Preparing Kubernetes v1.18.12 on Docker 19.03.13 ...
 🔎  Verifying Kubernetes components...
-🌟  Enabled addons: default-storageclass, storage-provisioner
-🏄  Done! kubectl is now configured to use "kuma-demo"
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use "kuma-demo" cluster and "default" namespace by default
 ```
 
 
@@ -104,10 +103,10 @@ And then check the pods are up and running by getting all pods in the `kuma-demo
 ```bash
 $ kubectl get pods -n kuma-demo
 NAME                                   READY   STATUS    RESTARTS   AGE
-kuma-demo-app-69c9fd4bd-4lkl7          1/1     Running   0          40s
-kuma-demo-backend-v0-d7cb6b576-nrl67   1/1     Running   0          40s
-postgres-master-65df766577-qqqwr       1/1     Running   0          40s
-redis-master-78ff699f7-rsdfk           1/1     Running   0          40s
+kuma-demo-app-69c9fd4bd-hfzg2          2/2     Running   0          31s
+kuma-demo-backend-v0-d7cb6b576-tbtcl   2/2     Running   0          31s
+postgres-master-65df766577-9bc2s       2/2     Running   0          31s
+redis-master-78ff699f7-hk4q7           2/2     Running   0          31s
 ```
 
 The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) deploys our application across four pods:
@@ -129,7 +128,7 @@ Forwarding from [::1]:8080 -> 8080
 
 ![frontend-gui](https://raw.githubusercontent.com/kumahq/kuma-website/master/docs/.vuepress/public/images/demo/kuma-demo-app-gui.png)
 
-This marketplace application is currently running **WITHOUT** Kuma. So all traffic is going directly between the services, and not routed through any dataplanes. In the next step, we will download Kuma and quickly deploy the mesh alongside an existing application. 
+This marketplace application is currently running **WITHOUT** Kuma. So all traffic is going directly between the services, and not routed through any data plane proxies. In the next step, we will download Kuma and quickly deploy the mesh alongside an existing application. 
 
 ### Kuma
 
@@ -143,21 +142,21 @@ Please check out [Kuma's official installation page](https://kuma.io/install) to
 $ curl -L https://kuma.io/installer.sh | sh -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  2902  100  2902    0     0   3422      0 --:--:-- --:--:-- --:--:--  3418
+100  3057  100  3057    0     0  11238      0 --:--:-- --:--:-- --:--:-- 11238
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 0.7.2
+INFO	Kuma version: 1.0.1
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.7.2-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.1-darwin-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 49.8M  100 49.8M    0     0  11.1M      0  0:00:04  0:00:04 --:--:-- 14.7M
+100 60.5M  100 60.5M    0     0  6749k      0  0:00:09  0:00:09 --:--:-- 7389k
 
-INFO	Kuma 0.7.2 has been downloaded!
+INFO	Kuma 1.0.1 has been downloaded!
 
 Welcome to Kuma!
 
@@ -202,7 +201,7 @@ instead please read the docs:
 
 NEXT STEPS:
 
-You can now explore the Kuma GUI on port 5681!
+You can now explore the Kuma GUI on `http://localhost:5681/gui`!
 
 Finally, you can start using Kuma by apply traffic policies to any service
 running in your system:
@@ -210,10 +209,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-0.7.2/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-1.0.1/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-0.7.2/bin && ls
+$ cd kuma-1.0.1/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -226,28 +225,28 @@ Using `kumactl install [..]`, install the control-plane onto the Kubernetes clus
 ```bash
 $ ./kumactl install control-plane | kubectl apply -f -
 namespace/kuma-system created
-secret/kuma-sds-tls-cert created
-secret/kuma-kds-tls-cert created
-secret/kuma-admission-server-tls-cert created
-configmap/kuma-control-plane-config created
 serviceaccount/kuma-control-plane created
+secret/kuma-tls-cert created
+configmap/kuma-control-plane-config created
 customresourcedefinition.apiextensions.k8s.io/circuitbreakers.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/traffictraces.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/zones.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/zoneinsights.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/dataplanes.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/traffictraces.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/zoneinsights.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/zones.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/externalservices.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/faultinjections.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/healthchecks.kuma.io created
+customresourcedefinition.apiextensions.k8s.io/meshinsights.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/meshes.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/proxytemplates.kuma.io created
 customresourcedefinition.apiextensions.k8s.io/trafficlogs.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io created
-customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io created
-clusterrole.rbac.authorization.k8s.io/kuma:control-plane created
-clusterrolebinding.rbac.authorization.k8s.io/kuma:control-plane created
-role.rbac.authorization.k8s.io/kuma:control-plane created
-rolebinding.rbac.authorization.k8s.io/kuma:control-plane created
+clusterrole.rbac.authorization.k8s.io/kuma-control-plane created
+clusterrolebinding.rbac.authorization.k8s.io/kuma-control-plane created
+role.rbac.authorization.k8s.io/kuma-control-plane created
+rolebinding.rbac.authorization.k8s.io/kuma-control-plane created
 service/kuma-control-plane created
 deployment.apps/kuma-control-plane created
 mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-admission-mutating-webhook-configuration created
@@ -259,30 +258,30 @@ And then check the pods are up and running by getting all pods in the `kuma-syst
 ```bash
 $ kubectl get pods -n kuma-system
 NAME                                  READY   STATUS    RESTARTS   AGE
-kuma-control-plane-6f55dbcc74-smf7s   1/1     Running   0          22s
+kuma-control-plane-7fd6877cd5-4rjmv   1/1     Running   0          57s
 ```
 
 The installation commands will deploy these one pod:
-1. Kuma control-plane: Kuma (kuma-cp) is one single executable written in GoLang that can be installed anywhere, hence why it's both universal and simple to deploy. When running on Kubernetes, no external dependencies required, since it leverages the underlying K8s API server to store its configuration. In Kubernetes, it will also automatically inject sidecar dataplane proxies without human intervention. For this service to work, you need to label the namespaces with `kuma.io/sidecar-injection: enabled`. The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) that deployed the marketplace application already has the label so you do not need to edit it.
+1. Kuma control-plane: Kuma (kuma-cp) is one single executable written in GoLang that can be installed anywhere, hence why it's both universal and simple to deploy. When running on Kubernetes, no external dependencies required, since it leverages the underlying K8s API server to store its configuration. In Kubernetes, it will also automatically inject sidecar data plane proxies without human intervention. For this service to work, you need to label the namespaces with `kuma.io/sidecar-injection: enabled`. The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) that deployed the marketplace application already has the label so you do not need to edit it.
 
 Now that we have the control-plane in our cluster, we need to delete the existing pods (or perform a rolling update) so the injector can do its job.
 
 ```bash
 $ kubectl delete pods --all -n kuma-demo
-pod "kuma-demo-app-69c9fd4bd-4lkl7" deleted
-pod "kuma-demo-backend-v0-d7cb6b576-nrl67" deleted
-pod "postgres-master-65df766577-qqqwr" deleted
-pod "redis-master-78ff699f7-rsdfk" deleted
+pod "kuma-demo-app-69c9fd4bd-hfzg2" deleted
+pod "kuma-demo-backend-v0-d7cb6b576-tbtcl" deleted
+pod "postgres-master-65df766577-9bc2s" deleted
+pod "redis-master-78ff699f7-hk4q7" deleted
 ```
 And then check the pods are up and running by getting all pods in the `kuma-demo` namespace:
 
 ```bash
 $ kubectl get pods -n kuma-demo -w
 NAME                                   READY   STATUS    RESTARTS   AGE
-kuma-demo-app-69c9fd4bd-4nkw9          2/2     Running   0          60s
-kuma-demo-backend-v0-d7cb6b576-fxsj2   2/2     Running   0          60s
-postgres-master-65df766577-2cvl7       2/2     Running   0          60s
-redis-master-78ff699f7-hxhbc           2/2     Running   0          59s
+kuma-demo-app-69c9fd4bd-lkhqm          2/2     Running   0          21s
+kuma-demo-backend-v0-d7cb6b576-cp4fm   2/2     Running   0          21s
+postgres-master-65df766577-9767x       2/2     Running   0          21s
+redis-master-78ff699f7-wdc5p           2/2     Running   0          20s
 ```
 It looks near identical **except** each pod now has an additional container. The additional container is the Envoy sidecar proxy that the control-plane is automatically adding to each pod. 
 
@@ -293,7 +292,7 @@ Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 ```
 
-The marketplace application is now running with Kuma, but will be identical to the version with Kuma. The underlying difference is that all the services are now sending traffic to the Envoy dataplane within the same pod, and the Envoy proxies will communicate to each other. But the user will not see any visual change!
+The marketplace application is now running with Kuma, but will be identical to the version with Kuma. The underlying difference is that all the services are now sending traffic to the Envoy data plane proxies within the same pod, and the Envoy proxies will communicate to each other. But the user will not see any visual change!
 
 <!-- Back to top for web browser usability  -->
 <br/>
@@ -332,18 +331,18 @@ switched active Control Plane to "minikube"
 
 #### Inspect
 
-Once kumactl is pointing to the correct control-plane, you can use it to inspect the dataplanes in the mesh.
+Once kumactl is pointing to the correct control-plane, you can use it to inspect the data plane proxies in the mesh.
 
 ```
 $ ./kumactl inspect dataplanes
-MESH      NAME                                             TAGS                                                                                                                       STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
-default   kuma-demo-app-69c9fd4bd-4nkw9.kuma-demo          app=kuma-demo-frontend env=prod pod-template-hash=69c9fd4bd protocol=http service=frontend.kuma-demo.svc:8080 version=v8   Online   4m                   4m                 4               0              never                  -                 0
-default   kuma-demo-backend-v0-d7cb6b576-fxsj2.kuma-demo   app=kuma-demo-backend env=prod pod-template-hash=d7cb6b576 protocol=http service=backend.kuma-demo.svc:3001 version=v0     Online   4m                   4m                 4               0              never                  -                 0
-default   postgres-master-65df766577-2cvl7.kuma-demo       app=postgres pod-template-hash=65df766577 protocol=tcp service=postgres.kuma-demo.svc:5432                                 Online   4m                   4m                 4               0              never                  -                 0
-default   redis-master-78ff699f7-hxhbc.kuma-demo           app=redis pod-template-hash=78ff699f7 protocol=tcp role=master service=redis.kuma-demo.svc:6379 tier=backend               Online   4m                   4m                 4               0              never                  -                 0
+MESH      NAME                                             TAGS                                                                                                                                       STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
+default   kuma-demo-app-69c9fd4bd-lkhqm.kuma-demo          app=kuma-demo-frontend env=prod kuma.io/protocol=http kuma.io/service=frontend_kuma-demo_svc_8080 pod-template-hash=69c9fd4bd version=v8   Online   1m                   1m                 4               0              never                  -                 0
+default   kuma-demo-backend-v0-d7cb6b576-cp4fm.kuma-demo   app=kuma-demo-backend env=prod kuma.io/protocol=http kuma.io/service=backend_kuma-demo_svc_3001 pod-template-hash=d7cb6b576 version=v0     Online   1m                   1m                 4               0              never                  -                 0
+default   postgres-master-65df766577-9767x.kuma-demo       app=postgres kuma.io/protocol=tcp kuma.io/service=postgres_kuma-demo_svc_5432 pod-template-hash=65df766577                                 Online   1m                   1m                 4               0              never                  -                 0
+default   redis-master-78ff699f7-wdc5p.kuma-demo           app=redis kuma.io/protocol=tcp kuma.io/service=redis_kuma-demo_svc_6379 pod-template-hash=78ff699f7 role=master tier=backend               Online   1m                   1m                 4               0              never                  -                 0
 ```
 
-There are 4 dataplanes which correlates with each component of our application
+There are 4 data plane proxies which correlates with each component of our application
 
 ### GUI
 
@@ -366,7 +365,7 @@ Using [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controlle
 
 #### Installation
 
-The dataplane can now operate in [Gateway mode](https://kuma.io/docs/latest/documentation/dps-and-data-model/#gateway). This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Run the following command to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller) via [`bit.ly/demokumakong`](https://www.bit.ly/demokumakong), which points to the [kuma-demo-kong YAML file](/kubernetes/kuma-demo-kong.yaml) provided in this directory:
+The data plane proxy can now operate in [Gateway mode](https://kuma.io/docs/latest/documentation/dps-and-data-model/#gateway). This way you can integrate Kuma with existing API Gateways like [Kong](https://github.com/Kong/kong). Run the following command to deploy [Kong for Kubernetes](https://github.com/Kong/kubernetes-ingress-controller) via [`bit.ly/demokumakong`](https://www.bit.ly/demokumakong), which points to the [kuma-demo-kong YAML file](/kubernetes/kuma-demo-kong.yaml) provided in this directory:
 
 ```bash
 $ kubectl apply -f https://bit.ly/demokumakong
@@ -385,27 +384,31 @@ service/kong-validation-webhook created
 deployment.apps/ingress-kong created
 ```
 
-This deployment is slightly modified from the [original one](https://github.com/Kong/kubernetes-ingress-controller/blob/master/deploy/single/all-in-one-dbless.yaml) in the Kong for Kubernetes repository. We added the annotation `80.service.kuma.io/protocol: "http"` to the `kong-proxy` service and `kuma.io/gateway: enabled` annotation to the API gateway pod so the control-plane knows to inject a gateway dataplane. If you check the pods in the `kuma-demo` namespace, Kong wil be running alongside the application we deployed earlier:
+This deployment is slightly modified from the [original one](https://github.com/Kong/kubernetes-ingress-controller/blob/master/deploy/single/all-in-one-dbless.yaml) in the Kong for Kubernetes repository. We added the annotation `80.service.kuma.io/protocol: "http"` to the `kong-proxy` service and `kuma.io/gateway: enabled` annotation to the API gateway pod so the control-plane knows to inject a gateway data plane proxy. If you check the pods in the `kuma-demo` namespace, Kong wil be running alongside the application we deployed earlier:
 
 ```bash
 $ kubectl get pods -n kuma-demo
 NAME                                   READY   STATUS    RESTARTS   AGE
-ingress-kong-5965cbfc79-9wgkh          3/3     Running   0          78s
-kuma-demo-app-69c9fd4bd-4nkw9          2/2     Running   0          7m36s
-kuma-demo-backend-v0-d7cb6b576-fxsj2   2/2     Running   0          7m36s
-postgres-master-65df766577-2cvl7       2/2     Running   0          7m36s
-redis-master-78ff699f7-hxhbc           2/2     Running   0          7m35s
+ingress-kong-5965cbfc79-2lwpq          3/3     Running   0          90s
+kuma-demo-app-69c9fd4bd-lkhqm          2/2     Running   0          4m19s
+kuma-demo-backend-v0-d7cb6b576-cp4fm   2/2     Running   0          4m19s
+postgres-master-65df766577-9767x       2/2     Running   0          4m19s
+redis-master-78ff699f7-wdc5p           2/2     Running   0          4m18s
 ```
 
-After Kong is deployed, export the proxy IP:
+After Kong is deployed, use `minikube service` to get the proxy URL:
 ```bash
-$ export PROXY_IP=$(minikube service -p kuma-demo -n kuma-demo kong-proxy --url | head -1)
-```
-
-And lastly to check that the proxy IP has been exported, run:
-```bash
-$ echo $PROXY_IP
-http://192.168.64.49:31553
+$ minikube service -p kuma-demo -n kuma-demo kong-proxy --url
+🏃  Starting tunnel for service kong-proxy.
+|-----------|------------|-------------|------------------------|
+| NAMESPACE |    NAME    | TARGET PORT |          URL           |
+|-----------|------------|-------------|------------------------|
+| kuma-demo | kong-proxy |             | http://127.0.0.1:55275 |
+|           |            |             | http://127.0.0.1:55276 |
+|-----------|------------|-------------|------------------------|
+http://127.0.0.1:55275
+http://127.0.0.1:55276
+❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.
 ```
 
 ![kong-gateway](https://raw.githubusercontent.com/Kong/kuma-website/master/docs/.vuepress/public/images/demo/kuma-kong-plugins.png)
@@ -454,7 +457,7 @@ After adding the Ingress rule, you can access the same marketplace application v
 
 ### Prometheus and Grafana
 
-Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If enabled, every dataplane will expose its metrics in Prometheus format. Furthermore, Kuma will make sure that Prometheus can automatically find every dataplane in the mesh.
+Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If enabled, every data plane proxy will expose its metrics in Prometheus format. Furthermore, Kuma will make sure that Prometheus can automatically find every data plane proxy in the mesh.
 
 #### Installation
 
@@ -464,6 +467,12 @@ In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-c
 $ ./kumactl install metrics | kubectl apply -f -
 namespace/kuma-metrics created
 podsecuritypolicy.policy/grafana created
+serviceaccount/prometheus-alertmanager created
+serviceaccount/prometheus-kube-state-metrics created
+serviceaccount/prometheus-node-exporter created
+serviceaccount/prometheus-pushgateway created
+serviceaccount/prometheus-server created
+serviceaccount/grafana created
 configmap/grafana created
 configmap/prometheus-alertmanager created
 configmap/provisioning-datasource created
@@ -471,12 +480,6 @@ configmap/provisioning-dashboards created
 configmap/prometheus-server created
 persistentvolumeclaim/prometheus-alertmanager created
 persistentvolumeclaim/prometheus-server created
-serviceaccount/prometheus-alertmanager created
-serviceaccount/prometheus-kube-state-metrics created
-serviceaccount/prometheus-node-exporter created
-serviceaccount/prometheus-pushgateway created
-serviceaccount/prometheus-server created
-serviceaccount/grafana created
 clusterrole.rbac.authorization.k8s.io/prometheus-alertmanager created
 clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
 clusterrole.rbac.authorization.k8s.io/prometheus-pushgateway created
@@ -508,12 +511,12 @@ To check if everything has been deployed, check the `kuma-metrics` namespace:
 ```
 $ kubectl get pods -n kuma-metrics
 NAME                                             READY   STATUS    RESTARTS   AGE
-grafana-7b4f8c8ffb-tsqbf                         1/1     Running   0          2m28s
-prometheus-alertmanager-d5c7bcb54-hg8wv          2/2     Running   0          2m28s
-prometheus-kube-state-metrics-6d6977fbff-wgck5   1/1     Running   0          2m28s
-prometheus-node-exporter-26smx                   1/1     Running   0          2m28s
-prometheus-pushgateway-5844c4c6d7-5nc7f          1/1     Running   0          2m28s
-prometheus-server-9f577488-lzx9z                 3/3     Running   0          2m28s
+grafana-7b7b687898-qgztc                         2/2     Running   0          3m17s
+prometheus-alertmanager-785975cffb-frbdw         3/3     Running   0          3m17s
+prometheus-kube-state-metrics-6d68cd67f6-x99km   2/2     Running   2          3m17s
+prometheus-node-exporter-dlj42                   1/1     Running   0          3m17s
+prometheus-pushgateway-7b7bc5dff7-krxtc          2/2     Running   0          3m16s
+prometheus-server-5d8f6bf796-7mhnt               4/4     Running   0          3m16s
 ```
 
 Once the pods are all up and running, we need to edit the Kuma Mesh object to include the `metrics: prometheus` section you see below. It is not included by default so you can edit the Mesh object using kubectl like so:
@@ -533,10 +536,49 @@ spec:
 EOF
 ```
 
+Allow the traffic from Grafana to Prometheus Server and from Prometheus Server to Dataplane metrics and for other Prometheus components:
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  name: metrics-permissions
+spec:
+  sources:
+    - match:
+       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+  destinations:
+    - match:
+       kuma.io/service: dataplane-metrics
+    - match:
+       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+    - match:
+       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+    - match:
+       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+    - match:
+       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+---
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  name: grafana-to-prometheus
+spec:
+   sources:
+   - match:
+      kuma.io/service: "grafana_kuma-metrics_svc_80"
+   destinations:
+   - match:
+      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+EOF
+```
+
 Afterwards, port-forward the Grafana server pod on the `kuma-metrics` namespace to acess the GUI:
 
 ```bash
-$ kubectl port-forward grafana-7b4f8c8ffb-tsqbf -n kuma-metrics 3000
+$ kubectl port-forward grafana-7b7b687898-qgztc -n kuma-metrics 3000
 Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 ```
@@ -566,8 +608,8 @@ Using [`kumactl`](#kumactl) that you configured earlier, you can check the Mesh 
 
 ```bash
 $ ./kumactl get meshes
-NAME      mTLS   METRICS                   LOGGING   TRACING   AGE
-default   off    prometheus/prometheus-1   off       off       21m
+NAME      mTLS   METRICS                   LOGGING   TRACING   LOCALITY   AGE
+default   off    prometheus/prometheus-1   off       off       off        30m
 ```
 
 #### Adding mTLS Policy
@@ -598,13 +640,13 @@ Once you have updated the Mesh object with mTLS enabled, check it was configured
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS           METRICS                   LOGGING   TRACING   AGE
-default   builtin/ca-1   prometheus/prometheus-1   off       off       24m
+NAME      mTLS           METRICS                   LOGGING   TRACING   LOCALITY   AGE
+default   builtin/ca-1   prometheus/prometheus-1   off       off       off        31m
 ```
 
-If you try to access the marketplace via the [`$PROXY_IP`](#configuration), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS and the services do not have the proper permissions.
+If you try to access the marketplace via the [`$PROXY_IP`](#configuration), it will still work because there is a default traffic permission. All traffic going through data plane proxies are now encrypted via mTLS.
 
-To enable traffic once mTLS has been enabled, please add [traffic permission policies](#traffic-permissions).
+To fine-tune traffic once mTLS has been enabled, please utilize [traffic permission policies](#traffic-permissions).
 
 <!-- Back to top for web browser usability  -->
 <br/>
@@ -617,35 +659,13 @@ To enable traffic once mTLS has been enabled, please add [traffic permission pol
 
 Traffic Permissions allow you to determine how services communicate. It is a very useful policy to increase security in the mesh and compliance in the organization. You can determine what source services are allowed to consume specific destination services. The service field is mandatory in both sources and destinations. 
 
-#### Adding Traffic Permission Policy
-
-Let's enable traffic-permission for all services so our marketplace works again:
-
-```bash
-$ cat <<EOF | kubectl apply -f - 
-apiVersion: kuma.io/v1alpha1
-kind: TrafficPermission
-mesh: default
-metadata:
-  namespace: kuma-demo
-  name: everything
-spec:
-  sources:
-  - match:
-      kuma.io/service: '*'
-  destinations:
-  - match:
-      kuma.io/service: '*'
-EOF
-```
-
-And now if we go back to the marketplace, everything will work since we allow all services to send traffic to one another.
+Kuma ships with a default traffic permission called `allow-all-default`. 
 
 #### Adding Granular Traffic Permissions 
 
 Imagine if someone was spamming fake reviews to compromise the integrity of our marketplace. We can easily take down our Redis service by using more granular traffic-permissions.
 
-First, we have to delete the existing permission that allows traffic between all services:
+First, we have to delete the default `allow-all-default` permission that allows traffic between all services:
 ```bash
 $ kubectl delete trafficpermission -n kuma-demo --all
 ```
@@ -663,7 +683,7 @@ metadata:
 spec:
   sources:
   - match:
-      kuma.io/service: kong-proxy_kuma-demo_svc_80
+      kuma.io/service: kong-validation-webhook_kuma-demo_svc_443
   destinations:
   - match:
       kuma.io/service: frontend_kuma-demo_svc_8080
@@ -765,13 +785,13 @@ Check all the pods are running like this:
 ```bash
 $ kubectl get pods -n kuma-demo
 NAME                                    READY   STATUS    RESTARTS   AGE
-ingress-kong-5965cbfc79-9wgkh           3/3     Running   0          18m
-kuma-demo-app-69c9fd4bd-4nkw9           2/2     Running   0          24m
-kuma-demo-backend-v0-d7cb6b576-fxsj2    2/2     Running   0          24m
-kuma-demo-backend-v1-648cbd6458-5mmxb   2/2     Running   0          15s
-kuma-demo-backend-v2-79969f7676-dt9st   2/2     Running   0          11s
-postgres-master-65df766577-2cvl7        2/2     Running   0          24m
-redis-master-78ff699f7-hxhbc            2/2     Running   0          24m
+ingress-kong-5965cbfc79-2lwpq           3/3     Running   0          38m
+kuma-demo-app-69c9fd4bd-lkhqm           2/2     Running   0          41m
+kuma-demo-backend-v0-d7cb6b576-cp4fm    2/2     Running   0          41m
+kuma-demo-backend-v1-648cbd6458-6drh5   2/2     Running   0          52s
+kuma-demo-backend-v2-79969f7676-dt7hr   2/2     Running   0          47s
+postgres-master-65df766577-9767x        2/2     Running   0          41m
+redis-master-78ff699f7-wdc5p            2/2     Running   0          41m
 ```
 
 #### Adding Routing Policy
@@ -794,21 +814,19 @@ spec:
   - match:
       kuma.io/service: backend_kuma-demo_svc_3001
   conf:
-  # it is NOT a percentage. just a positive weight
-  - weight: 80
-    destination:
-      kuma.io/service: backend_kuma-demo_svc_3001
-      version: v0
-  # we're NOT checking if total of all weights is 100  
-  - weight: 20
-    destination:
-      kuma.io/service: backend_kuma-demo_svc_3001
-      version: v1
-  # 0 means no traffic will be sent there
-  - weight: 0
-    destination:
-      kuma.io/service: backend_kuma-demo_svc_3001
-      version: v2
+    split:
+    - weight: 80
+      destination:
+        kuma.io/service: backend_kuma-demo_svc_3001
+        version: v0
+    - weight: 20
+      destination:
+        kuma.io/service: backend_kuma-demo_svc_3001
+        version: v1
+    - weight: 0
+      destination:
+        kuma.io/service: backend_kuma-demo_svc_3001
+        version: v2
 EOF
 ```
 
@@ -823,7 +841,7 @@ And now if we go back to our marketplace, roughly 20% of the requests will land 
 
 ### Health Check
 
-The goal of Health Checks is to minimize the number of failed requests due to temporary unavailability of a target endpoint. By applying a Health Check policy you effectively instruct a dataplane to keep track of health statuses for target endpoints. Dataplane will never send a request to an endpoint that is considered "unhealthy".
+The goal of Health Checks is to minimize the number of failed requests due to temporary unavailability of a target endpoint. By applying a Health Check policy you effectively instruct a data plane proxy to keep track of health statuses for target endpoints. Dataplane will never send a request to an endpoint that is considered "unhealthy".
 
 #### Adding Health Check Policy
 
@@ -860,7 +878,7 @@ EOF
 
 ### Traffic Metrics
 
-Kuma facilitates consistent traffic metrics across all dataplanes in your mesh.
+Kuma facilitates consistent traffic metrics across all data plane proxies in your mesh.
 
 A user can enable traffic metrics by editing a Mesh object and providing the desired mesh-wide configuration. If necessary, metrics configuration can be customized for each Dataplane individually, e.g. to override the default metrics port that might be already in use on that particular machine. 
 
@@ -893,6 +911,45 @@ You can check that Prometheus metrics is enabled by checking the mesh with `kuma
 $ ./kumactl get meshes
 NAME      mTLS           METRICS                   LOGGING   TRACING   AGE
 default   builtin/ca-1   prometheus/prometheus-1   off       off       31m
+```
+
+Allow the traffic from Grafana to Prometheus Server and from Prometheus Server to Dataplane metrics and for other Prometheus components:
+```bash
+$ cat <<EOF | kubectl apply -f - 
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  name: metrics-permissions
+spec:
+  sources:
+    - match:
+       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+  destinations:
+    - match:
+       kuma.io/service: dataplane-metrics
+    - match:
+       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+    - match:
+       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+    - match:
+       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+    - match:
+       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+---
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  name: grafana-to-prometheus
+spec:
+   sources:
+   - match:
+      kuma.io/service: "grafana_kuma-metrics_svc_80"
+   destinations:
+   - match:
+      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+EOF
 ```
 
 #### Query Metrics
@@ -992,7 +1049,7 @@ If you visit your personal Loggly instance, you will see the logs appear there.
 
 ### Traffic Trace
 
-With the TrafficTrace policy you can configure tracing on every Kuma DP that belongs to the Mesh. Note that tracing operates on L7 HTTP traffic, so make sure that selected dataplanes are configured with HTTP Protocol.
+With the TrafficTrace policy you can configure tracing on every Kuma DP that belongs to the Mesh. Note that tracing operates on L7 HTTP traffic, so make sure that selected data plane proxies are configured with HTTP Protocol.
 
 #### Jaeger Installation
 
@@ -1002,7 +1059,7 @@ In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-c
 
 ```bash
 $ kumactl install tracing | kubectl apply -f -
-```
+``` 
 
 #### Adding Traffic Tracing Policy
 
@@ -1026,11 +1083,11 @@ spec:
     - name: prometheus-1
       type: prometheus
   tracing:
-    defaultBackend: jaeger
+    defaultBackend: jaeger-collector
     backends:
-    - name: jaeger
-      sampling: 100.0
+    - name: jaeger-collector
       type: zipkin
+      sampling: 1.0.1
       conf:
         url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
 EOF
@@ -1051,21 +1108,8 @@ spec:
   - match:
       kuma.io/service: '*'
   conf:
-    backend: jaeger
+    backend: jaeger-collector
 EOF
-```
-
-You need to restart Kuma DP for tracing configuration to be applied. This limitation will be solved in the next versions of Kuma. 
-
-```bash
-$ kubectl delete pods -n kuma-demo --all
-pod "ingress-kong-5965cbfc79-9wgkh" deleted
-pod "kuma-demo-app-69c9fd4bd-4nkw9" deleted
-pod "kuma-demo-backend-v0-d7cb6b576-fxsj2" deleted
-pod "kuma-demo-backend-v1-648cbd6458-5mmxb" deleted
-pod "kuma-demo-backend-v2-79969f7676-dt9st" deleted
-pod "postgres-master-65df766577-2cvl7" deleted
-pod "redis-master-78ff699f7-hxhbc" deleted
 ```
 
 #### Visualizing Traces
@@ -1105,18 +1149,21 @@ spec:
     sources:
         - match:
             kuma.io/service: frontend_kuma-demo_svc_8080
-            protocol: http
+            kuma.io/protocol: http
     destinations:
         - match:
             kuma.io/service: backend_kuma-demo_svc_3001
-            protocol: http
+            kuma.io/protocol: http
     conf:        
         abort:
             httpStatus: 500
             percentage: 50
         delay:
-            percentage: 99.99
+            percentage: 50.5
             value: 5s
+        responseBandwidth:
+            limit: 50 mbps
+            percentage: 50 
 EOF
 ```
 
