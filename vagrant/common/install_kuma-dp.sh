@@ -18,7 +18,20 @@ if [ -z "${KUMA_DP_UNIT_FILE}" ]; then
   exit 1
 fi
 
+if [ -z "${KUMA_DATAPLANE_FILE}" ]; then
+  echo "Error: environment variable KUMA_DATAPLANE_FILE is not set"
+  exit 1
+fi
+
+if [ -z "${KUMA_DATAPLANE_IP}" ]; then
+  echo "Error: environment variable KUMA_DATAPLANE_IP is not set"
+  exit 1
+fi
+
+cp ${KUMA_DATAPLANE_FILE} /etc/systemd/system/dataplane.yaml
 cp ${KUMA_DP_UNIT_FILE} /etc/systemd/system/kuma-dp.service
+
+sed -i "s/{{ DATAPLANE_IP }}/${KUMA_DATAPLANE_IP}/g" /etc/systemd/system/dataplane.yaml
 
 # Always run the `systemctl daemon-reload` command after creating new unit files or modifying existing unit files.
 # Otherwise, the `systemctl start` or `systemctl enable` commands could fail due to a mismatch between states of systemd
