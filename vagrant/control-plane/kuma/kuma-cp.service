@@ -4,7 +4,6 @@ After=network.target
 Documentation=https://kuma.io
 
 [Service]
-Environment=KUMA_GENERAL_ADVERTISED_HOSTNAME=kuma-cp
 Environment=KUMA_DATAPLANE_TOKEN_SERVER_PUBLIC_ENABLED=true
 Environment=KUMA_DATAPLANE_TOKEN_SERVER_PUBLIC_INTERFACE=0.0.0.0
 Environment=KUMA_DATAPLANE_TOKEN_SERVER_PUBLIC_PORT=5684

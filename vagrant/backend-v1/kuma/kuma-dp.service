@@ -4,9 +4,8 @@ After=network.target
 Documentation=https://kuma.io
 
 [Service]
-Environment=KUMA_DATAPLANE_MESH=default
-Environment=KUMA_DATAPLANE_NAME=backend-v1
-Environment=KUMA_CONTROL_PLANE_API_SERVER_URL=http://kuma-cp:5681
+Environment=KUMA_CONTROL_PLANE_URL=https://kuma-cp:5678
+Environment=KUMA_DATAPLANE_RUNTIME_RESOURCE_PATH=/etc/systemd/system/dataplane.yaml
 Environment=KUMA_DATAPLANE_RUNTIME_TOKEN_PATH=/vagrant/.vagrant.data/backend-v1/var/secrets/kuma.io/kuma-dp/token
 Environment=KUMA_DATAPLANE_ADMIN_PORT=9901
 ExecStart=/opt/kuma/bin/kuma-dp run

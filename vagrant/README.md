@@ -34,7 +34,6 @@ For the purposes of this demo we will use in-memory.
       - [Check for mTLS](#check-for-mtls)
       - [Adding mTLS Policy](#adding-mtls-policy)
     - [Traffic Permissions](#traffic-permissions)
-      - [Adding Traffic Permission Policy](#adding-traffic-permission-policy)
       - [Adding Granular Traffic Permissions](#adding-granular-traffic-permissions)
     - [Traffic Routing](#traffic-routing)
       - [Adding Routing Policy](#adding-routing-policy)
@@ -92,7 +91,7 @@ above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
 ```
 
-To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.70:8000](http://192.168.33.70:8000). All the traffic between the machines are routed through Kuma's dataplane.
+To shop at Kuma's marketplace, access the Kong gateway that is the ingress to your mesh at [http://192.168.33.70:8000](http://192.168.33.70:8000). All the traffic between the machines are routed through Kuma's data plane proxy.
 
 ### Kuma
 
@@ -197,20 +196,20 @@ switched active Control Plane to "vagrant"
 
 #### Inspect
 
-Once `kumactl` is pointing to the correct control-plane, you can use it to inspect the dataplanes in the mesh.
+Once `kumactl` is pointing to the correct control-plane, you can use it to inspect the data plane proxies in the mesh.
 
 ```bash
 $ ./kumactl inspect dataplanes
-MESH      NAME         TAGS                                       STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
-default   redis        service=redis                              Online   9m                   9m                 2               0              never                  -                 0
-default   postgresql   service=postgresql                         Online   8m                   8m                 2               0              never                  -                 0
-default   backend      protocol=http service=backend version=v0   Online   5m                   5m                 3               0              never                  -                 0
-default   backend-v1   protocol=http service=backend version=v1   Online   3m                   3m                 3               0              never                  -                 0
-default   frontend     protocol=http service=frontend             Online   2m                   2m                 4               0              never                  -                 0
-default   kong         service=kong                               Online   15s                  14s                4               0              never                  -                 0
+MESH      NAME         TAGS                                                       STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
+default   backend      kuma.io/protocol=http kuma.io/service=backend version=v0   Online   19m                  19m                3               0              never                  -                 0
+default   backend-v1   kuma.io/protocol=http kuma.io/service=backend version=v1   Online   17m                  17m                3               0              never                  -                 0
+default   frontend     kuma.io/protocol=http kuma.io/service=frontend             Online   15m                  15m                3               0              never                  -                 0
+default   kong         kuma.io/service=kong                                       Online   12m                  12m                3               0              never                  -                 0
+default   postgresql   kuma.io/service=postgresql                                 Online   22m                  22m                2               0              never                  -                 0
+default   redis        kuma.io/service=redis                                      Online   24m                  24m                2               0              never                  -                 0
 ```
 
-There are 6 dataplanes.
+There are 6 data plane proxies.
 
 ### GUI
 
@@ -259,9 +258,9 @@ We start with a Service; that is the name Kong uses to refer to the upstream API
 
 #### Configure Dataplane with Gateway mode
 
-When you use a dataplane with a service, both inbound traffic to a service and outbound traffic from the service flows through the dataplane. But with Kong deployed, we want inbound traffic to go directly to API Gateway, otherwise clients would have to be provided with certificates that are generated dynamically for communication between services within the mesh. So we have to operate the dataplane in [Gateway mode](https://kuma.io/docs/latest/documentation/#gateway).
+When you use a data plane proxy with a service, both inbound traffic to a service and outbound traffic from the service flows through the data plane proxy. But with Kong deployed, we want inbound traffic to go directly to API Gateway, otherwise clients would have to be provided with certificates that are generated dynamically for communication between services within the mesh. So we have to operate the data plane proxy in [Gateway mode](https://kuma.io/docs/latest/documentation/#gateway).
 
-Gateway mode lets you skip exposing inbound listeners so it won't be intercepting ingress traffic. We define the dataplane configuration with Gateway mode for Kong in the [`dataplane.yaml`](/vagrant/kong/kuma/dataplane.yaml) found in the [`kong/kuma/`](/vagrant/kong/kuma/dataplane.yaml) directory.
+Gateway mode lets you skip exposing inbound listeners so it won't be intercepting ingress traffic. We define the data plane proxies' configuration with Gateway mode for Kong in the [`dataplane.yaml`](/vagrant/kong/kuma/dataplane.yaml) found in the [`kong/kuma/`](/vagrant/kong/kuma/dataplane.yaml) directory.
 
 ```yaml
 type: Dataplane
@@ -280,16 +279,16 @@ networking:
 
 The inbound networking configuration is replaced with gateway to enable Gateway mode. And the outbound points to our [frontend service](/README.md#frontend), similar to how we configured Kong in the [previous section](#configure-and-start-kong).
 
-With this dataplane policy, [`register_dataplane.sh`](/vagrant/common/register_dataplane.sh) will apply this configuration to the dataplane that will sit alongside our Kong gateway.
+With this data plane proxy policy, [`register_dataplane.sh`](/vagrant/common/register_dataplane.sh) will apply this configuration to the data plane proxy that will sit alongside our Kong gateway.
 
 ### Prometheus
 
 Out-of-the-box, Kuma provides full integration with Prometheus:
 
-- if enabled, every dataplane will expose its metrics in Prometheus format
-- furthemore, Kuma will make sure that Prometheus can automatically find every dataplane in the mesh
+- if enabled, every data plane proxy will expose its metrics in Prometheus format
+- furthemore, Kuma will make sure that Prometheus can automatically find every data plane proxy in the mesh
 
-In this demo guide, Prometheus is already deployed and configured. All the files that are used to configure and deploy Prometheus can be found in the [`metrics/`](/vagrant/metrics/app/prometheus/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/latest/policies/#traffic-metrics). **To enable Prometheus metrics on every dataplane in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
+In this demo guide, Prometheus is already deployed. All the files that are used to deploy Prometheus can be found in the [`metrics/`](/vagrant/metrics/app/prometheus/install.sh) directory. If you need more help, refer to the official documentation [here](https://kuma.io/docs/latest/policies/#traffic-metrics). **To enable Prometheus metrics on every data plane proxy in the mesh, configure a mesh resource as shown in the [Traffic Metric Policy](#traffic-metrics) section.**
 
 Once [Traffic Metric policies](#traffic-metrics) are added, you can visit the [Prometheus dashboard](http://192.168.33.80:9090/) to query the metrics that Prometheus is scraping from our Kuma mesh.
 
@@ -313,8 +312,8 @@ Using [`kumactl`](#kumactl) that you configured earlier, you can check the mesh 
 
 ```bash
 $ ./kumactl get meshes
-NAME      mTLS   METRICS   LOGGING   TRACING   AGE
-default   off    off       off       off       11m
+NAME      mTLS   METRICS   LOGGING   TRACING   LOCALITY   AGE
+default   off    off       off       off       off        5m
 ```
 
 #### Adding mTLS Policy
@@ -337,37 +336,19 @@ Once you have updated the mesh resource with mTLS enabled, check it was configur
 
 ```
 $ ./kumactl get meshes
-NAME      mTLS           METRICS   LOGGING   TRACING   AGE
-default   builtin/ca-1   off       off       off       3s
+NAME      mTLS           METRICS   LOGGING   TRACING   LOCALITY   AGE
+default   builtin/ca-1   off       off       off       off        4s
 ```
 
-If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the dataplane and is now encrypted via mTLS.
+If you try to access the marketplace via [http://192.168.33.70:8000](http://192.168.33.70:8000), it won't work because that traffic goes through the data plane proxies and is now encrypted via mTLS.
 
 To enable traffic once mTLS has been enabled, please add [traffic permission policies](#traffic-permissions-policy).
 
 ### Traffic Permissions
 
-Traffic Permissions allow you to determine how services communicate. It is a very useful policy to increase security in the mesh and compliance in the organization. You can determine what source services are allowed to consume specific destination services. The service field is mandatory in both sources and destinations.
+Traffic Permissions allow you to determine how services communicate. It is a very useful policy to increase security in the mesh and compliance in the organization. You can determine what source services are allowed to consume specific destination services. The service field is mandatory in both sources and destinations. 
 
-#### Adding Traffic Permission Policy
-
-Let's enable traffic-permission for all services so our marketplace works again:
-
-```bash
-$ cat <<EOF | kumactl apply -f -
-type: TrafficPermission
-name: permission-all
-mesh: default
-sources:
-  - match:
-      kuma.io/service: '*'
-destinations:
-  - match:
-      kuma.io/service: '*'
-EOF
-```
-
-And now if we go back to our [marketplace](http://192.168.33.70:8000), everything will work since we allow all services to send traffic to one another.
+Kuma ships with a default traffic permission called `allow-all-default`.
 
 #### Adding Granular Traffic Permissions
 
@@ -376,8 +357,8 @@ Imagine if someone was spamming fake reviews to compromise the integrity of our 
 First, we have to delete the existing permission that allows traffic between all services:
 
 ```bash
-$ kumactl delete traffic-permission permission-all
-deleted TrafficPermission "permission-all"
+$ kumactl delete traffic-permission allow-all-default
+deleted TrafficPermission "allow-all-default"
 ```
 
 Next, apply the three policies below. In the first one, we allow the Kong service to communicate to the frontend. In the second one, we allow the frontend to communicate with the backend. And in the last one, we allow the backend to communicate with PostgreSQL. By not providing any permissions to Redis, traffic won't be allowed to that service.
@@ -501,7 +482,7 @@ And now if we go back to our [marketplace](http://192.168.33.70:8000), roughly 2
 
 ### Health Check
 
-The goal of Health Checks is to minimize the number of failed requests due to temporary unavailability of a target endpoint. By applying a Health Check policy you effectively instruct a dataplane to keep track of health statuses for target endpoints. Dataplane will never send a request to an endpoint that is considered "unhealthy".
+The goal of Health Checks is to minimize the number of failed requests due to temporary unavailability of a target endpoint. By applying a Health Check policy you effectively instruct a data plane proxy to keep track of health statuses for target endpoints. Dataplane will never send a request to an endpoint that is considered "unhealthy".
 
 #### Adding Health Check Policy
 
@@ -536,7 +517,7 @@ EOF
 
 ### Traffic Metrics
 
-Kuma facilitates consistent traffic metrics across all dataplanes in your mesh.
+Kuma facilitates consistent traffic metrics across all data plane proxies in your mesh.
 
 A user can enable traffic metrics by editing a mesh resource and providing the desired mesh-wide configuration. If necessary, metrics configuration can be customized for each Dataplane individually, e.g. to override the default metrics port that might be already in use on that particular machine.
 
@@ -563,12 +544,46 @@ metrics:
 EOF
 ```
 
+After adding the policy, you need to add an additional traffic-permission policy for the Prometheus and Grafana services:
+
+```bash
+$ cat <<EOF | kumactl apply -f -
+type: TrafficPermission
+name: metrics-permissions
+mesh: default
+sources:
+  - match:
+      kuma.io/service: prometheus-server
+destinations:
+  - match:
+      kuma.io/service: dataplane-metrics
+  - match:
+      kuma.io/service: prometheus-alertmanager
+  - match:
+      kuma.io/service: prometheus-kube-state-metrics
+  - match:
+      kuma.io/service: prometheus-kube-state-metrics
+  - match:
+      kuma.io/service: prometheus-pushgateway
+---
+type: TrafficPermission
+name: grafana-to-prometheus
+mesh: default
+sources:
+  - match:
+      kuma.io/service: grafana
+destinations:
+  - match:
+      kuma.io/service: prometheus-server
+EOF
+```
+
 You can check that Prometheus metrics is enabled by checking the mesh with `kumactl get [..]`:
 
 ```bash
 $ ./kumactl get meshes
-NAME      mTLS           METRICS                   LOGGING   TRACING   AGE
-default   builtin/ca-1   prometheus/prometheus-1   off       off       5s
+NAME      mTLS           METRICS                   LOGGING   TRACING   LOCALITY   AGE
+default   builtin/ca-1   prometheus/prometheus-1   off       off       off        1m
 ```
 
 #### Query Metrics
