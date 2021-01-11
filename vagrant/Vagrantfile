@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-KUMA_VERSION = "1.0.3"
+KUMA_VERSION = "1.0.5"
 KUMA_HOME    = "/opt/kuma"
 
 KUMA_CONTROL_PLANE_IP      = "192.168.33.10"

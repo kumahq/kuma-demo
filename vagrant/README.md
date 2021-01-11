@@ -105,17 +105,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 0.7.2
+INFO	Kuma version: 1.0.5
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-0.7.2-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.5-darwin-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 49.8M  100 49.8M    0     0  11.1M      0  0:00:04  0:00:04 --:--:-- 14.7M
 
-INFO	Kuma 0.7.2 has been downloaded!
+INFO	Kuma 1.0.5 has been downloaded!
 
 Welcome to Kuma!
 
@@ -168,10 +168,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-0.7.2/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-1.0.5/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-0.7.2/bin && ls
+$ cd kuma-1.0.5/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```

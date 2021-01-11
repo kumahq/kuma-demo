@@ -146,17 +146,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 1.0.1
+INFO	Kuma version: 1.0.5
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.1-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.5-darwin-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 60.5M  100 60.5M    0     0  6749k      0  0:00:09  0:00:09 --:--:-- 7389k
 
-INFO	Kuma 1.0.1 has been downloaded!
+INFO	Kuma 1.0.5 has been downloaded!
 
 Welcome to Kuma!
 
@@ -209,10 +209,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-1.0.1/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-1.0.5/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-1.0.1/bin && ls
+$ cd kuma-1.0.5/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -1087,7 +1087,7 @@ spec:
     backends:
     - name: jaeger-collector
       type: zipkin
-      sampling: 1.0.1
+      sampling: 1.0
       conf:
         url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
 EOF
