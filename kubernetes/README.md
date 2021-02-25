@@ -1087,7 +1087,7 @@ spec:
     backends:
     - name: jaeger-collector
       type: zipkin
-      sampling: 1.0.1
+      sampling: 100.0
       conf:
         url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
 EOF
