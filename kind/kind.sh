@@ -1,19 +1,26 @@
-#!/bin/sh
+#! /usr/bin/env bash
 
-KUMACTL_BIN=${HOME}/bin/kumactl
-KUMA_VERSION="0.5.0"
+set -o errexit
+set -o pipefail
+set -o nounset
 
-KIND_BIN=${HOME}/bin/kind
-KIND_VERSION="v0.8.1"
-KIND_CONFIG=./cluster.yaml
-KIND_CLUSTER=kuma
+readonly HERE="$(cd $(dirname "$0") && pwd)"
 
-KIND_KUBECONFIG_DIR=${HOME}/.kube
-KIND_KUBECONFIG=${KIND_KUBECONFIG_DIR}/kind-kuma-config
+readonly KUMACTL_BIN="${HOME}/bin/kumactl"
+readonly KIND_BIN="${HOME}/bin/kind"
 
-KIND_DEMO=../kubernetes/kuma-demo-aio.yaml
+readonly KIND_VERSION="v0.11.1"
+KUMA_VERSION=${KUMA_VERSION:-""}
 
-KUBECTL=kubectl
+readonly KIND_CONFIG="${HERE}/cluster.yaml"
+readonly KIND_CLUSTER="kuma-demo"
+
+readonly KIND_KUBECONFIG_DIR="${HOME}/.kube"
+readonly KIND_KUBECONFIG="${KIND_KUBECONFIG_DIR}/kind-${KIND_CLUSTER}-config"
+
+readonly KIND_DEMO="${HERE}/../kubernetes/kuma-demo-aio.yaml"
+
+readonly KUBECTL=kubectl
 
 ARCH="amd64"
 
@@ -48,12 +55,16 @@ if [ ! -x "${KIND_BIN}" ] || [ "$(${KIND_BIN} version | awk '{ print $2}')" != "
 
   KIND_URL="https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-${OS}-${ARCH}"
 
-  curl --location --create-dirs --output "${KIND_BIN}" ${KIND_URL}
+  curl --progress-bar --location --create-dirs --output "${KIND_BIN}" ${KIND_URL}
   chmod +x "${KIND_BIN}"
 fi
 
 # Ensure kumactl binary in ${HOME}/bin
-if [ ! -x "${KUMACTL_BIN}" ] || [ "$(${KUMACTL_BIN} version 2>&1)" != "${KUMA_VERSION}" ];  then
+if [ -z "${KUMA_VERSION}" ]; then
+    KUMA_VERSION=$(curl --silent https://kuma.io/latest_version)
+fi
+
+if [ ! -x "${KUMACTL_BIN}" ] || ! grep -q "${KUMA_VERSION}" <(${KUMACTL_BIN} version 2>&1) ;  then
 
   case $OS in
     'linux')
@@ -61,8 +72,15 @@ if [ ! -x "${KUMACTL_BIN}" ] || [ "$(${KUMACTL_BIN} version 2>&1)" != "${KUMA_VE
       ;;
   esac
 
-  KUMA_URL="https://kong.bintray.com/kuma/kuma-${KUMA_VERSION}-${OS}-${ARCH}.tar.gz"
-  curl --location --output - ${KUMA_URL} | tar -z --strip 2 --extract --file=- -C "${HOME}" ./kuma-${KUMA_VERSION}/bin/kumactl
+  (
+    cd $(mktemp -d)
+
+    curl --silent https://kuma.io/installer.sh | VERSION="$KUMA_VERSION" bash
+
+    mkdir -p "$(dirname ${KUMACTL_BIN})"
+    cp $(find . -name kumactl) "${KUMACTL_BIN}"
+
+  )
 fi
 
 # Cleanup the created cluster
@@ -99,12 +117,17 @@ do
   echo "Waiting for the cluster to come up" && sleep 3;
 done
 
-# Deploy Kuma and wait for the deployment to finish
+# Deploy Kuma and wait for the deployment to finish. Waiting for pods
+# immediately is racy because if no pod resources are present when kubectl
+# runs, it will error out. This is why we wait for some initial deployment
+# availability first.
 ${KUMACTL_BIN} install control-plane | ${KUBECTL} apply --wait -f -
+${KUBECTL} wait -n kuma-system --timeout=300s --for condition=Available --all deployments
 ${KUBECTL} wait -n kuma-system --timeout=300s --for condition=Ready --all pods
 
-# Deploy the Demo and wait for the deployment to finish
+# Deploy the Demo and wait for the deployment to finish.
 ${KUBECTL} apply --wait -f ${KIND_DEMO}
+${KUBECTL} wait -n kuma-demo --timeout=300s --for condition=Available --all deployments
 ${KUBECTL} wait -n kuma-demo --timeout=300s --for condition=Ready --all pods
 
 # Print the Kuma and Demo pods
@@ -112,10 +135,10 @@ ${KUBECTL} get pods -n kuma-system
 ${KUBECTL} get pods -n kuma-demo
 
 # Portforward to Kuma Control plane and the Demo fronted
-portforward kuma-system app=kuma-control-plane 5681 5683
+portforward kuma-system app=kuma-control-plane 5681
 portforward kuma-demo app=kuma-demo-frontend 8080
 
-until curl http://localhost:5681 >/dev/null 2>&1 ;
+until curl --silent http://localhost:5681 >/dev/null 2>&1 ;
 do
   echo "Waiting for the port forwarding to finish" && sleep 3;
 done
@@ -125,7 +148,7 @@ ${KUMACTL_BIN} config control-planes add --overwrite --name=kind --address=http:
 ${KUMACTL_BIN} inspect dataplanes
 
 echo
-printf "Kuma GUI is available at \033[0;33mhttp://localhost:5683/\033[0m  ⬅️\n"
+printf "Kuma GUI is available at \033[0;33mhttp://localhost:5681/gui\033[0m  ⬅️\n"
 printf "Kuma DEMO is available at \033[0;33mhttp://localhost:8080/\033[0m  ⬅️\n"
 echo
 printf "For more about Integrations and Metrics see \033[0;33mhttps://github.com/kumahq/kuma-demo/tree/master/kubernetes#integrations\033[0m\n"
