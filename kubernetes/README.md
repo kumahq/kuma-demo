@@ -103,10 +103,10 @@ And then check the pods are up and running by getting all pods in the `kuma-demo
 ```bash
 $ kubectl get pods -n kuma-demo
 NAME                                   READY   STATUS    RESTARTS   AGE
-kuma-demo-app-69c9fd4bd-hfzg2          2/2     Running   0          31s
-kuma-demo-backend-v0-d7cb6b576-tbtcl   2/2     Running   0          31s
-postgres-master-65df766577-9bc2s       2/2     Running   0          31s
-redis-master-78ff699f7-hk4q7           2/2     Running   0          31s
+kuma-demo-app-69c9fd4bd-hfzg2          1/1     Running   0          31s
+kuma-demo-backend-v0-d7cb6b576-tbtcl   1/1     Running   0          31s
+postgres-master-65df766577-9bc2s       1/1     Running   0          31s
+redis-master-78ff699f7-hk4q7           1/1     Running   0          31s
 ```
 
 The [all-in-one YAML file](/kubernetes/kuma-demo-aio.yaml) deploys our application across four pods:
