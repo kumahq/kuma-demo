@@ -1,12 +1,7 @@
-type: Dataplane
-mesh: default
+type: ZoneIngress
 name: ingress-01
 networking:
   address: 127.0.0.1
-  ingress:
-    publicAddress: 127.0.0.1
-    publicPort: 10000
-  inbound:
-  - port: 10000
-    tags:
-      kuma.io/service: ingress
+  port: 10000
+  advertisedAddress: 127.0.0.1
+  advertisedPort: 10000

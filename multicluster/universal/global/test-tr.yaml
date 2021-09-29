@@ -1,0 +1,15 @@
+type: TrafficRoute
+mesh: default
+name: test-tr
+sources:
+  - match:
+      kuma.io/service: '*'
+destinations:
+  - match:
+      kuma.io/service: '*'
+conf:
+  split:
+    - destination:
+        kuma.io/service: '*'
+        version: "2"
+      weight: 100

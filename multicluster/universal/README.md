@@ -46,16 +46,16 @@ in `global` directory
 
 in `cluster1` directory
 1. Run CP in cluster 1 `./run-cp.sh`
-2. Run Ingress in cluster 1 `./run-ingress.sh`
+2. Run ZoneIngress in cluster 1 `./run-ingress.sh`
 3. Run Gateway in cluster 1 `./run-gateway-dp.sh`
 4. Run Backend DP in cluster 1 `./run-backend-dp.sh`
 5. Run Service for Backend DP in cluster 1 `./run-service-backend.sh`
 
-(at this point you can do `../requests-through-gateway.sh` to see that even without global you have communication)
+(at this point you can do `../requests-through-gateway.sh` to see that you've got communication)
 
 in `cluster2` directory
 1. Run CP in cluster 2 `./run-cp.sh`
-2. Run Ingress in cluster 2 `./run-ingress.sh`
+2. Run ZoneIngress in cluster 2 `./run-ingress.sh`
 3. Run Backend DP in cluster 2 `./run-backend-dp-02.sh`
 4. Run Service for Backend DP in cluster 1 `./run-service-backend-02.sh`
 5. Run Backend DP in cluster 2 `./run-backend-dp-03.sh`
@@ -64,17 +64,17 @@ in `cluster2` directory
 in `global` directory
 1. Inspect dataplanes
 ```
-❯❯❯ kumactl inspect dataplanes
-MESH      NAME                   TAGS                                          STATUS   LAST CONNECTED AGO   LAST UPDATED AGO   TOTAL UPDATES   TOTAL ERRORS   CERT REGENERATED AGO   CERT EXPIRATION   CERT REGENERATIONS
-default   cluster-2.ingress-02   cluster=cluster-2 service=ingress             Online   1m                   1m                 5               0              never                  -                 0
-default   cluster-2.backend-02   cluster=cluster-2 service=backend version=2   Online   1m                   1m                 2               0              never                  -                 0
-default   cluster-1.ingress-01   cluster=cluster-1 service=ingress             Online   2m                   1m                 3               0              never                  -                 0
-default   cluster-2.backend-03   cluster=cluster-2 service=backend version=1   Online   1m                   1m                 2               0              never                  -                 0
-default   cluster-1.gateway-01   cluster=cluster-1 service=gateway             Online   2m                   7s                 5               0              never                  -                 0
-default   cluster-1.backend-01   cluster=cluster-1 service=backend version=1   Online   2m                   2m                 2               0              never                  -                 0
+❯❯❯ ./switch-kumactl.sh && kumactl get dataplanes
+switched active Control Plane to "global"
+MESH      NAME                   TAGS                                                       AGE
+default   cluster-1.backend-01   kuma.io/service=backend kuma.io/zone=cluster-1 version=1   8m
+default   cluster-1.gateway-01   kuma.io/service=gateway kuma.io/zone=cluster-1             8m
+default   cluster-2.backend-02   kuma.io/service=backend kuma.io/zone=cluster-2 version=2   1m
+default   cluster-2.backend-03   kuma.io/service=backend kuma.io/zone=cluster-2 version=1   38s
 ```
 (you can do the same on other clusters to see that ingresses are synced)
-2. Deploy mTLS + TrafficPermission: `./switch-kumactl.sh && kumactl apply -f mesh.yaml && kumactl apply -f tp.yaml` 
+
+2. Deploy mTLS: `./switch-kumactl.sh && kumactl apply -f mesh.yaml` 
    (you can go to other clusters and do `./switch-kumactl.sh && kumactl get meshes -oyaml` etc. to see that resources are synced)
    Ingresses require mTLS to work.
 

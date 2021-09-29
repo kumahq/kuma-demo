@@ -10,4 +10,3 @@ networking:
   - port: 10005
     tags:
       kuma.io/service: backend
-#      version: "1"

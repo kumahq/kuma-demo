@@ -8,7 +8,6 @@ destinations:
   - match:
       kuma.io/service: backend
 conf:
-  - weight: 100
-    destination:
-      service: backend
-      version: "2"
+  destination:
+    kuma.io/service: backend
+    version: "2"
