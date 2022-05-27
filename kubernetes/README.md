@@ -146,17 +146,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 1.0.1
+INFO	Kuma version: 1.7.0
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.1-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://download.konghq.com/mesh-alpine/kuma-1.7.0-debian-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 60.5M  100 60.5M    0     0  6749k      0  0:00:09  0:00:09 --:--:-- 7389k
 
-INFO	Kuma 1.0.1 has been downloaded!
+INFO	Kuma 1.7.0 has been downloaded!
 
 Welcome to Kuma!
 
@@ -209,10 +209,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-1.0.1/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-1.7.0/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-1.0.1/bin && ls
+$ cd kuma-1.7.0/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -461,62 +461,76 @@ Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If e
 
 #### Installation
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Prometheus and Grafana components onto the Kubernetes cluster we have deployed:
+In Kubernetes mode, we can use `kumactl install [..]` again to install pre-configured observability services (Prometheus, Grafana, Jaeger, Loki) onto the Kubernetes cluster we have deployed:
 
 ```
-$ ./kumactl install metrics | kubectl apply -f -
-namespace/kuma-metrics created
+$ ./kumactl install observability | kubectl apply -f -
+namespace/mesh-observability created
 podsecuritypolicy.policy/grafana created
-serviceaccount/prometheus-alertmanager created
 serviceaccount/prometheus-kube-state-metrics created
-serviceaccount/prometheus-node-exporter created
-serviceaccount/prometheus-pushgateway created
 serviceaccount/prometheus-server created
 serviceaccount/grafana created
 configmap/grafana created
-configmap/prometheus-alertmanager created
 configmap/provisioning-datasource created
-configmap/provisioning-dashboards created
 configmap/prometheus-server created
-persistentvolumeclaim/prometheus-alertmanager created
+configmap/provisioning-dashboards created
+configmap/provisioning-dashboards-0 created
+configmap/provisioning-dashboards-1 created
+configmap/provisioning-dashboards-2 created
+configmap/provisioning-dashboards-3 created
+configmap/provisioning-dashboards-4 created
 persistentvolumeclaim/prometheus-server created
-clusterrole.rbac.authorization.k8s.io/prometheus-alertmanager created
-clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
-clusterrole.rbac.authorization.k8s.io/prometheus-pushgateway created
-clusterrole.rbac.authorization.k8s.io/prometheus-server created
 clusterrole.rbac.authorization.k8s.io/grafana-clusterrole created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-alertmanager created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-pushgateway created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-server created
+clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrole.rbac.authorization.k8s.io/prometheus-server created
 clusterrolebinding.rbac.authorization.k8s.io/grafana-clusterrolebinding created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-server created
 role.rbac.authorization.k8s.io/grafana created
 rolebinding.rbac.authorization.k8s.io/grafana created
-service/prometheus-alertmanager created
-service/prometheus-kube-state-metrics created
-service/prometheus-node-exporter created
-service/prometheus-pushgateway created
-service/prometheus-server created
 service/grafana created
-daemonset.apps/prometheus-node-exporter created
+service/prometheus-kube-state-metrics created
+service/prometheus-server created
 deployment.apps/grafana created
-deployment.apps/prometheus-alertmanager created
 deployment.apps/prometheus-kube-state-metrics created
-deployment.apps/prometheus-pushgateway created
 deployment.apps/prometheus-server created
+namespace/mesh-observability configured
+namespace/mesh-observability unchanged
+podsecuritypolicy.policy/loki created
+podsecuritypolicy.policy/loki-promtail created
+serviceaccount/loki created
+serviceaccount/loki-promtail created
+secret/loki created
+configmap/loki-promtail created
+clusterrole.rbac.authorization.k8s.io/loki-promtail-clusterrole created
+clusterrolebinding.rbac.authorization.k8s.io/loki-promtail-clusterrolebinding created
+role.rbac.authorization.k8s.io/loki-promtail created
+role.rbac.authorization.k8s.io/loki created
+rolebinding.rbac.authorization.k8s.io/loki created
+rolebinding.rbac.authorization.k8s.io/loki-promtail created
+service/loki-headless created
+service/loki created
+daemonset.apps/loki-promtail created
+statefulset.apps/loki created
+namespace/mesh-observability unchanged
+deployment.apps/jaeger created
+service/jaeger-query created
+service/jaeger-collector created
+service/jaeger-agent created
+service/zipkin created
 ```
 
-To check if everything has been deployed, check the `kuma-metrics` namespace:
+To check if everything has been deployed, check the `mesh-observability` namespace:
 
 ```
-$ kubectl get pods -n kuma-metrics
+$ kubectl get pods -n mesh-observability
 NAME                                             READY   STATUS    RESTARTS   AGE
-grafana-7b7b687898-qgztc                         2/2     Running   0          3m17s
-prometheus-alertmanager-785975cffb-frbdw         3/3     Running   0          3m17s
-prometheus-kube-state-metrics-6d68cd67f6-x99km   2/2     Running   2          3m17s
-prometheus-node-exporter-dlj42                   1/1     Running   0          3m17s
-prometheus-pushgateway-7b7bc5dff7-krxtc          2/2     Running   0          3m16s
-prometheus-server-5d8f6bf796-7mhnt               4/4     Running   0          3m16s
+grafana-db859d54c-tc77c                          1/1     Running   0          118s
+jaeger-85d84d97b-8dflq                           1/1     Running   0          118s
+loki-0                                           1/1     Running   0          118s
+loki-promtail-vgtqj                              1/1     Running   0          118s
+prometheus-kube-state-metrics-84b95b8c96-hzd5w   1/1     Running   0          118s
+prometheus-server-db5c5b7c9-7dzxd                2/2     Running   0          118s
 ```
 
 Once the pods are all up and running, we need to edit the Kuma Mesh object to include the `metrics: prometheus` section you see below. It is not included by default so you can edit the Mesh object using kubectl like so:
@@ -547,18 +561,18 @@ metadata:
 spec:
   sources:
     - match:
-       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+       kuma.io/service: prometheus-server_mesh-observability_svc_80
   destinations:
     - match:
        kuma.io/service: dataplane-metrics
     - match:
-       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-alertmanager_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_81"
     - match:
-       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+       kuma.io/service: "prometheus-pushgateway_mesh-observability_svc_9091"
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -568,17 +582,17 @@ metadata:
 spec:
    sources:
    - match:
-      kuma.io/service: "grafana_kuma-metrics_svc_80"
+      kuma.io/service: "grafana_mesh-observability_svc_80"
    destinations:
    - match:
-      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+      kuma.io/service: "prometheus-server_mesh-observability_svc_80"
 EOF
 ```
 
-Afterwards, port-forward the Grafana server pod on the `kuma-metrics` namespace to acess the GUI:
+Afterwards, port-forward the Grafana server pod on the `mesh-observability` namespace to acess the GUI:
 
 ```bash
-$ kubectl port-forward grafana-7b7b687898-qgztc -n kuma-metrics 3000
+$ kubectl port-forward grafana-7b7b687898-qgztc -n mesh-observability 3000
 Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 ```
@@ -924,18 +938,18 @@ metadata:
 spec:
   sources:
     - match:
-       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+       kuma.io/service: prometheus-server_mesh-observability_svc_80
   destinations:
     - match:
        kuma.io/service: dataplane-metrics
     - match:
-       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-alertmanager_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_81"
     - match:
-       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+       kuma.io/service: "prometheus-pushgateway_mesh-observability_svc_9091"
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -945,10 +959,10 @@ metadata:
 spec:
    sources:
    - match:
-      kuma.io/service: "grafana_kuma-metrics_svc_80"
+      kuma.io/service: "grafana_mesh-observability_svc_80"
    destinations:
    - match:
-      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+      kuma.io/service: "prometheus-server_mesh-observability_svc_80"
 EOF
 ```
 
@@ -1051,15 +1065,11 @@ If you visit your personal Loggly instance, you will see the logs appear there.
 
 With the TrafficTrace policy you can configure tracing on every Kuma DP that belongs to the Mesh. Note that tracing operates on L7 HTTP traffic, so make sure that selected data plane proxies are configured with HTTP Protocol.
 
-#### Jaeger Installation
+#### Jaeger
 
 We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-source tracing tool. You can use popular alternatives like Zipkin alongside Kuma.
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
-
-```bash
-$ kumactl install tracing | kubectl apply -f -
-``` 
+Jaeger was already installed in [Installation step](#installation).
 
 #### Adding Traffic Tracing Policy
 
@@ -1089,7 +1099,7 @@ spec:
       type: zipkin
       sampling: 100.0
       conf:
-        url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
+        url: http://jaeger-collector.mesh-observability:9411/api/v2/spans
 EOF
 ```
 
@@ -1117,7 +1127,7 @@ EOF
 After generating some traffic in the mesh, you can access the Jaeger dashboard using the following command to visualize the traces:
 
 ```bash
-$ minikube service jaeger-query --url -p kuma-demo -n kuma-tracing
+$ minikube service jaeger-query --url -p kuma-demo -n mesh-observability
 http://192.168.64.62:30911
 ```
 
