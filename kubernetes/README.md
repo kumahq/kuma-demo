@@ -461,7 +461,7 @@ Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If e
 
 #### Installation
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install all observability services with a pre-configured Prometheus and Grafana components onto the Kubernetes cluster we have deployed:
+In Kubernetes mode, we can use `kumactl install [..]` again to install pre-configured observability services (Prometheus, Grafana, Jaeger, Loki) onto the Kubernetes cluster we have deployed:
 
 ```
 $ ./kumactl install observability | kubectl apply -f -
