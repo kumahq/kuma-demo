@@ -467,43 +467,57 @@ In Kubernetes mode, we can use `kumactl install [..]` again to install all obser
 $ ./kumactl install observability | kubectl apply -f -
 namespace/mesh-observability created
 podsecuritypolicy.policy/grafana created
-serviceaccount/prometheus-alertmanager created
 serviceaccount/prometheus-kube-state-metrics created
-serviceaccount/prometheus-node-exporter created
-serviceaccount/prometheus-pushgateway created
 serviceaccount/prometheus-server created
 serviceaccount/grafana created
 configmap/grafana created
-configmap/prometheus-alertmanager created
 configmap/provisioning-datasource created
-configmap/provisioning-dashboards created
 configmap/prometheus-server created
-persistentvolumeclaim/prometheus-alertmanager created
+configmap/provisioning-dashboards created
+configmap/provisioning-dashboards-0 created
+configmap/provisioning-dashboards-1 created
+configmap/provisioning-dashboards-2 created
+configmap/provisioning-dashboards-3 created
+configmap/provisioning-dashboards-4 created
 persistentvolumeclaim/prometheus-server created
-clusterrole.rbac.authorization.k8s.io/prometheus-alertmanager created
-clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
-clusterrole.rbac.authorization.k8s.io/prometheus-pushgateway created
-clusterrole.rbac.authorization.k8s.io/prometheus-server created
 clusterrole.rbac.authorization.k8s.io/grafana-clusterrole created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-alertmanager created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-pushgateway created
-clusterrolebinding.rbac.authorization.k8s.io/prometheus-server created
+clusterrole.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrole.rbac.authorization.k8s.io/prometheus-server created
 clusterrolebinding.rbac.authorization.k8s.io/grafana-clusterrolebinding created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-kube-state-metrics created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-server created
 role.rbac.authorization.k8s.io/grafana created
 rolebinding.rbac.authorization.k8s.io/grafana created
-service/prometheus-alertmanager created
-service/prometheus-kube-state-metrics created
-service/prometheus-node-exporter created
-service/prometheus-pushgateway created
-service/prometheus-server created
 service/grafana created
-daemonset.apps/prometheus-node-exporter created
+service/prometheus-kube-state-metrics created
+service/prometheus-server created
 deployment.apps/grafana created
-deployment.apps/prometheus-alertmanager created
 deployment.apps/prometheus-kube-state-metrics created
-deployment.apps/prometheus-pushgateway created
 deployment.apps/prometheus-server created
+namespace/mesh-observability configured
+namespace/mesh-observability unchanged
+podsecuritypolicy.policy/loki created
+podsecuritypolicy.policy/loki-promtail created
+serviceaccount/loki created
+serviceaccount/loki-promtail created
+secret/loki created
+configmap/loki-promtail created
+clusterrole.rbac.authorization.k8s.io/loki-promtail-clusterrole created
+clusterrolebinding.rbac.authorization.k8s.io/loki-promtail-clusterrolebinding created
+role.rbac.authorization.k8s.io/loki-promtail created
+role.rbac.authorization.k8s.io/loki created
+rolebinding.rbac.authorization.k8s.io/loki created
+rolebinding.rbac.authorization.k8s.io/loki-promtail created
+service/loki-headless created
+service/loki created
+daemonset.apps/loki-promtail created
+statefulset.apps/loki created
+namespace/mesh-observability unchanged
+deployment.apps/jaeger created
+service/jaeger-query created
+service/jaeger-collector created
+service/jaeger-agent created
+service/zipkin created
 ```
 
 To check if everything has been deployed, check the `mesh-observability` namespace:
@@ -511,12 +525,12 @@ To check if everything has been deployed, check the `mesh-observability` namespa
 ```
 $ kubectl get pods -n mesh-observability
 NAME                                             READY   STATUS    RESTARTS   AGE
-grafana-7b7b687898-qgztc                         2/2     Running   0          3m17s
-prometheus-alertmanager-785975cffb-frbdw         3/3     Running   0          3m17s
-prometheus-kube-state-metrics-6d68cd67f6-x99km   2/2     Running   2          3m17s
-prometheus-node-exporter-dlj42                   1/1     Running   0          3m17s
-prometheus-pushgateway-7b7bc5dff7-krxtc          2/2     Running   0          3m16s
-prometheus-server-5d8f6bf796-7mhnt               4/4     Running   0          3m16s
+grafana-db859d54c-tc77c                          1/1     Running   0          118s
+jaeger-85d84d97b-8dflq                           1/1     Running   0          118s
+loki-0                                           1/1     Running   0          118s
+loki-promtail-vgtqj                              1/1     Running   0          118s
+prometheus-kube-state-metrics-84b95b8c96-hzd5w   1/1     Running   0          118s
+prometheus-server-db5c5b7c9-7dzxd                2/2     Running   0          118s
 ```
 
 Once the pods are all up and running, we need to edit the Kuma Mesh object to include the `metrics: prometheus` section you see below. It is not included by default so you can edit the Mesh object using kubectl like so:
@@ -1051,15 +1065,11 @@ If you visit your personal Loggly instance, you will see the logs appear there.
 
 With the TrafficTrace policy you can configure tracing on every Kuma DP that belongs to the Mesh. Note that tracing operates on L7 HTTP traffic, so make sure that selected data plane proxies are configured with HTTP Protocol.
 
-#### Jaeger Installation
+#### Jaeger
 
 We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-source tracing tool. You can use popular alternatives like Zipkin alongside Kuma.
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install all observability services with the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
-
-```bash
-$ kumactl install observability | kubectl apply -f -
-``` 
+Jaeger was already installed in [Installation step](#installation).
 
 #### Adding Traffic Tracing Policy
 
