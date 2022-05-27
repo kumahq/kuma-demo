@@ -461,10 +461,10 @@ Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If e
 
 #### Installation
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Prometheus and Grafana components onto the Kubernetes cluster we have deployed:
+In Kubernetes mode, we can use `kumactl install [..]` again to install all observability services with a pre-configured Prometheus and Grafana components onto the Kubernetes cluster we have deployed:
 
 ```
-$ ./kumactl install observability --components grafana,prometheus | kubectl apply -f -
+$ ./kumactl install observability | kubectl apply -f -
 namespace/mesh-observability created
 podsecuritypolicy.policy/grafana created
 serviceaccount/prometheus-alertmanager created
@@ -1055,10 +1055,10 @@ With the TrafficTrace policy you can configure tracing on every Kuma DP that bel
 
 We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-source tracing tool. You can use popular alternatives like Zipkin alongside Kuma.
 
-In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
+In Kubernetes mode, we can use `kumactl install [..]` again to install all observability services with the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
 
 ```bash
-$ kumactl install observability --components jaeger | kubectl apply -f -
+$ kumactl install observability | kubectl apply -f -
 ``` 
 
 #### Adding Traffic Tracing Policy
