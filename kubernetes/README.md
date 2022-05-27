@@ -146,17 +146,17 @@ $ curl -L https://kuma.io/installer.sh | sh -
 
 INFO	Welcome to the Kuma automated download!
 INFO	Fetching latest Kuma version..
-INFO	Kuma version: 1.0.1
+INFO	Kuma version: 1.7.0
 INFO	Kuma architecture: amd64
 INFO	Operating system: darwin
-INFO	Downloading Kuma from: https://kong.bintray.com/kuma/kuma-1.0.1-darwin-amd64.tar.gz
+INFO	Downloading Kuma from: https://download.konghq.com/mesh-alpine/kuma-1.7.0-debian-amd64.tar.gz
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 100 60.5M  100 60.5M    0     0  6749k      0  0:00:09  0:00:09 --:--:-- 7389k
 
-INFO	Kuma 1.0.1 has been downloaded!
+INFO	Kuma 1.7.0 has been downloaded!
 
 Welcome to Kuma!
 
@@ -209,10 +209,10 @@ running in your system:
 * https://kuma.io/policies/
 ```
 
-Next, navigate into the `kuma-1.0.1/bin` directory where the kuma components will be:
+Next, navigate into the `kuma-1.7.0/bin` directory where the kuma components will be:
 
 ```bash
-$ cd kuma-1.0.1/bin && ls
+$ cd kuma-1.7.0/bin && ls
 envoy              kuma-dp            kumactl
 kuma-cp            kuma-prometheus-sd
 ```
@@ -464,8 +464,8 @@ Out-of-the-box, Kuma provides full integration with Prometheus and Grafana. If e
 In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Prometheus and Grafana components onto the Kubernetes cluster we have deployed:
 
 ```
-$ ./kumactl install metrics | kubectl apply -f -
-namespace/kuma-metrics created
+$ ./kumactl install observability --components grafana,prometheus | kubectl apply -f -
+namespace/mesh-observability created
 podsecuritypolicy.policy/grafana created
 serviceaccount/prometheus-alertmanager created
 serviceaccount/prometheus-kube-state-metrics created
@@ -506,10 +506,10 @@ deployment.apps/prometheus-pushgateway created
 deployment.apps/prometheus-server created
 ```
 
-To check if everything has been deployed, check the `kuma-metrics` namespace:
+To check if everything has been deployed, check the `mesh-observability` namespace:
 
 ```
-$ kubectl get pods -n kuma-metrics
+$ kubectl get pods -n mesh-observability
 NAME                                             READY   STATUS    RESTARTS   AGE
 grafana-7b7b687898-qgztc                         2/2     Running   0          3m17s
 prometheus-alertmanager-785975cffb-frbdw         3/3     Running   0          3m17s
@@ -547,18 +547,18 @@ metadata:
 spec:
   sources:
     - match:
-       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+       kuma.io/service: prometheus-server_mesh-observability_svc_80
   destinations:
     - match:
        kuma.io/service: dataplane-metrics
     - match:
-       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-alertmanager_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_81"
     - match:
-       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+       kuma.io/service: "prometheus-pushgateway_mesh-observability_svc_9091"
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -568,17 +568,17 @@ metadata:
 spec:
    sources:
    - match:
-      kuma.io/service: "grafana_kuma-metrics_svc_80"
+      kuma.io/service: "grafana_mesh-observability_svc_80"
    destinations:
    - match:
-      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+      kuma.io/service: "prometheus-server_mesh-observability_svc_80"
 EOF
 ```
 
-Afterwards, port-forward the Grafana server pod on the `kuma-metrics` namespace to acess the GUI:
+Afterwards, port-forward the Grafana server pod on the `mesh-observability` namespace to acess the GUI:
 
 ```bash
-$ kubectl port-forward grafana-7b7b687898-qgztc -n kuma-metrics 3000
+$ kubectl port-forward grafana-7b7b687898-qgztc -n mesh-observability 3000
 Forwarding from 127.0.0.1:3000 -> 3000
 Forwarding from [::1]:3000 -> 3000
 ```
@@ -924,18 +924,18 @@ metadata:
 spec:
   sources:
     - match:
-       kuma.io/service: prometheus-server_kuma-metrics_svc_80
+       kuma.io/service: prometheus-server_mesh-observability_svc_80
   destinations:
     - match:
        kuma.io/service: dataplane-metrics
     - match:
-       kuma.io/service: "prometheus-alertmanager_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-alertmanager_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_80"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_80"
     - match:
-       kuma.io/service: "prometheus-kube-state-metrics_kuma-metrics_svc_81"
+       kuma.io/service: "prometheus-kube-state-metrics_mesh-observability_svc_81"
     - match:
-       kuma.io/service: "prometheus-pushgateway_kuma-metrics_svc_9091"
+       kuma.io/service: "prometheus-pushgateway_mesh-observability_svc_9091"
 ---
 apiVersion: kuma.io/v1alpha1
 kind: TrafficPermission
@@ -945,10 +945,10 @@ metadata:
 spec:
    sources:
    - match:
-      kuma.io/service: "grafana_kuma-metrics_svc_80"
+      kuma.io/service: "grafana_mesh-observability_svc_80"
    destinations:
    - match:
-      kuma.io/service: "prometheus-server_kuma-metrics_svc_80"
+      kuma.io/service: "prometheus-server_mesh-observability_svc_80"
 EOF
 ```
 
@@ -1058,7 +1058,7 @@ We will be using [Jaeger](https://www.jaegertracing.io/), which is an open-sourc
 In Kubernetes mode, we can use `kumactl install [..]` again to install the pre-configured Jaeger components onto the Kubernetes cluster we have deployed:
 
 ```bash
-$ kumactl install tracing | kubectl apply -f -
+$ kumactl install observability --components jaeger | kubectl apply -f -
 ``` 
 
 #### Adding Traffic Tracing Policy
@@ -1089,7 +1089,7 @@ spec:
       type: zipkin
       sampling: 100.0
       conf:
-        url: http://jaeger-collector.kuma-tracing:9411/api/v2/spans
+        url: http://jaeger-collector.mesh-observability:9411/api/v2/spans
 EOF
 ```
 
@@ -1117,7 +1117,7 @@ EOF
 After generating some traffic in the mesh, you can access the Jaeger dashboard using the following command to visualize the traces:
 
 ```bash
-$ minikube service jaeger-query --url -p kuma-demo -n kuma-tracing
+$ minikube service jaeger-query --url -p kuma-demo -n mesh-observability
 http://192.168.64.62:30911
 ```
 
