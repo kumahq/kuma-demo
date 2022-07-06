@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: kuma-demo
   namespace: kuma-demo
-  annotations:
+  labels:
     kuma.io/sidecar-injection: enabled
 ---
 apiVersion: apps/v1
