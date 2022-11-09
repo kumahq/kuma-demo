@@ -13,4 +13,4 @@ kumactl generate tls-certificate \
 --cert-file=/vagrant/.vagrant.data/control-plane/var/secrets/kuma.io/kuma-cp/tls/server.crt \
 --key-file=/vagrant/.vagrant.data/control-plane/var/secrets/kuma.io/kuma-cp/tls/server.key \
 --type=server \
---cp-hostname=kuma-cp
+--hostname=kuma-cp
