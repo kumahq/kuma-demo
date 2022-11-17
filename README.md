@@ -35,7 +35,6 @@ The first step is obviously to [download and install Kuma](https://kuma.io/insta
 To see examples of how to deploy Kuma alongside this marketplace application, please check out the following instructions:
 
 - [Kubernetes](kubernetes/README.md)
-- [Universal](vagrant/README.md) 
 
 ## Application Components
 

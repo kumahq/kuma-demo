@@ -19,21 +19,5 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# vagrant - ignore sync folder
-.vagrant.data/
-/vagrant/*
-!/vagrant/common/
-!/vagrant/frontend/
-!/vagrant/backend/
-!/vagrant/backend-v1/
-!/vagrant/postgresql/
-!/vagrant/control-plane/
-!/vagrant/redis/
-!/vagrant/metrics/
-!/vagrant/kong/
-!/vagrant/images/
-!/vagrant/README.md
-!Vagrantfile
-
 # postgres data
 pgdata/
