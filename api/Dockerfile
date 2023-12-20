@@ -15,4 +15,6 @@ EXPOSE 3001
 
 RUN apk add curl
 
+ENV NODE_ENV=production
+
 CMD [ "npm", "start" ]
