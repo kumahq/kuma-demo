@@ -3,7 +3,7 @@ const { Pool } = require("pg");
 const pino = require('pino');
 const logger = pino({ name: 'kuma-backend-pg' });
 const dns = require('dns');
-dnsPromises = dns.promises;
+const dnsPromises = dns.promises;
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER || "kumademo",
@@ -60,7 +60,7 @@ const importData = () => {
       await client.query("ROLLBACK");
       throw e;
     } finally {
-      logger.error("Release");
+      logger.info("Release");
       client.release();
     }
   })().catch((e) => logger.error(e.stack));
