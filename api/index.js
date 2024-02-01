@@ -52,7 +52,6 @@ app.get("/items", async (req, res) => {
       if (results.rows === undefined) {
         logger.error('result.rows is undefined');
       }
-      // logger.info('result: ' + JSON.stringify(results));
       if (results.rows.length === 0) {
         logger.warn('no results found');
       } else {
