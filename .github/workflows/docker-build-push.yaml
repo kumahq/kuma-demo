@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
           file: ./api/Dockerfile
@@ -31,3 +31,30 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-demo-be:latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          file: ./app/Dockerfile
+          context: ./app
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-demo-fe:latest
+
+      - name: Build and push postgres
+        uses: docker/build-push-action@v5
+        with:
+          file: ./api/db/postgresql/Dockerfile
+          context: ./api/db/postgresql
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/postgres:latest
+
+      - name: Build and push redis
+        uses: docker/build-push-action@v5
+        with:
+          file: ./api/db/redis/Dockerfile
+          context: ./api/db/redis
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-redis:latest
