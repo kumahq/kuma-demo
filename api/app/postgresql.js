@@ -1,7 +1,7 @@
 const items = require("../db/items.json");
 const { Pool } = require("pg");
 const pino = require('pino');
-const logger = pino({ name: 'kuma-backend-pg' });
+const logger = pino({ name: 'kuma-backend-pg', level: process.env.PINO_LOG_LEVEL || 'info' });
 const dns = require('dns');
 const dnsPromises = dns.promises;
 
@@ -25,9 +25,8 @@ pool.on("error", (err, clients) => {
 });
 
 const search = async (itemName) => {
-  logger.info('pool details: ' + JSON.stringify(pool));
-  await dnsPromises.lookup(pool.options.host, dnsOptions).then((result) => {
-    logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
+  await dnsPromises.lookup(pool.options.host, dnsOptions).then(async (result) => {
+    await logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
   }); 
   return await pool.query(
       `SELECT data FROM marketItems WHERE name ILIKE '%${itemName}%'`
@@ -60,11 +59,12 @@ const importData = () => {
       await client.query("ROLLBACK");
       throw e;
     } finally {
-      logger.info("Release");
+      logger.debug("Release");
       client.release();
     }
   })().catch((e) => logger.error(e.stack));
 };
+
 
 module.exports = Object.assign({
   search,

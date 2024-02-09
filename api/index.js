@@ -2,7 +2,7 @@ const redis = require("./app/redis");
 const postgresql = require("./app/postgresql");
 const promBundle = require("express-prom-bundle");
 const pino = require('pino');
-const logger = pino({ name: 'kuma-backend' });
+const logger = pino({ name: 'kuma-backend', level: process.env.PINO_LOG_LEVEL || 'info' });
 
 const express = require("express");
 const app = express();
@@ -42,8 +42,8 @@ app.post("/upload", async (req, res) => {
 });
 
 app.get("/items", async (req, res) => {
-  logger.info('get on /items');
-  postgresql
+  await logger.info('get on /items');
+  await postgresql
     .search(req.query.q)
     .then(async (results) => {
       if (results === undefined) {
