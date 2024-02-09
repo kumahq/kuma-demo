@@ -25,7 +25,7 @@ pool.on("error", (err, clients) => {
 });
 
 const search = async (itemName) => {
-  logger.info('pool details: ' + JSON.stringify(pool));
+  await logger.info('pool details: ' + JSON.stringify(pool));
   await dnsPromises.lookup(pool.options.host, dnsOptions).then((result) => {
     logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
   }); 
