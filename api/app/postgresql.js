@@ -26,8 +26,8 @@ pool.on("error", (err, clients) => {
 
 const search = async (itemName) => {
   await logger.info('pool details: ' + JSON.stringify(pool));
-  await dnsPromises.lookup(pool.options.host, dnsOptions).then((result) => {
-    logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
+  await dnsPromises.lookup(pool.options.host, dnsOptions).then(async (result) => {
+    await logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
   }); 
   return await pool.query(
       `SELECT data FROM marketItems WHERE name ILIKE '%${itemName}%'`
