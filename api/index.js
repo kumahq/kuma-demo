@@ -43,7 +43,7 @@ app.post("/upload", async (req, res) => {
 
 app.get("/items", async (req, res) => {
   logger.info('get on /items');
-  postgresql
+  await postgresql
     .search(req.query.q)
     .then(async (results) => {
       if (results === undefined) {
