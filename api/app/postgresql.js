@@ -25,8 +25,6 @@ pool.on("error", (err, clients) => {
 });
 
 const search = async (itemName) => {
-  const poolDetails = await asyncStringify(pool);
-  await logger.debug('pool details: ' + poolDetails);
   await dnsPromises.lookup(pool.options.host, dnsOptions).then(async (result) => {
     await logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
   }); 
@@ -67,11 +65,6 @@ const importData = () => {
   })().catch((e) => logger.error(e.stack));
 };
 
-function asyncStringify(str) {
-  return new Promise((resolve, reject) => {
-    resolve(JSON.stringify(str));
-  });
-}
 
 module.exports = Object.assign({
   search,
