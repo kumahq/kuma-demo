@@ -48,7 +48,7 @@ jobs:
           context: ./api/db/postgresql
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/postgres:latest-gitlab
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/postgres:latest
 
       - name: Build and push redis
         uses: docker/build-push-action@v5
