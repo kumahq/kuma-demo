@@ -1,7 +1,7 @@
 const items = require("../db/items.json");
 const { Pool } = require("pg");
 const pino = require('pino');
-const logger = pino({ name: 'kuma-backend-pg' });
+const logger = pino({ name: 'kuma-backend-pg', level: process.env.PINO_LOG_LEVEL || 'info' });
 const dns = require('dns');
 const dnsPromises = dns.promises;
 
@@ -26,7 +26,7 @@ pool.on("error", (err, clients) => {
 
 const search = async (itemName) => {
   const poolDetails = await asyncStringify(pool);
-  await logger.info('pool details: ' + poolDetails);
+  await logger.debug('pool details: ' + poolDetails);
   await dnsPromises.lookup(pool.options.host, dnsOptions).then(async (result) => {
     await logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
   }); 
@@ -61,7 +61,7 @@ const importData = () => {
       await client.query("ROLLBACK");
       throw e;
     } finally {
-      logger.info("Release");
+      logger.debug("Release");
       client.release();
     }
   })().catch((e) => logger.error(e.stack));
