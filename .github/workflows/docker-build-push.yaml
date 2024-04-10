@@ -20,8 +20,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_API_KEY }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v5
@@ -30,7 +30,7 @@ jobs:
           context: ./api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-demo-be:latest
+          tags: ${{ vars.DOCKER_REPOSITORY || vars.DOCKER_USERNAME }}/kuma-demo-be:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -39,7 +39,7 @@ jobs:
           context: ./app
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-demo-fe:latest
+          tags: ${{ vars.DOCKER_REPOSITORY || vars.DOCKERHUB_USERNAME }}/kuma-demo-fe:latest
 
       - name: Build and push postgres
         uses: docker/build-push-action@v5
@@ -48,7 +48,7 @@ jobs:
           context: ./api/db/postgresql
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/postgres:latest
+          tags: ${{ vars.DOCKERHUB_REPOSITORY || vars.DOCKERHUB_USERNAME }}/kuma-demo-pg:latest
 
       - name: Build and push redis
         uses: docker/build-push-action@v5
@@ -57,4 +57,4 @@ jobs:
           context: ./api/db/redis
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kuma-redis:latest
+          tags: ${{ vars.DOCKER_REPOSITORY || vars.DOCKER_USERNAME }}/kuma-demo-redis:latest
