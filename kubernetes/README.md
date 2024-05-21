@@ -771,7 +771,7 @@ EOF
 
 Traffic Routing policy enable you to configure routing rules for L4 traffic, i.e. blue/green deployments and canary releases. To route traffic, Kuma matches via tags that we can designate to Dataplane resources.
 
-When we deployed the application earlier, the manifest deployed three versions of the backend application: `backend`, `backend-v1`, and `backend-v2`. The original `backend` service is a normal marketplace you've been browsing. The `backend-v1` is a marketplace with 1 sale on the front page, and `backend-v1` is a marketplace with 2 sales. In the diagram below, you can see the two destination services have been assigned the version tag to help with canary deployment.
+When we deployed the application earlier, the manifest deployed three versions of the backend application: `backend`, `backend-v1`, and `backend-v2`. The original `backend` service is a normal marketplace you've been browsing. The `backend-v1` is a marketplace with 1 sale on the front page, and `backend-v2` is a marketplace with 2 sales. In the diagram below, you can see the two destination services have been assigned the version tag to help with canary deployment.
 
 ```           
                         ----> backend-v0  :  service=backend, version=v0, env=prod
