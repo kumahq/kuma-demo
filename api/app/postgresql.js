@@ -1,5 +1,9 @@
 const items = require("../db/items.json");
 const { Pool } = require("pg");
+const pino = require('pino');
+const logger = pino({ name: 'kuma-backend-pg', level: process.env.PINO_LOG_LEVEL || 'info' });
+const dns = require('dns');
+const dnsPromises = dns.promises;
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER || "kumademo",
@@ -7,17 +11,26 @@ const pool = new Pool({
   database: process.env.POSTGRES_DB || "kumademo",
   password: process.env.POSTGRES_PASSWORD || "kumademo",
   port: process.env.POSTGRES_PORT_NUM || 5432, //POSTGRES_PORT environmental variable is taken on K8S
+  idleTimeoutMillis: process.env.POSTGRES_IDLE_TIMEOUT || 10000,
+  connectionTimeoutMillis: process.env.POSTGRES_CONNECTION_TIMEOUT || 2000,
 });
 
+const dnsOptions = {
+  all: true,
+};
+
 pool.on("error", (err, clients) => {
-  console.error("Unexpected error on idle client", err);
+  logger.error('error on postgresql pool', err);
   process.exit(-1);
 });
 
 const search = async (itemName) => {
+  await dnsPromises.lookup(pool.options.host, dnsOptions).then(async (result) => {
+    await logger.info('DNS lookup for host ' + pool.options.host + ': %j', result);
+  }); 
   return await pool.query(
-    `SELECT data FROM marketItems WHERE name ILIKE '%${itemName}%'`
-  );
+      `SELECT data FROM marketItems WHERE name ILIKE '%${itemName}%'`
+    );
 };
 
 const importData = () => {
@@ -42,15 +55,16 @@ const importData = () => {
       });
       await client.query("COMMIT");
     } catch (e) {
-      console.log("Error");
+      logger.error('search error: ', err);
       await client.query("ROLLBACK");
       throw e;
     } finally {
-      console.log("Release");
+      logger.debug("Release");
       client.release();
     }
-  })().catch((e) => console.error(e.stack));
+  })().catch((e) => logger.error(e.stack));
 };
+
 
 module.exports = Object.assign({
   search,

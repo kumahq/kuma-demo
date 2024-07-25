@@ -1,7 +1,7 @@
 # docker build . -t kvn0218/kuma-demo-fe:latest
 # docker push kvn0218/kuma-demo-fe:latest
 
-FROM node:lts-alpine
+FROM node:21-alpine
 
 RUN npm install -g http-server 
 
